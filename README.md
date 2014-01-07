@@ -1,4 +1,4 @@
 WSUWP-scrape-n-post
 ===================
 
-Still in dev so the repo it dirty.  Don't count on things till a tag is put forth.  
+Still in dev so the repo is dirty. Don't count on things until a tag is put forth.
