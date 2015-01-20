@@ -284,13 +284,13 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				);
 		}
 		public function findlinks() {
-			global $wpdb, $scrape_pages,$scrape_data, $_params;
+			global $wpdb,$scrape_core,$scrape_pages,$scrape_data, $_params;
 			
 			$options = $scrape_data->get_options();
 	
 			$url=$_params['scrape_url'];
 			$scrape_data->rootUrl = parse_url($url, PHP_URL_HOST);
-			//var_dump($url);
+			//var_dump($url);die();
 			$urls = $scrape_data->get_all_urls($url,$options['crawl_depth']);
 
 			$scrape_pages->crawler_page();

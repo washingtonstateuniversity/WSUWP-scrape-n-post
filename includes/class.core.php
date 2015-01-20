@@ -31,8 +31,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
 				if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1)
 					ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
-				if(isset($options['time_limit']) && $options['time_limit']>-1)
-					set_time_limit($options['time_limit']);
+				if(isset($options['timeout_limit']) && $options['timeout_limit']>-1)
+					set_time_limit($options['timeout_limit']);
 				if(isset($options['memory_limit']) && $options['memory_limit']>-2)
 					ini_set('memory_limit', $options['memory_limit']);
 			}

@@ -12,13 +12,17 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			}
 	// @TODO
 		public function get_options(){
+			//should pull from inline options right before run
+			// then merge the options
 			$plugin_option = get_option('scrape_options', array(
 				'crawl_depth' => 5,
 				'on_error' => 'error_hide',
 				'custom_error' => 'Unable to fetch data',
 				'useragent' => "Scrape-N-Post bot -- NOT A DDoS",
 				'timeout' => 2,
-				'time_limit'=>300,
+				'limit_scraps'=>'-1',
+				'interval'=>'500',
+				'timeout_limit'=>300,
 				'memory_limit'=>'-1',
 				'xdebug_fix'=>1,
 				'add_post_on_crawl'=>0
@@ -107,7 +111,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	}
 
 	public function get_urls($url){
-		global $scrape_data,$_params;
+		global $scrape_core,$scrape_data,$_params;
 		$res = wp_remote_get($url);
 		$page=wp_remote_retrieve_body( $res );
 		if(empty($page)){
@@ -173,6 +177,10 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	 * @return string
 	 */
 	function scrape_get_content($url, $selector = '', $xpath = '', $scrapeopt = '') {
+		
+		
+		
+		
 		$scrape_options = get_option('scrape_options');
 		//$scrape_options = $scrape_options['scrape_options'];
 		$default_scrapeopt = array(
@@ -284,6 +292,12 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			return $response;
 		} else {
 			var_dump($response);
+			var_dump($url);
+			var_dump($cache_args);
+			var_dump($http_args);
+			var_dump($retry_limit);
+			
+			
 			if($retry_limit>0){
 				sleep(2);
 				print('retrying');

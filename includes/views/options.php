@@ -70,10 +70,10 @@
        <div class="field-wrap">
         <div class="field">
           <label> <?php _e( "Timeout (in seconds)"); ?> </label>
-          <input type="text" name="time_limit" id="scrape_time_limit"  value="<?php echo $scrape_options['time_limit']; ?>" class="small-text code" />
+          <input type="text" name="timeout_limit" id="scrape_timeout_limit"  value="<?php echo $scrape_options['timeout_limit']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
-          <?php _e("Over write [if possible], php's time_limit"); ?>
+          <?php _e("Over write [if possible], php's execution time limit"); ?>
           )</span> </div>
       </div>     
       
