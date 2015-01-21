@@ -368,7 +368,14 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @param int     $post_id The ID of the post being saved.
 		 */
-		private function save_object_url( $post_id ) {
+		private function save_object( $post_id ) {
+			/*
+			`url` MEDIUMINT(9),
+			`tied_post_id` MEDIUMINT(9),
+			`ignored` BIT(1) NOT NULL DEFAULT 0,
+			`last_http_status` MEDIUMINT(9),
+			`type` VARCHAR(255) DEFAULT NULL,
+			*/
 			if ( isset( $_POST['wsuwp_spn_url'] ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_url'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_url' );
@@ -376,35 +383,49 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					update_post_meta( $post_id, '_wsuwp_spn_url', esc_url_raw( $_POST['wsuwp_spn_url'] ) );
 				}
 			}
-	
+			
+			if ( isset( $_POST['wsuwp_spn_tied_post_id'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_tied_post_id'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_tied_post_id' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_tied_post_id', esc_url_raw( $_POST['wsuwp_spn_tied_post_id'] ) );
+				}
+			}
+			
+			if ( isset( $_POST['wsuwp_spn_ignored'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_ignored'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_ignored' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_ignored', esc_url_raw( $_POST['wsuwp_spn_ignored'] ) );
+				}
+			}			
+			
+			if ( isset( $_POST['wsuwp_spn_ignored'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_ignored'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_ignored' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_ignored', esc_url_raw( $_POST['wsuwp_spn_ignored'] ) );
+				}
+			}				
+			
+			if ( isset( $_POST['wsuwp_spn_last_http_status'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_last_http_status'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_last_http_status' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_last_http_status', esc_url_raw( $_POST['wsuwp_spn_last_http_status'] ) );
+				}
+			}					
+			
+			if ( isset( $_POST['wsuwp_spn_type'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_type'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_type' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_type', esc_url_raw( $_POST['wsuwp_spn_type'] ) );
+				}
+			}		
 			return;
 		}
 
-		/**
-		 * Assign a URL to an object when saved through the object's meta box.
-		 *
-		 * @param int     $post_id The ID of the post being saved.
-		 */
-		private function save_shadow_object( $post_id ) {
-			if ( isset( $_POST['wsuwp_spn_shadow_object'] ) ) {
-				/*
-				`post_id` MEDIUMINT(9),
-				`ignored` BIT(1) NOT NULL DEFAULT 0,
-				`http_status` MEDIUMINT(9),
-				`type` VARCHAR(255) DEFAULT NULL,
-				*/
-				
-				//we need to build the object that we are going to hold on to
-				
-				
-				if ( empty( trim( $_POST['wsuwp_spn_shadow_object'] ) ) ) {
-					delete_post_meta( $post_id, '_wsuwp_spn_shadow_object' );
-				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_shadow_object', $_POST['wsuwp_spn_shadow_object'] );
-				}
-			}
-			return;
-		}
 		
 	}
 	global $scrape_core;
