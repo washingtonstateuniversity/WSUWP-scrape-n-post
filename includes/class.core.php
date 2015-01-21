@@ -87,17 +87,23 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				
+				
+				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
+				
 
 				$options = $scrape_data->get_options(); // after _param validation just in case
 				
 				//@todo move this to it's own method
 				//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
-				if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1)
+				if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1){
 					ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
-				if(isset($options['timeout_limit']) && $options['timeout_limit']>-1)
+				}
+				if(isset($options['timeout_limit']) && $options['timeout_limit']>-1){
 					set_time_limit($options['timeout_limit']);
-				if(isset($options['memory_limit']) && $options['memory_limit']>-2)
+				}
+				if(isset($options['memory_limit']) && $options['memory_limit']>-2){
 					ini_set('memory_limit', $options['memory_limit']);
+				}
 			}
 		}
 		
@@ -110,6 +116,31 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			$this->_add_table();
 		}
 
+		/**
+		 * Process any upgrade routines between versions or on initial activation.
+		 */
+		public function process_upgrade_routine() {
+			$db_version = get_option( 'wsuwp_snp_version', '0.0.0' );
+	
+			// Flush rewrite rules if on an early or non existing DB version.
+			if ( version_compare( $db_version, '0.2.0', '<' ) ) {
+				flush_rewrite_rules();
+			}
+	
+			update_option( 'wsuwp_snp_version', SCRAPE_VERSION );
+		}
+		
+
+		/**
+		 * Flush the rewrite rules on the site.
+		 *
+		 * is an expensive operation so it should only be used when absolutely necessary
+		 */
+		public function flush_rewrite_rules() {
+			flush_rewrite_rules();
+		}
+			
+		
 		/**
 		 * Add template table
 		 * 
@@ -172,8 +203,11 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				'modules' => SCRAPE_PATH . '/scrape-content/modules',
 				'http-cache' => SCRAPE_PATH . '/scrape-content/http-cache'
 			);
-			foreach ($required_dir as $dir)
-				if( !is_dir($dir) ) @mkdir($dir, 0777);
+			foreach ($required_dir as $dir){
+				if( !is_dir($dir) ){
+					 @mkdir($dir, 0777);
+				}
+			}
 			
 			
 		}

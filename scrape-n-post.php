@@ -31,11 +31,11 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 
 	$scrape_core = NULL;
 	class scrapeNpostLoad {
+					
+		/*
+		 * Initiate the plug-in.
+		 */
 		public function __construct() {
-			
-			/*
-			 * Initiate the plug-in.
-			 */
 			include(SCRAPE_PATH . '/includes/class.core.php');// Include core
 			register_activation_hook(__FILE__,  '_activation');// Install
 			register_deactivation_hook(__FILE__,  '_deactivation');// turn off cron jobs
