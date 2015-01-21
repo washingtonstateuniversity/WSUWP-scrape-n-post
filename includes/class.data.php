@@ -265,9 +265,14 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	 * @param array $http_args Optional. Override the defaults.
 	 * @return WP_Error|array The response or WP_Error on failure.
 	 */
-	function scrape_remote_request($url, $cache_args = array(), $http_args = array(),$retry_limit=3) {
+	function scrape_remote_request($url, $cache_args = array(), $http_args = array(),$retry_limit=false) {
 		//print('starting request <h5>'.$url.'</h5>');
 		//var_dump($http_args);
+		$scrape_options = get_option('scrape_options');
+		if(!$retry_limit){
+			$retry_limit = $scrape_options['retry_limit'];
+		}
+		
 		$default_cache_args = array(
 			'cache' => 60,
 			'on-error' => 'cache'
@@ -293,15 +298,14 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			@$response['headers']['source'] = 'WP_Http';
 			return $response;
 		} else {
+			
 			var_dump($response);
 			var_dump($url);
 			var_dump($cache_args);
 			var_dump($http_args);
 			var_dump($retry_limit);
-			
-			
 			if($retry_limit>0){
-				sleep(2);
+				sleep($scrape_options['retry_interval']);
 				print('retrying');
 				return $this->scrape_remote_request($url,$cache_args,$http_args,$retry_limit-1);	
 			}
