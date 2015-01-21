@@ -70,7 +70,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @var string
 		 */
-		var $project_content_type = 'wsuwp_snp_post_shadow';
+		var $shadow_content_type = 'wsuwp_snp_postshadow';
 
 
 		
@@ -276,7 +276,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			);
 			$description = __( 'Shadow Copies belonging to a post.', 'wsuwp_snp' );
 			$default_slug = 'post_shadow';
-	
+
 			$args = array(
 				'labels' => $labels,
 				'description' => $description,
@@ -292,6 +292,13 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					'slug' => $slug,
 					'with_front' => false
 				),
+				'public'=>true,
+				'exclude_from_search' => true,
+				'publicly_queryable' => false,
+				'show_in_nav_menus' => false,
+				'show_ui' => true,
+				'menu_icon' => 'dashicons-share-alt2',
+				'show_in_menu'=>SCRAPE_BASE_NAME
 			);
 	
 			register_post_type( $this->shadow_content_type, $args );
