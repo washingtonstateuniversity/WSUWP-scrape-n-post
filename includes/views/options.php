@@ -62,6 +62,28 @@
 	  
 	  
 	  
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Retry on failed scrape interval (in seconds)"); ?> </label>
+          <input type="text" name="retry_interval" id="scrape_retry_interval"  value="<?php echo $scrape_options['retry_interval']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit is 2"); ?>
+          )</span> </div>
+      </div>  
+	  
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Retry on failed scrape Limit"); ?> </label>
+          <input type="text" name="retry_limit" id="scrape_retry_limit"  value="<?php echo $scrape_options['retry_limit']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit of retries is 3"); ?>
+          )</span> </div>
+      </div>  
+
+	  
+	  
 	  
 	<div class="field-wrap">
         <div class="field">
