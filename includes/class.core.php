@@ -99,6 +99,9 @@ if ( ! class_exists( 'scrape_core' ) ) {
 
 				add_action( 'init', array( $this, 'register_tracked_external_content_type' ), 11 );
 				
+				add_action( 'save_post', array( $this, 'save_object_url' ), 12, 2 );
+				add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 11, 1 );
+				
 				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
 				
 			}
@@ -284,7 +287,6 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				'hierarchical' => false,
 				'supports' => array (
 					'title',
-					'editor',
 					'revisions'
 				),
 				'has_archive' => true,
@@ -303,6 +305,84 @@ if ( ! class_exists( 'scrape_core' ) ) {
 	
 			register_post_type( $this->shadow_content_type, $args );
 		}
+
+
+
+		/**
+		 * Add meta boxes used to capture pieces of information.
+		 *
+		 * @param string $post_type
+		 */
+		public function add_meta_boxes( $post_type ) {
+			add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
+			add_meta_box( 'wsuwp_snp_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
+		}
+
+		/**
+		 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
+		 * not really the meta of the post, but it'll work for our needs
+		 *
+		 * @param WP_Post $post The full post object being edited.
+		 */
+		public function display_cached_html( $post ) {
+			?>
+			<div id="wsuwp-snp-display">
+				<p class="description">Html from url</p>
+				<p class="description"><strong>note:</strong> edits to this will not be saved.  This is purly informational only.</p>
+				<div class="html">
+					<label for="wsuwp-snp-html">Last captured html:</label><br/>
+					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?php echo $post->content; ?></textarea>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<?php
+		}
+
+
+		/**
+		 * Display a meta box to capture the URL for an object.
+		 *
+		 * @param WP_Post $post
+		 */
+		public function display_object_url_meta_box( $post ) {
+			$object_url = get_post_meta( $post->ID, '_wsuwp_spn_url', true );
+			if ( ! empty( $object_url ) ) {
+				$object_url = esc_url( $object_url );
+			} else {
+				$object_url = '';
+			}
+	
+			?>
+			<div id="wsuwp-snp-display">
+				<div class="html">
+					<label for="wsuwp-spn-url">Tracked URL:</label>
+					<input type="text" class="widefat" id="wsuwp-spn-url" name="wsuwp_spn_url" value="<?php echo $object_url; ?>" />
+					<p class="description">Note, altering the url will cause the html to get reloaded.</p>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<?php
+		}
+		/**
+		 * Assign a URL to an object when saved through the object's meta box.
+		 *
+		 * @param int     $post_id The ID of the post being saved.
+		 */
+		private function save_object_url( $post_id ) {
+			if ( isset( $_POST['wsuwp_spn_url'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_url'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_url' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_url', esc_url_raw( $_POST['wsuwp_spn_url'] ) );
+				}
+			}
+	
+			return;
+		}
+
+
+
+
 	
 	}
 	global $scrape_core;
