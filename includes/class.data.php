@@ -50,7 +50,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			return;
 		}
 		$this->seen["{$url}"] = true;
-	
+		$scrape_options = get_option('scrape_options');
 		$urls = $this->get_urls($url);
 		foreach($urls as $href=>$obj ) {
 			if($obj['type']=='page'){
@@ -97,7 +97,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 						'type'=>$obj['type'],
 						'http_status'=>200
 					));
-					$scrape_options = get_option('scrape_options');
+					
 					if($scrape_options['add_post_on_crawl']){
 						$scrape_actions->make_post($href);
 					}
@@ -106,7 +106,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				$this->traverse_all_urls($href,$depth - 1);
 			}
 		}
-		sleep( 1 );
+		sleep( $scrape_options['interval'] );
 		echo $url;
 	}
 
