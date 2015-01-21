@@ -1,14 +1,14 @@
 <?php
 
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( ! defined( 'ABSPATH' ) ) exit;// Exit if accessed directly
 if ( ! class_exists( 'scrape_data' ) ) {
 	class scrape_data extends scrape_core {
 		public $seen = array();
 		public $wanted = array();
 		function __construct() { }
 		/**
-		 * Get the options for the plugin as set for each run
+		 * Get the options for the plugin as set for each run.
 		 * 
 		 * @reutrun array
 		 *
@@ -36,7 +36,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 
 		/**
-		 * Get all the urls of a page
+		 * Get all the urls of a page.
 		 * 
 		 * @return array All the urls that are on a page
 		 *
@@ -49,7 +49,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		
 		
 		/**
-		 * Look through a page and grab and store based on the options set
+		 * Look through a page and grab and store based on the options set.
 		 * 
 		 * @global class $scrape_actions
 		 * @global class $scrape_core
@@ -133,7 +133,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 	
 		/**
-		 * Get all urls from links in a page
+		 * Get all urls from links in a page.
 		 * 
 		 * @global class $scrape_data
 		 * @global class $scrape_core
@@ -182,7 +182,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 
 		/**
-		 * build link object
+		 * build link object.
 		 *
 		 * @access public
 		 * 
@@ -194,7 +194,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 		
 		/**
-		 * Wrapper function to fetch content, select / query it and parse it
+		 * Wrapper function to fetch content, select / query it and parse it.
 		 * 
 		 * @param string $url
 		 * @param string $selector (optional) Selector
@@ -284,7 +284,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		
 		/**
 		 * Retrieve the raw response from the HTTP request (or its cached version).
-		 * Wrapper function to wp_remote_request()
+		 * 
+		 * Wrapper function to wp_remote_request().
 		 * 
 		 * @param string $url Site URL to retrieve.
 		 * @param array $cache_args Optional. Override the defaults.
@@ -344,7 +345,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 	
 		/**
-		 * Get HTML from a web page using selector
+		 * Get HTML from a web page using selector.
 		 *
 		 * @param string $raw_html Raw HTML
 		 * @param string $selector Selector
@@ -372,7 +373,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	
 		
 		/**
-		 * take @param $url and insure it's a fully qualified URL 
+		 * take @param $url and insure it's a fully qualified URL.
+		 * 
 		 * NOTE: this only does local domains
 		 * @param string $url possibly drity url
 		 * 
@@ -407,7 +409,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		
 
 		/*
-		 * corrects any oddities of @param $url 
+		 * corrects any oddities of @param $url.
 		 * 
 		 * EX: 'HtTp://UsEr:PaSs@wWW.ExAmPle.cOm:80/BlaH' becomes
 		 * 'http://UsEr:PaSs@www.example.com:80/BlaH'
@@ -426,7 +428,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 
 		/*
-		 * test if @param $url is not a file or emai
+		 * test if @param $url is not a file or emai.
 		 * 
 		 * @param string $url
 		 *
@@ -444,7 +446,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 		
 		/*
-		 * test if @param $url is a comman media file
+		 * test if @param $url is a comman media file.
 		 * 
 		 * @param string $url
 		 *
@@ -462,7 +464,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 
 		/*
-		 * test if @param $url is an email
+		 * test if @param $url is an email.
 		 * 
 		 * @param string $url
 		 *
@@ -478,7 +480,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 		
 		/*
-		 * test if @param $url is an anchor
+		 * test if @param $url is an anchor.
 		 * 
 		 * @param string $url
 		 *
@@ -494,7 +496,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 		
 		/*
-		 * test if @param $url is an internal url to the site
+		 * test if @param $url is an internal url to the site.
 		 * 
 		 * @param string $url
 		 *
@@ -510,10 +512,10 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 
 		/*
-		 * Get post data
+		 * Get post data.
 		 * 
 		 * It's worth noting that any out put here will print into the pdf.  If the PDF can't be 
-		 * read then look at it in a text editor like Notepad, where you will see the php errors
+		 * read then look at it in a text editor like Notepad, where you will see the php errors.
 		 *
 		 * @global array $_params
 		 * 
@@ -550,7 +552,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 		
 		/*
-		 * Return query filter
+		 * Return query filter.
 		 *
 		 * @global array $_params
 		 * 

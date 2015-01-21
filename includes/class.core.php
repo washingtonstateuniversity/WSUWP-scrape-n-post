@@ -11,7 +11,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 	class scrape_core {
 		
 		/**
-		 * scrape_pages class
+		 * scrape_pages class.
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_pages.
@@ -20,7 +20,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		public $scrape_pages = NULL;
 		
 		/**
-		 * scrape_output class
+		 * scrape_output class.
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_output.
@@ -29,7 +29,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		public $scrape_output = NULL;
 		
 		/**
-		 * scrape_data class
+		 * scrape_data class.
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_data.
@@ -38,7 +38,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		public $scrape_data = NULL;
 		
 		/**
-		 * scrape_actions class
+		 * scrape_actions class.
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_actions.
@@ -48,7 +48,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		
 		
 		/**
-		 * message array
+		 * message array.
 		 *
 		 * @since 0.1.0
 		 * @var array $message.
@@ -57,16 +57,25 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		public $message = array();
 		
 		/**
-		 * _params from post/get array
+		 * _params from post/get array.
 		 *
 		 * @since 0.1.0
 		 * @var array $_params.
 		 * @access public
 		 */
 		public $_params;
+
+		/**
+		 * The slug used to register the shadow content type.
+		 *
+		 * @var string
+		 */
+		var $project_content_type = 'wsuwp_snp_post_shadow';
+
+
 		
 		/**
-		 * Add template table
+		 * Add template table.
 		 * 
 		 * @global array $_params
 		 * 
@@ -87,15 +96,17 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				
 				add_action( 'init', array( $this, 'set_default_model' ), 10 );
-				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
-				
 
+				add_action( 'init', array( $this, 'register_tracked_external_content_type' ), 11 );
+				
+				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
 				
 			}
 		}
 		
 		/**
-		 * Initialize install
+		 * Initialize install.
+		 *
 		 * @access public
 		 */
 		public function install_init() {
@@ -104,7 +115,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		}
 		
 		/**
-		 * Make sure everything is good to go as the plugin is run
+		 * Make sure everything is good to go as the plugin is run.
 		 * 
 		 * @global class $scrape_data
 		 * 
@@ -146,7 +157,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		/**
 		 * Flush the rewrite rules on the site.
 		 *
-		 * is an expensive operation so it should only be used when absolutely necessary
+		 * is an expensive operation so it should only be used when absolutely necessary.
 		 */
 		public function flush_rewrite_rules() {
 			flush_rewrite_rules();
@@ -154,7 +165,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			
 		
 		/**
-		 * Add template table
+		 * Add template table.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_data
@@ -226,7 +237,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 	
 
 		/**
-		 * Check if entry already exist
+		 * Check if entry already exist.
 		 * 
 		 * @param string $column
 		 * @param string $value
@@ -244,7 +255,47 @@ if ( ! class_exists( 'scrape_core' ) ) {
 	
 		
 		
-		
+		/**
+		 * Register the shadow content type.
+		 *
+		 * The point of this content is that a post can be linked back to a url so that it can be 
+		 * updated from that url. 
+		 */
+		public function register_tracked_external_content_type() {
+			$labels = array(
+				'name'               => __( 'Shadow Copy', 'wsuwp_snp' ),
+				'singular_name'      => __( 'Shadow Copy', 'wsuwp_snp' ),
+				'all_items'          => __( 'All Shadow Copies', 'wsuwp_snp' ),
+				'add_new_item'       => __( 'Add Shadow Copy', 'wsuwp_snp' ),
+				'edit_item'          => __( 'Edit Shadow Copy', 'wsuwp_snp' ),
+				'new_item'           => __( 'New Shadow Copy', 'wsuwp_snp' ),
+				'view_item'          => __( 'View Shadow Copy', 'wsuwp_snp' ),
+				'search_items'       => __( 'Search Shadow Copies', 'wsuwp_snp' ),
+				'not_found'          => __( 'No Shadow Copies found', 'wsuwp_snp' ),
+				'not_found_in_trash' => __( 'No Shadow Copies found in trash', 'wsuwp_snp' ),
+			);
+			$description = __( 'Shadow Copies belonging to a post.', 'wsuwp_snp' );
+			$default_slug = 'post_shadow';
+	
+			$args = array(
+				'labels' => $labels,
+				'description' => $description,
+				'public' => false,
+				'hierarchical' => false,
+				'supports' => array (
+					'title',
+					'editor',
+					'revisions'
+				),
+				'has_archive' => true,
+				'rewrite' => array(
+					'slug' => $slug,
+					'with_front' => false
+				),
+			);
+	
+			register_post_type( $this->shadow_content_type, $args );
+		}
 	
 	}
 	global $scrape_core;

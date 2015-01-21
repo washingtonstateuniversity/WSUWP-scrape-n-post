@@ -8,7 +8,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		function __construct() { }
 
 		/**
-		 * Insert to template table
+		 * Insert to template table.
 		 * 
 		 * @global class $wpdb
 		 * 
@@ -25,7 +25,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 		
 		/**
-		 * Update entry in template table
+		 * Update entry in template table.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_core
@@ -47,7 +47,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 		
 		/**
-		 * Mark a target to be ignored
+		 * Mark a target to be ignored.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_core
@@ -74,7 +74,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 		
 		/**
-		 * Unlink a post from the url it was created from
+		 * Unlink a post from the url it was created from.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_core
@@ -103,7 +103,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 		
 		/**
-		 * Re import the post
+		 * Re import the post.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_core
@@ -139,7 +139,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}	
 			
 		/**
-		 * Make a post from the url stored - this is use for repost too, not just new ones
+		 * Make a post from the url stored - this is use for repost too, not just new ones.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_core
@@ -184,7 +184,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 	
 		/**
-		 * Make a post from the url stored - this is use for repost too, not just new ones
+		 * Make a post from the url stored - this is use for repost too, not just new ones.
 		 * 
 		 * @global class $wpdb
 		 * @global class $current_user
@@ -327,7 +327,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 			
 		/**
-		 * Start the crawl from this url
+		 * Start the crawl from this url.
 		 * 
 		 * @global class $scrape_core
 		 * @global array $_params
@@ -346,7 +346,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		}
 			
 		/**
-		 * Start a test the crawl from this url, and display the title back
+		 * Start a test the crawl from this url, and display the title back.
 		 * 
 		 * @global class $scrape_core
 		 * @global class $scrape_data
@@ -371,7 +371,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				);
 		}
 		/**
-		 * Start the crawl from this url
+		 * Start the crawl from this url.
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_core
