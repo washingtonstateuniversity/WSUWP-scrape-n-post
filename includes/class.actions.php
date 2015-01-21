@@ -7,10 +7,12 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 
 		function __construct() { }
 
-	
-		/*
+		/**
 		 * Insert to template table
-		 * @arr - array
+		 * 
+		 * @global class $wpdb
+		 * 
+		 * @param array $arr
 		 */
 		public function add_queue($arr = array()) {
 			global $wpdb;
@@ -19,9 +21,15 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$rows_affected      = $wpdb->insert($table_name, $arr);
 			//needs message
 		}
-		/*
+		
+		/**
 		 * Update entry in template table
-		 * @data - array
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_core
+		 * @global array $_params
+		 * 
+		 * @param array $arr
 		 */
 		public function update_queue($arr = array()) {
 			global $wpdb,$scrape_core,$_params;
@@ -33,14 +41,16 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$rows_affected = $wpdb->update($table_name, $arr, $where);
 			//needs message
 		}
-	/*				$_params['target_id']=$target_id;
-					$this->update_queue(array(
-						'url'=>$href,
-						'type'=>$obj['type'],
-						'http_status'=>200
-					));
-					*/
-	
+		
+		/**
+		 * Mark a target to be ignored
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_core
+		 * @global array $_params
+		 * 
+		 * @param int $target_id
+		 */			
 		public function ignore_url($target_id=NULL) {
 			global $wpdb,$scrape_core,$_params;
 			if( $target_id==NULL && !isset($_params['url']) ){
@@ -56,6 +66,17 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$rows_affected = $wpdb->update($table_name, $arr, $where);
 			//needs message
 		}
+		
+		/**
+		 * Unlink a post from the url it was created from
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_core
+		 * @global class $scrape_pages
+		 * @global array $_params
+		 * 
+		 * @param int $target_id
+		 */	
 		public function detach_post($target_id=NULL) {
 			global $wpdb,$scrape_core,$_params,$scrape_pages;
 			if( $target_id==NULL && !isset($_params['url']) ){
@@ -72,6 +93,17 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$scrape_pages->foward('scrape-crawler',$scheme='http');
 			//needs message
 		}
+		
+		/**
+		 * Re import the post
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_core
+		 * @global class $scrape_pages
+		 * @global array $_params
+		 * 
+		 * @param int $target_id
+		 */	
 		public function reimport_post($target_id=NULL) {
 			global $wpdb,$scrape_core,$_params,$scrape_pages;
 			if( $target_id==NULL && !isset($_params['url']) ){
@@ -94,7 +126,18 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				$post_id = $_params['post_id'];
 			}
 			$this->make_post($url, $arr = array('ID'=>$post_id));
-		}		
+		}	
+			
+		/**
+		 * Make a post from the url stored - this is use for repost too, not just new ones
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_core
+		 * @global array $_params
+		 * 
+		 * @param int $post_id
+		 * @param int $target_id
+		 */	
 		public function url_to_post($post_id=NULL,$target_id=NULL) {
 			global $wpdb,$scrape_core,$_params;
 			if( $target_id==NULL && !isset($_params['url']) ){
@@ -128,7 +171,18 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				);
 		}
 	
-	
+		/**
+		 * Make a post from the url stored - this is use for repost too, not just new ones
+		 * 
+		 * @global class $wpdb
+		 * @global class $current_user
+		 * @global class $scrape_core
+		 * @global class $scrape_data
+		 * @global array $_params
+		 * 
+		 * @param int $post_id
+		 * @param int $target_id
+		 */	
 		public function make_post($target_id=NULL, $arr = array()){
 			global $wpdb, $current_user,$scrape_core,$scrape_data,$_params;
 			
@@ -257,7 +311,15 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			//all good let tie the post to the url
 			$this->url_to_post($post_id,$url);
 		}
-	
+			
+		/**
+		 * Start the crawl from this url
+		 * 
+		 * @global class $scrape_core
+		 * @global array $_params
+		 *
+		 * @param string $url
+		 */	
 		public function crawl_from($url=NULL) {
 			global $_params,$scrape_core;
 			if(isset($_params['url'])){
@@ -267,6 +329,13 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			}
 		}
 			
+		/**
+		 * Start a test the crawl from this url, and display the title back
+		 * 
+		 * @global class $scrape_core
+		 * @global class $scrape_data
+		 * @global array $_params
+		 */		
 		public function test_crawler(){
 			global $scrape_core,$scrape_data,$_params;
 			$url = $_params['scrape_url'];
@@ -283,6 +352,15 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 					'message' => __('tested '.$url.' and return html &lt;title&gt; '.$title)
 				);
 		}
+		/**
+		 * Start the crawl from this url
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_core
+		 * @global class $scrape_pages
+		 * @global class $scrape_data
+		 * @global array $_params
+		 */	
 		public function findlinks() {
 			global $wpdb,$scrape_core,$scrape_pages,$scrape_data, $_params;
 			
