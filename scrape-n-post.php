@@ -10,13 +10,6 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 
-define('SCRAPE_NAME', 'Scrape-N-Post');
-define('SCRAPE_BASE_NAME', 'scrape-n-post');
-define('SCRAPE_VERSION', '0.1.1');
-define('SCRAPE_URL', plugin_dir_url(__FILE__));
-define('SCRAPE_PATH', plugin_dir_path(__FILE__));
-define('SCRAPE_CACHE_PATH', SCRAPE_PATH . 'cache/');
-define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
 
 /* things still to do
 [ ]-Needs to set a intermediary on url to post
@@ -28,6 +21,14 @@ define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
 [ ]-cronjob support for active crawl and snync
 */
 if ( ! class_exists( 'scrapeNpostLoad' ) ) {
+	define('SCRAPE_NAME', 'Scrape-N-Post');
+	define('SCRAPE_BASE_NAME', 'scrape-n-post');
+	define('SCRAPE_VERSION', '0.1.1');
+	define('SCRAPE_URL', plugin_dir_url(__FILE__));
+	define('SCRAPE_PATH', plugin_dir_path(__FILE__));
+	define('SCRAPE_CACHE_PATH', SCRAPE_PATH . 'cache/');
+	define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
+
 	$scrape_core = NULL;
 	class scrapeNpostLoad {
 		public function __construct() {

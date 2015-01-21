@@ -11,6 +11,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * Get the options for the plugin as set for each run
 		 * 
 		 * @reutrun array
+		 *
+		 * @access public
+		 *
 		 * @TODO should pull from inline options right before run then merge the options
 		 */
 		public function get_options(){
@@ -36,6 +39,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * Get all the urls of a page
 		 * 
 		 * @return array All the urls that are on a page
+		 *
+		 * @access public
 		 */
 		public function get_all_urls($url, $depth = 5) {
 			$this->traverse_all_urls($url,$depth);
@@ -52,6 +57,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * 
 		 * @param string $url Starting url
 		 * @param int $depth Starting depth pool, -- with interation
+		 *
+		 * @access public
+		 * 
 		 * @TODO should store the content if option allows for it, create option to not allow for storeage, and when to not allow
 		 */
 		public function traverse_all_urls($url,  $depth = 5) {
@@ -134,6 +142,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url starting url of target content
 		 *
 		 * @return array $url all url found in the page
+		 *
+		 * @access public
+		 *
 		 * @TODO should pull from store the content if option allows for it, create option to not allow for storage, and when to not allow
 		 */
 		public function get_urls($url){
@@ -172,6 +183,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 
 		/**
 		 * build link object
+		 *
+		 * @access public
 		 * 
 		 * @TODO remove
 		 */
@@ -189,6 +202,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param array $scrapeopt Options
 		 *
 		 * @return string
+		 *
+		 * @access public
+		 *
 		 * @TODO Refactor this alot!!
 		 */
 		function scrape_get_content($url, $selector = '', $xpath = '', $scrapeopt = '') {
@@ -275,6 +291,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param array $http_args Optional. Override the defaults.
 		 * 
 		 * @return WP_Error|array The response or WP_Error on failure.
+		 *
+		 * @access public
 		 */
 		function scrape_remote_request($url, $cache_args = array(), $http_args = array(),$retry_limit=false) {
 			//print('starting request <h5>'.$url.'</h5>');
@@ -333,6 +351,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $output html or text
 		 *
 		 * @return string
+		 *
+		 * @access public
 		 */
 		function scrape_get_html_by_selector($raw_html, $selector, $output = 'html'){
 			// Parsing request using phpQuery
@@ -357,6 +377,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url possibly drity url
 		 * 
 		 * @return string Clean url
+		 *
+		 * @access public
 		 */	
 		public function normalize_url($url){
 			if(!$this->is_localurl($url))return $url;
@@ -393,6 +415,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return string
+		 *
+		 * @access public
+		 *
 		 * @todo this should be an optional part, an pull from a type list
 		 */
 		public function normalize_url_format($url){
@@ -406,6 +431,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
+		 *
+		 * @access public
+		 *
 		 * @todo this should be an optional part, an pull from a type list
 		 */
 		public function is_page($url=false){
@@ -421,6 +449,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
+		 *
+		 * @access public
+		 * 
 		 * @todo this should be an optional part, an pull from a type list
 		 */
 		public function is_fileurl($url=false){
@@ -436,6 +467,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
+		 *
+		 * @access public
 		 */
 		public function is_email($url=false){
 			if( $url === false || strpos($url,'mailto:')===false ){
@@ -450,6 +483,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
+		 *
+		 * @access public
 		 */
 		public function is_anchor($url=false){
 			if(substr($url,0,1) == '#'){
@@ -464,6 +499,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
+		 *
+		 * @access public
 		 */
 		public function is_localurl($url){
 			if( substr($url,0,4) == 'http' && strpos($url,$this->rootUrl)===false ){
@@ -483,6 +520,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param int $id
 		 *
 		 * @return object
+		 *
+		 * @access public
 		 */
 		public function query_posts($id = NULL) {
 			global $_params;
@@ -518,6 +557,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $where
 		 * 
 		 * @return string
+		 *
+		 * @access public
 		 */
 		public function filter_where($where = '') {
 			global $_params;

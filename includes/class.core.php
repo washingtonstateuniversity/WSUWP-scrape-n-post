@@ -15,6 +15,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_pages.
+		 * @access public
 		 */
 		public $scrape_pages = NULL;
 		
@@ -23,6 +24,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_output.
+		 * @access public
 		 */
 		public $scrape_output = NULL;
 		
@@ -31,6 +33,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_data.
+		 * @access public
 		 */
 		public $scrape_data = NULL;
 		
@@ -39,6 +42,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @since 0.1.0
 		 * @var class $scrape_actions.
+		 * @access public
 		 */
 		public $scrape_actions = NULL;
 		
@@ -48,6 +52,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @since 0.1.0
 		 * @var array $message.
+		 * @access public
 		 */
 		public $message = array();
 		
@@ -56,6 +61,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @since 0.1.0
 		 * @var array $_params.
+		 * @access public
 		 */
 		public $_params;
 		
@@ -66,6 +72,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @global class $scrape_data
 		 * 
 		 * @todo refator with conversion to a post typed object will be needed
+		 * @access private
 		 */
 		function __construct() {
 			global $scrape_data,$_params;
@@ -96,6 +103,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		
 		/**
 		 * Initialize install
+		 * @access public
 		 */
 		public function install_init() {
 			// Add database table
@@ -107,6 +115,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * 
 		 * @global class $wpdb
 		 * @global class $scrape_data
+		 *
+		 * @access public
 		 * 
 		 * @todo will be a post typed item later on
 		 */
@@ -174,6 +184,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * 
 		 * @param string $column
 		 * @param string $value
+		 *
+		 * @access public
 		 * 
 		 * @todo will be a post typed item later on
 		 */

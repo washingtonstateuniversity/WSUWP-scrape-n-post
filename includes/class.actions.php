@@ -13,6 +13,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global class $wpdb
 		 * 
 		 * @param array $arr
+		 *
+		 * @access public
 		 */
 		public function add_queue($arr = array()) {
 			global $wpdb;
@@ -30,6 +32,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global array $_params
 		 * 
 		 * @param array $arr
+		 *
+		 * @access public
 		 */
 		public function update_queue($arr = array()) {
 			global $wpdb,$scrape_core,$_params;
@@ -50,6 +54,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global array $_params
 		 * 
 		 * @param int $target_id
+		 *
+		 * @access public
 		 */			
 		public function ignore_url($target_id=NULL) {
 			global $wpdb,$scrape_core,$_params;
@@ -76,6 +82,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global array $_params
 		 * 
 		 * @param int $target_id
+		 *
+		 * @access public
 		 */	
 		public function detach_post($target_id=NULL) {
 			global $wpdb,$scrape_core,$_params,$scrape_pages;
@@ -103,6 +111,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global array $_params
 		 * 
 		 * @param int $target_id
+		 *
+		 * @access public
 		 */	
 		public function reimport_post($target_id=NULL) {
 			global $wpdb,$scrape_core,$_params,$scrape_pages;
@@ -137,6 +147,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * 
 		 * @param int $post_id
 		 * @param int $target_id
+		 *
+		 * @access public
 		 */	
 		public function url_to_post($post_id=NULL,$target_id=NULL) {
 			global $wpdb,$scrape_core,$_params;
@@ -182,6 +194,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * 
 		 * @param int $post_id
 		 * @param int $target_id
+		 *
+		 * @access public
 		 */	
 		public function make_post($target_id=NULL, $arr = array()){
 			global $wpdb, $current_user,$scrape_core,$scrape_data,$_params;
@@ -319,6 +333,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global array $_params
 		 *
 		 * @param string $url
+		 *
+		 * @access public
 		 */	
 		public function crawl_from($url=NULL) {
 			global $_params,$scrape_core;
@@ -335,6 +351,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global class $scrape_core
 		 * @global class $scrape_data
 		 * @global array $_params
+		 *
+		 * @access public
 		 */		
 		public function test_crawler(){
 			global $scrape_core,$scrape_data,$_params;
@@ -360,6 +378,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global class $scrape_pages
 		 * @global class $scrape_data
 		 * @global array $_params
+		 *
+		 * @access public
 		 */	
 		public function findlinks() {
 			global $wpdb,$scrape_core,$scrape_pages,$scrape_data, $_params;

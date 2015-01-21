@@ -2,8 +2,7 @@
 if(isset($urls)){
 	var_dump($urls);
 }
-
- ?>
+?>
 <div id="scrape-wrap" class="wrap">
   <div class="icon32" id="icon-tools"><br>
   </div>
