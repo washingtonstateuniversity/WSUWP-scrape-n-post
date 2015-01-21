@@ -33,15 +33,36 @@
       </div>
       <div class="field-wrap">
         <div class="field">
-          <label> <?php _e( "Timeout (in seconds)"); ?> </label>
+          <label> <?php _e( "Page Timeout (in seconds)"); ?> </label>
           <input type="text" name="timeout" id="scrape_timeout"  value="<?php echo $scrape_options['timeout']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
           <?php _e("Default timeout interval in seconds for cURL or Fopen. Larger interval might slow down your page."); ?>
           )</span> </div>
       </div>
-      
-      
+       <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Limit pages scraped"); ?> </label>
+          <input type="text" name="limit_scraps" id="scrape_limit_scraps"  value="<?php echo $scrape_options['limit_scraps']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit is infinite, but this could cause issues, one way to get around a server that is not ok with it's pages being crawled is to do short runs."); ?>
+          )</span> </div>
+      </div>     
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Scraping interval (in seconds)"); ?> </label>
+          <input type="text" name="interval" id="scrape_interval"  value="<?php echo $scrape_options['interval']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit is 1, but this could cause issues.  To slow it down, just increse the number.  5 should be more then enough to please any server."); ?>
+          )</span> </div>
+      </div>      
+	  
+	  
+	  
+	  
+	  
 	<div class="field-wrap">
         <div class="field">
           <label> <?php _e( "Add posts on crawl" ); ?>  </label>

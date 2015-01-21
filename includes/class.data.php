@@ -21,7 +21,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				'useragent' => "Scrape-N-Post bot -- NOT A DDoS",
 				'timeout' => 2,
 				'limit_scraps'=>'-1',
-				'interval'=>'500',
+				'interval'=>'1',
 				'timeout_limit'=>300,
 				'memory_limit'=>'-1',
 				'xdebug_fix'=>1,
