@@ -69,13 +69,12 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * Add template table
 		 * 
 		 * @global array $_params
-		 * @global class $scrape_data
 		 * 
-		 * @todo refator with conversion to a post typed object will be needed
+		 * @todo refactor with conversion to a post typed object will be needed
 		 * @access private
 		 */
 		function __construct() {
-			global $scrape_data,$_params;
+			global $_params;
 			
 			$_params = $_REQUEST; // this needs to get validated and noonced and what not
 
@@ -87,23 +86,11 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				
-				
+				add_action( 'init', array( $this, 'set_default_model' ), 10 );
 				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
 				
 
-				$options = $scrape_data->get_options(); // after _param validation just in case
 				
-				//@todo move this to it's own method
-				//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
-				if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1){
-					ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
-				}
-				if(isset($options['timeout_limit']) && $options['timeout_limit']>-1){
-					set_time_limit($options['timeout_limit']);
-				}
-				if(isset($options['memory_limit']) && $options['memory_limit']>-2){
-					ini_set('memory_limit', $options['memory_limit']);
-				}
 			}
 		}
 		
@@ -115,7 +102,32 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			// Add database table
 			$this->_add_table();
 		}
-
+		
+		/**
+		 * Make sure everything is good to go as the plugin is run
+		 * 
+		 * @global class $scrape_data
+		 * 
+		 * @todo refactor with conversion to a post typed object will be needed
+		 * @access private
+		 */
+		public function set_default_model() {
+			global $scrape_data;
+			
+			$options = $scrape_data->get_options(); // after _param validation just in case
+				
+			//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
+			if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1){
+				ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
+			}
+			if(isset($options['timeout_limit']) && $options['timeout_limit']>-1){
+				set_time_limit($options['timeout_limit']);
+			}
+			if(isset($options['memory_limit']) && $options['memory_limit']>-2){
+				ini_set('memory_limit', $options['memory_limit']);
+			}
+		}
+		
 		/**
 		 * Process any upgrade routines between versions or on initial activation.
 		 */
