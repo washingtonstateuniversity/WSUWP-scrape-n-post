@@ -1,18 +1,72 @@
 <?php
+/**
+ * Core methods for the scraper.
+ *
+ * @link URL
+ * @since 0.1.0
+ */
 
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! class_exists( 'scrape_core' ) ) {
 	class scrape_core {
 		
+		/**
+		 * scrape_pages class
+		 *
+		 * @since 0.1.0
+		 * @var class $scrape_pages.
+		 */
 		public $scrape_pages = NULL;
+		
+		/**
+		 * scrape_output class
+		 *
+		 * @since 0.1.0
+		 * @var class $scrape_output.
+		 */
 		public $scrape_output = NULL;
+		
+		/**
+		 * scrape_data class
+		 *
+		 * @since 0.1.0
+		 * @var class $scrape_data.
+		 */
 		public $scrape_data = NULL;
+		
+		/**
+		 * scrape_actions class
+		 *
+		 * @since 0.1.0
+		 * @var class $scrape_actions.
+		 */
 		public $scrape_actions = NULL;
 		
+		
+		/**
+		 * message array
+		 *
+		 * @since 0.1.0
+		 * @var array $message.
+		 */
 		public $message = array();
+		
+		/**
+		 * _params from post/get array
+		 *
+		 * @since 0.1.0
+		 * @var array $_params.
+		 */
 		public $_params;
+		
+		/**
+		 * Add template table
+		 * 
+		 * @global array $_params
+		 * @global class $scrape_data
+		 * 
+		 * @todo refator with conversion to a post typed object will be needed
+		 */
 		function __construct() {
 			global $scrape_data,$_params;
 			
@@ -28,6 +82,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				
 
 				$options = $scrape_data->get_options(); // after _param validation just in case
+				
+				//@todo move this to it's own method
 				//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
 				if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1)
 					ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
@@ -37,18 +93,22 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					ini_set('memory_limit', $options['memory_limit']);
 			}
 		}
-		/*
+		
+		/**
 		 * Initialize install
 		 */
 		public function install_init() {
 			// Add database table
 			$this->_add_table();
 		}
-		
-		
-		//move installs to install class
-		/*
+
+		/**
 		 * Add template table
+		 * 
+		 * @global class $wpdb
+		 * @global class $scrape_data
+		 * 
+		 * @todo will be a post typed item later on
 		 */
 		public function _add_table() {
 			global $wpdb,$scrape_data;
@@ -108,13 +168,14 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			
 		}
 	
-	
-	
-		//@todo move it on out of here to ?data? class
-		/*
+
+		/**
 		 * Check if entry already exist
-		 * @column - string
-		 * @value - string
+		 * 
+		 * @param string $column
+		 * @param string $value
+		 * 
+		 * @todo will be a post typed item later on
 		 */
 		public function _is_exist($column = '', $value = '') {
 			global $wpdb;

@@ -2,11 +2,13 @@
 /*
 Plugin Name: Scrape-N-Post
 Version: 0.1.1
-Plugin URI: #
-Description: Import content form your old site with easy
-Author: Jeremy Bass
-Author URI: #
+Plugin URI: http://web.wsu.edu/wordpress/plugins/scrape-n-post/
+Description: Import content form your old site with ease
+Author: washingtonstateuniversity, jeremyBass
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
+
 
 define('SCRAPE_NAME', 'Scrape-N-Post');
 define('SCRAPE_BASE_NAME', 'scrape-n-post');
