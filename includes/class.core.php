@@ -99,7 +99,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 
 				add_action( 'init', array( $this, 'register_tracked_external_content_type' ), 11 );
 				
-				add_action( 'save_post', array( $this, 'save_object_url' ), 12, 2 );
+				add_action( 'save_post', array( $this, 'save_object' ), 12, 2 );
 				add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 11, 1 );
 				
 				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
@@ -316,6 +316,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		public function add_meta_boxes( $post_type ) {
 			add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
 			add_meta_box( 'wsuwp_snp_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
+			add_meta_box( 'wsuwp_snp_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
 		}
 
 		/**
@@ -326,12 +327,34 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 */
 		public function display_cached_html( $post ) {
 			?>
-			<div id="wsuwp-snp-display">
+			<div id="wsuwp-snp-display-content">
 				<p class="description">Html from url</p>
 				<p class="description"><strong>note:</strong> edits to this will not be saved.  This is purly informational only.</p>
 				<div class="html">
 					<label for="wsuwp-snp-html">Last captured html:</label><br/>
 					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?php echo $post->content; ?></textarea>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Should this shadow be used for an ignore list?
+		 *
+		 * @param WP_Post $post The full post object being edited.
+		 */
+		public function display_option_ignore( $post ) {
+			$ignore = get_post_meta( $post->ID, '_wsuwp_spn_ignored', true );
+			?>
+			<div id="wsuwp-snp-display-ignore">
+				<p class="description">Ignore this url</p>
+				<div class="html">
+					<input type="radio" name="wsuwp_spn_ignored" value="1" id="wsuwp-snp-ignore1" <?php if($ignore==1): echo "checked"; endif;?> />
+					<label for="wsuwp-snp-ignore1">Yes</label>
+					
+					<input type="radio" name="wsuwp_spn_ignored" value="0" id="wsuwp-snp-ignore2" <?php if($ignore==0): echo "checked"; endif;?> />
+					<label for="wsuwp-snp-ignore2">No</label>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -368,7 +391,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @param int     $post_id The ID of the post being saved.
 		 */
-		private function save_object( $post_id ) {
+		public function save_object( $post_id ) {
 			/*
 			`url` MEDIUMINT(9),
 			`tied_post_id` MEDIUMINT(9),
@@ -396,18 +419,10 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_ignored'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_ignored' );
 				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_ignored', esc_url_raw( $_POST['wsuwp_spn_ignored'] ) );
+					update_post_meta( $post_id, '_wsuwp_spn_ignored', $_POST['wsuwp_spn_ignored']);
 				}
 			}			
-			
-			if ( isset( $_POST['wsuwp_spn_ignored'] ) ) {
-				if ( empty( trim( $_POST['wsuwp_spn_ignored'] ) ) ) {
-					delete_post_meta( $post_id, '_wsuwp_spn_ignored' );
-				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_ignored', esc_url_raw( $_POST['wsuwp_spn_ignored'] ) );
-				}
-			}				
-			
+
 			if ( isset( $_POST['wsuwp_spn_last_http_status'] ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_last_http_status'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_last_http_status' );
@@ -425,8 +440,6 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			}		
 			return;
 		}
-
-		
 	}
 	global $scrape_core;
 	$scrape_core = new scrape_core();
