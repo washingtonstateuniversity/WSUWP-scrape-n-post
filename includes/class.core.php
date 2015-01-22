@@ -328,12 +328,14 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @param string $post_type
 		 */
 		public function add_meta_boxes( $post_type ) {
-			//main content area
-			add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
-			add_meta_box( 'wsuwp_snp_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
-			//side bars
-			add_meta_box( 'display_option_post_tie', 'Shadowing Post', array( $this, 'display_option_post_tie' ) , null, 'side', 'default' );
-			add_meta_box( 'wsuwp_snp_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
+			if ($post_type == 'wsuwp_snp_postshadow'){   
+				//main content area
+				add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
+				add_meta_box( 'wsuwp_snp_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
+				//side bars
+				add_meta_box( 'display_option_post_tie', 'Shadowing Post', array( $this, 'display_option_post_tie' ) , null, 'side', 'default' );
+				add_meta_box( 'wsuwp_snp_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
+			}
 		}
 
 		/**
@@ -350,6 +352,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				<div class="html">
 					<label for="wsuwp-snp-html">Last captured html:</label><br/>
 					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?php echo $post->content; ?></textarea>
+					<input type="hidden" name="post_content"
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -445,9 +448,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			`last_http_status` MEDIUMINT(9),
 			`type` VARCHAR(255) DEFAULT NULL,
 			*/
-			if ($post->post_type == 'wsuwp_snp_postshadow'){   
-				$post->post_status = 'private';
-			}
+			
 			if ( isset( $_POST['wsuwp_spn_url'] ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_url'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_url' );
