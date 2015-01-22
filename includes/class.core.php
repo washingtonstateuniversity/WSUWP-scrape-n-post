@@ -369,8 +369,6 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			<?php
 		}
 
-
-
 		/**
 		 * Should this shadow be used for an ignore list?
 		 *
@@ -401,18 +399,19 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 */
 		public function display_object_url_meta_box( $post ) {
 			$object_url = get_post_meta( $post->ID, '_wsuwp_spn_url', true );
-			if ( ! empty( $object_url ) ) {
-				$object_url = esc_url( $object_url );
-			} else {
-				$object_url = '';
-			}
-	
+			$object_url = ! empty( $object_url ) ? esc_url( $object_url ) : '';
+			$http_status = get_post_meta( $post->ID, '_wsuwp_spn_last_http_status', true );
+			$http_status = ! empty( $http_status ) ? $http_status : 'not checked';
 			?>
 			<div id="wsuwp-snp-display">
 				<div class="html">
 					<label for="wsuwp-spn-url">Tracked URL:</label>
-					<input type="text" class="widefat" id="wsuwp-spn-url" name="wsuwp_spn_url" value="<?php echo $object_url; ?>" />
+					<input type="text" class="widefat" id="wsuwp-spn-url" name="wsuwp_spn_url" value="<?=$object_url?>" />
 					<p class="description">Note, altering the url will cause the html to get reloaded.</p>
+				</div>
+				<div class="wsuwp_spn_last_http_status">
+					<input type="hidden" name="wsuwp_spn_last_http_status" value="<?=$http_status?>"/>
+					<b>Last checked header status:</b> <i style="color:<?=($http_status=="200"?"green":"red")?>" > <?=$http_status?> </i>
 				</div>
 				<div class="clear"></div>
 			</div>

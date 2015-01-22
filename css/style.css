@@ -1,4 +1,10 @@
 /* Admin CSS style */
+.post-type-wsuwp_snp_postshadow #edit-slug-box,
+.post-type-wsuwp_snp_postshadow .wp-list-table .view,
+.post-type-wsuwp_snp_postshadow .preview.button,
+a[href*="?wsuwp_snp_postshadow="]
+{position:absolute; top:-99999em; left:-999em;}
+
 
 #scrape-wrap .field-wrap {
 	background: #edeae3;
