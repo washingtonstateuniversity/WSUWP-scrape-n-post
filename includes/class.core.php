@@ -365,7 +365,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			$tiedTo = get_post_meta( $post->ID, '_wsuwp_spn_tied_post_id', true );
 			?>
 			<div id="wsuwp-snp-display-ignore">
-				<p class="description">Ignore this url</p>
+				<p class="description">This is the post that the shadow post feeds to when requested</p>
 				<div class="html">
 					<?php wp_dropdown_pages( array(
 						'depth'                 => 0,
