@@ -96,17 +96,34 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				
 				add_action( 'init', array( $this, 'set_default_model' ), 10 );
-
 				add_action( 'init', array( $this, 'register_tracked_external_content_type' ), 11 );
-				
-				add_action( 'save_post', array( $this, 'save_object' ), 12, 2 );
+
 				add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 11, 1 );
+
+				add_action( 'save_post', array( $this, 'save_object' ), 12, 2 );
+				add_action( 'transition_post_status', array( $this, 'force_post_status' ), 12, 3 );
 				
-				add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
+				add_action( 'init', array( $this, 'process_upgrade_routine' ), 13 );
 				
 			}
 		}
-		
+
+		/**
+		 * force post status to be private for the shadow posts.
+		 * 
+		 * @param string $new_status string of new value
+		 * @param string $old_status string of old value
+		 * @param object $post Post object
+		 * 
+		 * @access public
+		 */
+		public function force_post_status( $new_status, $old_status,  $post ) {
+			if ( $post->post_type == 'wsuwp_snp_postshadow' && $new_status == 'publish' && $old_status  != $new_status ) {
+				$post->post_status = 'private';
+				wp_update_post( $post );
+			}
+		}
+	
 		/**
 		 * Initialize install.
 		 *
@@ -255,8 +272,6 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			$result     = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE " . $column . " = '" . $value . "'");
 			return (count($result) > 0);
 		}
-	
-		
 		
 		/**
 		 * Register the shadow content type.
@@ -294,7 +309,6 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					'slug' => $slug,
 					'with_front' => false
 				),
-				'public'=>true,
 				'exclude_from_search' => true,
 				'publicly_queryable' => false,
 				'show_in_nav_menus' => false,
@@ -421,8 +435,9 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * Assign a URL to an object when saved through the object's meta box.
 		 *
 		 * @param int     $post_id The ID of the post being saved.
+		 * @param object  $post The post being saved.
 		 */
-		public function save_object( $post_id ) {
+		public function save_object( $post_id, $post ) {
 			/*
 			`url` MEDIUMINT(9),
 			`tied_post_id` MEDIUMINT(9),
@@ -430,6 +445,9 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			`last_http_status` MEDIUMINT(9),
 			`type` VARCHAR(255) DEFAULT NULL,
 			*/
+			if ($post->post_type == 'wsuwp_snp_postshadow'){   
+				$post->post_status = 'private';
+			}
 			if ( isset( $_POST['wsuwp_spn_url'] ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_url'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_url' );
