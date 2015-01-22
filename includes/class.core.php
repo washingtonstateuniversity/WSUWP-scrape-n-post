@@ -351,8 +351,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				<p class="description"><strong>note:</strong> edits to this will not be saved. This is purely informational only.</p>
 				<div class="html">
 					<label for="wsuwp-snp-html">Last captured html:</label><br/>
-					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?php echo $post->content; ?></textarea>
-					<input type="hidden" name="post_content"
+					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?=$post->content?></textarea>
+					<input type="hidden" name="content" value="<?=$post->content?>" />
 				</div>
 				<div class="clear"></div>
 			</div>
