@@ -442,7 +442,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_tied_post_id'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_tied_post_id' );
 				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_tied_post_id', esc_url_raw( $_POST['wsuwp_spn_tied_post_id'] ) );
+					update_post_meta( $post_id, '_wsuwp_spn_tied_post_id', $_POST['wsuwp_spn_tied_post_id'] );
 				}
 			}
 			
@@ -458,7 +458,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_last_http_status'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_last_http_status' );
 				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_last_http_status', esc_url_raw( $_POST['wsuwp_spn_last_http_status'] ) );
+					update_post_meta( $post_id, '_wsuwp_spn_last_http_status', $_POST['wsuwp_spn_last_http_status'] );
 				}
 			}					
 			
@@ -466,7 +466,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				if ( empty( trim( $_POST['wsuwp_spn_type'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_type' );
 				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_type', esc_url_raw( $_POST['wsuwp_spn_type'] ) );
+					update_post_meta( $post_id, '_wsuwp_spn_type', $_POST['wsuwp_spn_type'] );
 				}
 			}		
 			return;
