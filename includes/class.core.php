@@ -410,7 +410,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					<p class="description">Note, altering the url will cause the html to get reloaded.</p>
 				</div>
 				<div class="wsuwp_spn_last_http_status">
-					<input type="hidden" name="wsuwp_spn_last_http_status" value="<?=$http_status?>"/>
+					<input type="hidden" name="wsuwp_spn_last_http_status" value="<?=($http_status!="not checked"?$http_status:"")?>"/>
 					<b>Last checked header status:</b> <i style="color:<?=($http_status=="200"?"green":"red")?>" > <?=$http_status?> </i>
 				</div>
 				<div class="clear"></div>
