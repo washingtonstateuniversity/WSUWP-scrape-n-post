@@ -360,7 +360,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		}
 
 		/**
-		 * Should this shadow be used for an ignore list?
+		 * Which post should this be feeding?
 		 *
 		 * @param WP_Post $post The full post object being edited.
 		 */
