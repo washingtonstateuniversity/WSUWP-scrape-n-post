@@ -7,6 +7,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		public $seen = array();
 		public $wanted = array();
 		function __construct() { }
+		
 		/**
 		 * Get the options for the plugin as set for each run.
 		 * 
@@ -35,6 +36,31 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			));	
 			return $plugin_option;
 		}
+
+		/**
+		 * Get the profile jig which will have all the data patterns to match the page being scraped.
+		 * 
+		 * @param int $id
+		 * 
+		 * @return array
+		 *
+		 * @access public
+		 *
+		 * @TODO this is just laying out the ground work still
+		 */
+		public function get_scraping_profile($id=0){
+			$default_profile = array();
+			$found_profile = array();
+			if($id>0){
+				$found_profile = array();
+			}
+			$profile = array_merge($default_profile,$found_profile);
+			return $profile;
+		}
+
+
+
+
 
 		/**
 		 * Get all the urls of a page.
