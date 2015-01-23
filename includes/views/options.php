@@ -12,37 +12,54 @@
   <div id="form-wrap">
     <form id="scrape_form" method="post">
       <div class="field-wrap">
-        <div class="field">
-          <label> <?php _e( "Crawl Depth"); ?> </label>
-          <input type="text" name="crawl_depth" id="crawl_depth"  value="<?php echo $scrape_options['crawl_depth']; ?>" class="small-text code" />
-        </div>
-        <div class="note"> <span>(
-          <?php _e("Set the number to the depth you whish to crawl a site.  If the site is big 100-200 is a good choice.  Make sure you have the php max-* limits set to account for a deep crawl before running."); ?>
-          )</span> </div>
-      </div>
-	  
-	<div class="field-wrap">
-        <div class="field">
-          <label> <?php _e( "Add posts on crawl" ); ?>  </label>
-          <select name="add_post_on_crawl">
-            <option <?php selected('1', $scrape_options['add_post_on_crawl']); ?> value="1"> <?php _e('Yes');?> </option>
-            <option <?php selected('0', $scrape_options['add_post_on_crawl']); ?> value="0"> <?php _e('No');?> </option>
-          </select>
-        </div>
-        <div class="note"> <span>(
-          <?php _e("This can take a bit, make sure php ini is set up for long running scripts"); ?>
-          )</span> </div>
-	</div>  
+			<div class="field">
+			  <label> <?php _e( "Crawl Depth"); ?> </label>
+			  <input type="text" name="crawl_depth" id="crawl_depth"  value="<?php echo $scrape_options['crawl_depth']; ?>" class="small-text code" />
+			</div>
+			<div class="note"> <span>(
+			  <?php _e("Set the number to the depth you whish to crawl a site.  If the site is big 100-200 is a good choice.  Make sure you have the php max-* limits set to account for a deep crawl before running."); ?>
+			  )</span> </div>
+		</div>
+		  
+		<div class="field-wrap">
+			<div class="field">
+			  <label> <?php _e( "Add posts on crawl" ); ?>  </label>
+			  <select name="add_post_on_crawl">
+				<option <?php selected('1', $scrape_options['add_post_on_crawl']); ?> value="1"> <?php _e('Yes');?> </option>
+				<option <?php selected('0', $scrape_options['add_post_on_crawl']); ?> value="0"> <?php _e('No');?> </option>
+			  </select>
+			</div>
+			<div class="note"> <span>(
+			  <?php _e("This can take a bit, make sure php ini is set up for long running scripts"); ?>
+			  )</span> </div>
+		</div>  
 
-      <div class="field-wrap">
-        <div class="field">
-          <label> <?php _e( "Useragent string"); ?> </label>
-          <input type="text" name="useragent" id="scrape_useragent"  value="<?php echo $scrape_options['useragent']; ?>"  class="large-text code"/>
-        </div>
-        <div class="note"> <span>(
-          <?php _e("Default useragent header to identify yourself when crawling sites."); ?>
-          )</span> </div>
-      </div>
+		<div class="field-wrap">
+			<div class="field">
+			  <label> <?php _e( "Use Post Type" ); ?>  </label>
+			  <select name="add_post_on_crawl">
+			  <?php foreach($post_type as $key=>$val):?>
+			  	<option <?php selected($val, $scrape_options['post_type']); ?> value="1"> <?=$val?> </option>
+			  <?php endforeach; ?>
+			  </select>
+			</div>
+			<div class="note"> <span>(
+			  <?php _e("On a run this post type will be used to match up and create the shadow copy for."); ?>
+			  )</span> </div>
+		</div> 
+
+
+
+
+		<div class="field-wrap">
+			<div class="field">
+			  <label> <?php _e( "Useragent string"); ?> </label>
+			  <input type="text" name="useragent" id="scrape_useragent"  value="<?php echo $scrape_options['useragent']; ?>"  class="large-text code"/>
+			</div>
+			<div class="note"> <span>(
+			  <?php _e("Default useragent header to identify yourself when crawling sites."); ?>
+			  )</span> </div>
+		</div>
       <div class="field-wrap">
         <div class="field">
           <label> <?php _e( "Page Timeout (in seconds)"); ?> </label>

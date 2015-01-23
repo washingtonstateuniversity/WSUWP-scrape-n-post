@@ -165,6 +165,8 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			// Set options
 			$data['options']   = $scrape_data->get_options();
 			$data['scrape_options']   = $data['options'];
+			
+			$data['post_type'] = get_post_types( array(), 'names', 'and' );
 			// Get templates
 			$data['templates'] = "";
 			// Display option form

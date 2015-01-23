@@ -30,7 +30,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				'timeout_limit'=>300,
 				'memory_limit'=>'-1',
 				'xdebug_fix'=>1,
-				'add_post_on_crawl'=>0
+				'add_post_on_crawl'=>0,
+				'post_type'=>'post',
 			));	
 			return $plugin_option;
 		}

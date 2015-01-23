@@ -279,10 +279,10 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 					}
 				}
 			}
-			
+			$options = $scrape_data->get_options();
 			// Create post object
 			$complied = array(
-				'post_type' => 'wsu_policy', // yes don't hard code in final   
+				'post_type' => $options['post_type'], // yes don't hard code in final   
 				'post_title' => $title,
 				'post_content' => $content,
 				'post_status' => 'draft',
@@ -339,7 +339,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		public function crawl_from($url=NULL) {
 			global $_params,$scrape_core;
 			if(isset($_params['url'])){
-				$options = get_option( 'scrape_options', array('crawl_depth'=>5) );
+				$options = get_option( 'scrape_options', array('crawl_depth'=>5) ); //@todo bring this option in line with the abstracted
 				$depth = $options['depth']; 
 				$this->traverse_all_urls($_params['url'],$depth);
 			}
