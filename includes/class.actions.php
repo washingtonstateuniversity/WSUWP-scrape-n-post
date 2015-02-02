@@ -226,8 +226,12 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$scrape_profile = $scrape_data->get_scraping_profile();
 
 
-			$doc = phpQuery::newDocumentHTML($raw_html['body'], $currcharset);
-			phpQuery::selectDocument($doc);
+			//$doc = phpQuery::newDocumentHTML($raw_html['body'], $currcharset);
+			//phpQuery::selectDocument($doc);
+
+//$html5 = new HTML5();
+//$dom = $html5->loadHTML($html);
+$html=$raw_html['body'];
 
 			$obj = get_post_type_object( $options['post_type'] );
 
@@ -312,26 +316,38 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 						]
 					]
 				];
-				$title = $this->get_content($profile_obj);
-				var_dump($title);
+				$title = $this->get_content($html,$profile_obj);
+				//var_dump('$title:'.$title);
 
 
 				$profile_obj = (object) [
 					'id' => 1,
-					'root_selector' => 'p:first',
-					'selector' => '',
-					'pull_from' => 'html',
-					'pre_filter' => [],
+					'root_selector' => 'html',
+					'selector' => 'p:eq(0)',
+					'pull_from' => 'innerHTML',
+					'pre_filter' => [
+						(object) [
+							'type'=>'str_replace',
+							'search'=>'<P>',
+							'replace'=>'<p>'
+						],
+						(object) [
+							'type'=>'str_replace',
+							'search'=>'</P>',
+							'replace'=>'</p>'
+						]
+					],
 					'filter' => [
 						(object) [
 							'type'=>'explode',
-							'on'=>'<br>',
+							'on'=>'<br/>',
 							'select'=>'0'
 						]
 					],
 				];
-				$catName = $this->get_content($profile_obj);
-				var_dump($catName);
+				$catName = $this->get_content($html,$profile_obj);
+				//var_dump('$catName:'.$catName);
+				
 
 
 
@@ -339,55 +355,42 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					'id' => 1,
 					'root_selector' => 'html',
 					'selector' => 'div#main:eq(0)',
-					'pull_from' => 'html',
+					'pull_from' => 'innerHTML',
 					'pre_filter' => [],
 					'filter' => [],
 					'fall_back' =>(object) [
 						'id' => 2,
 						'root_selector' => 'body',
 						'selector' => '',
-						'pull_from' => 'html',
+						'pull_from' => 'innerHTML',
 						'pre_filter' => [
 							(object) [
 								'type'=>'remove',
 								'root'=>'body',
-								'selector'=>'h3:first'
+								'selector'=>'h3:eq(0)'
 							],
 							(object) [
 								'type'=>'remove',
 								'root'=>'body',
-								'selector'=>'p:first'
+								'selector'=>'p:eq(0)'
 							],
 							(object) [
 								'type'=>'remove',
 								'root'=>'body',
-								'selector'=>'h2:first'
+								'selector'=>'h2:eq(0)'
 							],
 							(object) [
 								'type'=>'remove',
 								'root'=>'body',
-								'selector'=>'p:first'
+								'selector'=>'p:eq(0)'
 							]
 						],
 						'filter' => [],
 						'fall_back' =>(object) []
 					]
 				];
-				$content = $this->get_content($profile_obj);
-				var_dump($content);
-
-				
-	/*
-				$content = pq('html')->find('div#main:eq(0)')->html();
-				if($content==""){
-					$content_obj = pq('body');
-					$content_obj->find('h3:first')->remove();
-					$content_obj->find('p:first')->remove();
-					$content_obj->find('h2:first')->remove();
-					$content_obj->find('p:first')->remove();
-					$content = trim($content_obj->html());
-				}//var_dump($content);*/
-				var_dump($content);die();
+				$content = $this->get_content($html,$profile_obj);
+				//var_dump('$content:'.$content);die();
 				//die();
 				
 
@@ -474,7 +477,7 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 		 * 
 		 * @access public
 		 */
-		public function get_content($profile_obj){
+		public function get_content($html,$profile_obj){
 			var_dump($profile_obj);
 			/*
 			'root_selector' => 'html',
@@ -483,34 +486,36 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			'filter' => (object) [],
 			*/
 			$output = "";
-			$output = $this->filter_content($output, $profile_obj->pre_filter);
-								pq('body')->find('h3:first')->remove();
-					pq('body')->find('p:first')->remove();
-					pq('body')->find('h2:first')->remove();
-					pq('body')->find('p:first')->remove();
-					$doc->document->saveXML();
-					$content = trim(pq('body')->html());
-			
-			
-			
-			
-			$content_obj = pq($profile_obj->root_selector);
+			if(isset($profile_obj->pre_filter) && !empty($profile_obj->pre_filter)){
+				$html = $this->filter_content($html, $profile_obj->pre_filter);
+			}
+
+
+			$content_obj = htmlqp($html, $profile_obj->root_selector, array('ignore_parser_warnings' => TRUE));
+			//var_dump($content_obj);
 			if(isset($profile_obj->selector) && !empty($profile_obj->selector)){
 				$content_obj = $content_obj->find($profile_obj->selector);
 			}
 			
-			
-			if($profile_obj->pull_from == "text"){
+			$grab = $profile_obj->pull_from;
+			if( $grab == "text"){
 				$output = $content_obj->text();
+			}elseif($grab == "innerHTML"){
+				$output = $content_obj->innerHTML();
 			}else{
 				$output = $content_obj->html();
 			}
 			
 			//would filter here
-			$output = $this->filter_content($output, $profile_obj->filter);
-
-			if( $output=="" && isset($profile_obj->fall_back) ){ 
-				$output = $this->get_content($profile_obj->fall_back);
+			if(isset($profile_obj->filter)&& !empty($profile_obj->filter)){
+				$output = $this->filter_content($output, $profile_obj->filter);
+			}
+			
+			if( $output=="" && isset($profile_obj->fall_back)){ 
+				$fall_check = (array) $profile_obj->fall_back;
+				if(!empty($fall_check)){
+					$output = $this->get_content($html,$profile_obj->fall_back);
+				}
 			}
 			return trim($output);
 			
@@ -548,6 +553,15 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 						$content=explode($filter->on,$content);
 						$content=$content[$filter->select];
 						break;
+					case 'remove':
+						$content_obj = htmlqp($content, $filter->root, array('ignore_parser_warnings' => TRUE));
+						$content_obj->find($filter->selector)->remove();
+						$content = $content_obj->top()->html();
+						break;
+					case 'str_replace':
+						$content = str_replace($filter->search,$filter->replace,$content);
+						break;
+						
 				}
 			}
 			return trim($content);

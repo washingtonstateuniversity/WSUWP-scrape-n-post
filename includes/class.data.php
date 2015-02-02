@@ -384,14 +384,19 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 */
 		function scrape_get_html_by_selector($raw_html, $selector, $output = 'html'){
 			// Parsing request using phpQuery
-			$currcharset = get_bloginfo('charset');
+			//$currcharset = get_bloginfo('charset');
 			//require_once 'phpQuery.php';
-			$phpquery = phpQuery::newDocumentHTML($raw_html, $currcharset);
-			phpQuery::selectDocument($phpquery);
+			//$phpquery = phpQuery::newDocumentHTML($raw_html, $currcharset);
+			//phpQuery::selectDocument($phpquery);
+			
+			//$html5 = new HTML5();
+			//$dom = $html5->loadHTML($raw_html);
+			
+			
 			if($output == 'text')
-				return pq($selector)->text();
+				return html5qp($raw_html,$selector)->text();
 			if($output == 'html')
-				return pq($selector)->html();
+				return html5qp($raw_html,$selector)->html();
 			if( empty($output) )
 				return new WP_Error('scrape_get_html_by_selector_failed', "Error parsing selector: $selector");
 		}

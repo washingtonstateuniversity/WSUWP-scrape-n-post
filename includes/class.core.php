@@ -88,7 +88,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			$_params = $_REQUEST; // this needs to get validated and noonced and what not
 
 			if (is_admin()) {
-				include(SCRAPE_PATH . '/includes/phpQuery.php');
+				//include(SCRAPE_PATH . '/includes/phpQuery.php');
+				include(SCRAPE_PATH . '/includes/QueryPath/qp.php');
 				include(SCRAPE_PATH . '/includes/class.templates.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_actions::	
 				include(SCRAPE_PATH . '/includes/class.output.php');// Include scrape_output::
@@ -149,8 +150,9 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				
 			//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
 			if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1){
-				ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
+				ini_set('xdebug.max_nesting_level', 1000); // should quitely fail if no xdebug
 			}
+			
 			if(isset($options['timeout_limit']) && $options['timeout_limit']>-1){
 				set_time_limit($options['timeout_limit']);
 			}
