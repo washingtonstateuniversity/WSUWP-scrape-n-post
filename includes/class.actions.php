@@ -282,40 +282,79 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			//remove placeholder
 				
 				//foreach profile query not fallback
-					//$filter_obj = get_meta profile_id
-					//$content = get_content($filter_obj);
+					//$profile_obj = get_meta profile_id
+					//$content = get_content($profile_obj);
 					//if $content == "" && profile_fallback > 0
 						// repeat for profile_fallback_id
 					//assign string to post part
 				//
+				$profile_obj = (object) [
+					'id' => 1,
+					'root_selector' => 'html',
+					'selector' => 'title',
+					'pull_from' => 'text',
+					'filter' => (object) [],
+					'fall_back' =>(object) [
+						'id' => 2,
+						'root_selector' => '#siteID',
+						'selector' => 'h1:first',
+						'pull_from' => 'text',
+						'filter' => (object) [],
+						'fall_back' =>(object) [
+							'id' => 3,
+							'root_selector' => 'h2:first',
+							'selector' => '',
+							'pull_from' => 'text',
+							'filter' => (object) []
+						]
+					]
+				];
+				$title = $this->get_content($profile_obj);
 				
 				
 				
-				
-				$title = pq('html')->find('title');
+				/*$title = pq('html')->find('title');
 				$title = $title->text();
 				if($title==""){ $title = pq('#siteID')->find('h1:first')->text(); }
-				if($title==""){ $title = pq('h2:first')->text(); }
-				//var_dump($title);
+				if($title==""){ $title = pq('h2:first')->text(); }*/
+				var_dump($title);
+
+
+				$profile_obj = (object) [
+					'id' => 1,
+					'root_selector' => 'p:first',
+					'selector' => '',
+					'pull_from' => 'html',
+					'filter' => [
+						(object) [
+							'type'=>'explode',
+							'on'=>'<br>',
+							'select'=>'0'
+						]
+					],
+				];
+				$catName = $this->get_content($profile_obj);
+
+
 	
 				//should applie paterens by option
 				
-				$catName = pq('p:first')->html();
+				/*$catName = pq('p:first')->html();
 				$catarea = explode('<br>',$catName);
-				$catName = trim($catarea[0]);
-				//var_dump($catName);
+				$catName = trim($catarea[0]);*/
+				var_dump($catName);
 				
 	
 				$content = pq('html')->find('div#main:eq(0)')->html();
 				if($content==""){
-					pq('body')->find('h3:first')->remove();
-					pq('body')->find('p:first')->remove();
-					pq('body')->find('h2:first')->remove();
-					pq('body')->find('p:first')->remove();
-					$doc->document->saveXML();
-					$content = trim(pq('body')->html());
+					$content_obj = pq('body');
+					$content_obj->find('h3:first')->remove();
+					$content_obj->find('p:first')->remove();
+					$content_obj->find('h2:first')->remove();
+					$content_obj->find('p:first')->remove();
+					$content = trim($content_obj->html());
 				}//var_dump($content);
-	
+				var_dump($content);die();
 				//die();
 				
 
@@ -403,6 +442,35 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 		 * @access public
 		 */
 		public function get_content($profile_obj){
+			var_dump($profile_obj);
+			/*
+			'root_selector' => 'html',
+			'selector' => 'title',
+			'pull_from' => 'text',
+			'filter' => (object) [],
+			*/
+			$output = "";
+			$content_obj = pq($profile_obj->root_selector);
+			if(isset($profile_obj->selector) && !empty($profile_obj->selector)){
+				$content_obj = $content_obj->find($profile_obj->selector);
+			}
+			
+			
+			if($profile_obj->pull_from == "text"){
+				$output = $content_obj->text();
+			}else{
+				$output = $content_obj->html();
+			}
+			
+			//would filter here
+			$output = $this->filter_content($output, $profile_obj->filter);
+
+			if( $output=="" && isset($profile_obj->fall_back) ){ 
+				$output = $this->get_content($profile_obj->fall_back);
+			}
+			return trim($output);
+			
+			
 			// search for the match in the doc
 			// - what it the $root element?
 			// - what is the $selector to use?
@@ -422,14 +490,23 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 		 * Filter content from basic options
 		 * 
 		 * @param string $content
-		 * @param int $filter_id
+		 * @param object $filter_obj
 		 *
 		 * @return string
 		 * 
 		 * @access public
 		 */
-		public function filter_content($content, $filter_id){
-			
+		public function filter_content($content, $filter_obj){
+			var_dump($filter_obj);
+			foreach($filter_obj as $key=>$filter){
+				switch($filter->type){
+					case 'explode':
+						$content=explode($filter->on,$content);
+						$content=$content[$filter->select];
+						break;
+				}
+			}
+			return trim($content);
 		}
 	
 		/**
