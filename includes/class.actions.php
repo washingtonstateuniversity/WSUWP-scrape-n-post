@@ -488,14 +488,12 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			
 			
 			$arrs = array_merge($complied,$arr);
-			
-			var_dump($arrs);die();
-			
+
 			//good so far let make the post
 			if(isset($arrs['ID'])){
 				$post_id = wp_update_post( $arrs );
 			}else{
-				$post_id = wp_insert_post($arrs);	
+				$post_id = wp_insert_post( $arrs );	
 			}
 			if( !is_wp_error($post_id) ) {
 				$scrape_core->message = array(
