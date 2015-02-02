@@ -285,160 +285,160 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			//NOTE WHAT IS GOIGN TO BE DONE IS A EVAL FOR A PATTERN
 			//remove placeholder
 				
-				//foreach profile query not fallback
-					//$profile_obj = get_meta profile_id
-					//$content = get_content($profile_obj);
-					//if $content == "" && profile_fallback > 0
-						// repeat for profile_fallback_id
-					//assign string to post part
-				//
-				$profile = (object) [
-					'post_name'=>(object) [
-						'id' => 1,
-						'root_selector' => 'html',
-						'selector' => 'title',
-						'pull_from' => 'text',
-						'pre_filter' => [],
-						'filter' => [],
-						'fall_back' =>(object) [
-							'id' => 2,
-							'root_selector' => '#siteID',
-							'selector' => 'h1:first',
-							'pull_from' => 'text',
-							'pre_filter' => [],
-							'filter' => [],
-							'fall_back' =>(object) [
-								'id' => 3,
-								'root_selector' => 'h2:first',
-								'selector' => '',
-								'pull_from' => 'text',
-								'pre_filter' => [],
-								'filter' => []
-							]
-						]
-					],
-					'post_title'=>(object) [
-						'id' => 1,
+			//foreach profile query not fallback
+				//$profile_obj = get_meta profile_id
+				//$content = get_content($profile_obj);
+				//if $content == "" && profile_fallback > 0
+					// repeat for profile_fallback_id
+				//assign string to post part
+			//
+			$profile = (object) [
+				'post_name'=>(object) [
+					'id' => 1,
+					'root_selector' => 'html',
+					'selector' => 'title',
+					'pull_from' => 'text',
+					'pre_filter' => [],
+					'filter' => [],
+					'fall_back' =>(object) [
+						'id' => 2,
 						'root_selector' => '#siteID',
-						'selector' => 'h1:eq(0)',
+						'selector' => 'h1:first',
 						'pull_from' => 'text',
 						'pre_filter' => [],
 						'filter' => [],
 						'fall_back' =>(object) [
-							'id' => 2,
-							'root_selector' => 'h2:eq(0)',
+							'id' => 3,
+							'root_selector' => 'h2:first',
 							'selector' => '',
 							'pull_from' => 'text',
-							'pre_filter' => [
-									(object) [
-										'type'=>'str_replace',
-										'search'=>'<H2>',
-										'replace'=>'<h2>'
-									],
-									(object) [
-										'type'=>'str_replace',
-										'search'=>'</H2>',
-										'replace'=>'</h2>'
-									]
+							'pre_filter' => [],
+							'filter' => []
+						]
+					]
+				],
+				'post_title'=>(object) [
+					'id' => 1,
+					'root_selector' => '#siteID',
+					'selector' => 'h1:eq(0)',
+					'pull_from' => 'text',
+					'pre_filter' => [],
+					'filter' => [],
+					'fall_back' =>(object) [
+						'id' => 2,
+						'root_selector' => 'h2:eq(0)',
+						'selector' => '',
+						'pull_from' => 'text',
+						'pre_filter' => [
+								(object) [
+									'type'=>'str_replace',
+									'search'=>'<H2>',
+									'replace'=>'<h2>'
 								],
-							'filter' => [],
-							'fall_back' =>(object) [
-								'id' => 3,
-								'root_selector' => 'html',
-								'selector' => 'title',
-								'pull_from' => 'text',
-								'pre_filter' => [],
-								'filter' => [
-									(object) [
-										'type'=>'str_replace',
-										'search'=>'.htm',
-										'replace'=>''
-									],
-									(object) [
-										'type'=>'str_replace',
-										'search'=>'_',
-										'replace'=>' '
-									],
-									(object) [
-										'type'=>'preg_replace',
-										'pattern'=>'/\d+\.\d+/',
-										'replace'=>''
-									]
+								(object) [
+									'type'=>'str_replace',
+									'search'=>'</H2>',
+									'replace'=>'</h2>'
+								]
+							],
+						'filter' => [],
+						'fall_back' =>(object) [
+							'id' => 3,
+							'root_selector' => 'html',
+							'selector' => 'title',
+							'pull_from' => 'text',
+							'pre_filter' => [],
+							'filter' => [
+								(object) [
+									'type'=>'str_replace',
+									'search'=>'.htm',
+									'replace'=>''
+								],
+								(object) [
+									'type'=>'str_replace',
+									'search'=>'_',
+									'replace'=>' '
+								],
+								(object) [
+									'type'=>'preg_replace',
+									'pattern'=>'/\d+\.\d+/',
+									'replace'=>''
 								]
 							]
 						]
+					]
+				],
+				'post_category'=>(object) [
+					'id' => 1,
+					'root_selector' => 'html',
+					'selector' => 'p:eq(0)',
+					'pull_from' => 'innerHTML',
+					'pre_filter' => [
+						(object) [
+							'type'=>'str_replace',
+							'search'=>'<P>',
+							'replace'=>'<p>'
+						],
+						(object) [
+							'type'=>'str_replace',
+							'search'=>'</P>',
+							'replace'=>'</p>'
+						]
 					],
-					'post_category'=>(object) [
-						'id' => 1,
-						'root_selector' => 'html',
-						'selector' => 'p:eq(0)',
+					'filter' => [
+						(object) [
+							'type'=>'explode',
+							'on'=>'<br/>',
+							'select'=>'0'
+						]
+					],
+				],
+				'post_content'=>(object) [
+					'id' => 1,
+					'root_selector' => 'html',
+					'selector' => 'div#main:eq(0)',
+					'pull_from' => 'innerHTML',
+					'pre_filter' => [],
+					'filter' => [],
+					'fall_back' =>(object) [
+						'id' => 2,
+						'root_selector' => 'body',
+						'selector' => '',
 						'pull_from' => 'innerHTML',
 						'pre_filter' => [
 							(object) [
-								'type'=>'str_replace',
-								'search'=>'<P>',
-								'replace'=>'<p>'
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'h3:eq(0)'
 							],
 							(object) [
-								'type'=>'str_replace',
-								'search'=>'</P>',
-								'replace'=>'</p>'
-							]
-						],
-						'filter' => [
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'p:eq(0)'
+							],
 							(object) [
-								'type'=>'explode',
-								'on'=>'<br/>',
-								'select'=>'0'
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'h2:eq(0)'
+							],
+							(object) [
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'p:eq(0)'
 							]
 						],
-					],
-					'post_content'=>(object) [
-						'id' => 1,
-						'root_selector' => 'html',
-						'selector' => 'div#main:eq(0)',
-						'pull_from' => 'innerHTML',
-						'pre_filter' => [],
 						'filter' => [],
-						'fall_back' =>(object) [
-							'id' => 2,
-							'root_selector' => 'body',
-							'selector' => '',
-							'pull_from' => 'innerHTML',
-							'pre_filter' => [
-								(object) [
-									'type'=>'remove',
-									'root'=>'body',
-									'selector'=>'h3:eq(0)'
-								],
-								(object) [
-									'type'=>'remove',
-									'root'=>'body',
-									'selector'=>'p:eq(0)'
-								],
-								(object) [
-									'type'=>'remove',
-									'root'=>'body',
-									'selector'=>'h2:eq(0)'
-								],
-								(object) [
-									'type'=>'remove',
-									'root'=>'body',
-									'selector'=>'p:eq(0)'
-								]
-							],
-							'filter' => [],
-							'fall_back' =>(object) []
-						]
+						'fall_back' =>(object) []
 					]
-				];
+				]
+			];
 
-				$catName = $this->get_content_part($html,$profile->post_category);
-				//var_dump('$catName:'.$catName);
+			$catName = $this->get_content_part($html,$profile->post_category);
+			//var_dump('$catName:'.$catName);
 
-				$content = $this->get_content_part($html,$profile_obj);
-				//var_dump('$content:'.$content);die();
-				//die();
+			$content = $this->get_content_part($html,$profile_obj);
+			//var_dump('$content:'.$content);die();
+			//die();
 				
 
 			
@@ -468,22 +468,7 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					}
 				}
 			}
-/*
-$post_compiled = array(
-  'post_content'   => [ <string> ] // The full text of the post.
-  'post_name'      => [ <string> ] // The name (slug) for your post
-  'post_title'     => [ <string> ] // The title of your post.
-  'post_author'    => [ <user ID> ] // The user ID number of the author. Default is the current user ID.
-  'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
-  'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
-  'post_excerpt'   => [ <string> ] // For all your post excerpt needs.
-  'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
-  'post_category'  => [ array(<category id>, ...) ] // Default empty.
-  'tags_input'     => [ '<tag>, <tag>, ...' | array ] // Default empty.
-  'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
-);
-*/
-			
+
 			// Create post object
 			$post_compiled = array(
 				'post_type'      => $options['post_type'],
@@ -500,37 +485,28 @@ $post_compiled = array(
 				'post_content'   => $this->get_content_part($html,$profile->post_content)
 			);
 						
-			var_dump($post_compiled);die();
+			
 			
 			$arrs = array_merge($complied,$arr);
+			
+			var_dump($arrs);die();
+			
 			//good so far let make the post
 			if(isset($arrs['ID'])){
 				$post_id = wp_update_post( $arrs );
-				if( !is_wp_error($post_id) ) {
-					$scrape_core->message = array(
-						'type' => 'updated',
-						'message' => __('Updated post')
-					);
-				}else{
-					$scrape_core->message = array(
-						'type' => 'error',
-						'message' => __('Post error '.$post_id->get_error_message())
-					);	
-				}
-					
 			}else{
 				$post_id = wp_insert_post($arrs);	
-				if( !is_wp_error($post_id) ) {
-					$scrape_core->message = array(
-						'type' => 'updated',
-						'message' => __('Adding Post')
-					);
-				} else {
-					$scrape_core->message = array(
-						'type' => 'error',
-						'message' => __('Post error '.$post_id->get_error_message())
-					);
-				}
+			}
+			if( !is_wp_error($post_id) ) {
+				$scrape_core->message = array(
+					'type' => isset($arrs['ID']) ? 'updated' : 'added',
+					'message' => isset($arrs['ID']) ?  __('Updated post') : __('Added new Post')
+				);
+			}else{
+				$scrape_core->message = array(
+					'type' => 'error',
+					'message' => __('Post error '.$post_id->get_error_message())
+				);	
 			}
 			//all good let tie the post to the url
 			$this->url_to_post($post_id,$url);
