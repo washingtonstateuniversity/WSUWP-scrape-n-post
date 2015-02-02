@@ -293,30 +293,26 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					'root_selector' => 'html',
 					'selector' => 'title',
 					'pull_from' => 'text',
-					'filter' => (object) [],
+					'pre_filter' => [],
+					'filter' => [],
 					'fall_back' =>(object) [
 						'id' => 2,
 						'root_selector' => '#siteID',
 						'selector' => 'h1:first',
 						'pull_from' => 'text',
-						'filter' => (object) [],
+						'pre_filter' => [],
+						'filter' => [],
 						'fall_back' =>(object) [
 							'id' => 3,
 							'root_selector' => 'h2:first',
 							'selector' => '',
 							'pull_from' => 'text',
-							'filter' => (object) []
+							'pre_filter' => [],
+							'filter' => []
 						]
 					]
 				];
 				$title = $this->get_content($profile_obj);
-				
-				
-				
-				/*$title = pq('html')->find('title');
-				$title = $title->text();
-				if($title==""){ $title = pq('#siteID')->find('h1:first')->text(); }
-				if($title==""){ $title = pq('h2:first')->text(); }*/
 				var_dump($title);
 
 
@@ -325,6 +321,7 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					'root_selector' => 'p:first',
 					'selector' => '',
 					'pull_from' => 'html',
+					'pre_filter' => [],
 					'filter' => [
 						(object) [
 							'type'=>'explode',
@@ -334,17 +331,53 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					],
 				];
 				$catName = $this->get_content($profile_obj);
-
-
-	
-				//should applie paterens by option
-				
-				/*$catName = pq('p:first')->html();
-				$catarea = explode('<br>',$catName);
-				$catName = trim($catarea[0]);*/
 				var_dump($catName);
+
+
+
+				$profile_obj = (object) [
+					'id' => 1,
+					'root_selector' => 'html',
+					'selector' => 'div#main:eq(0)',
+					'pull_from' => 'html',
+					'pre_filter' => [],
+					'filter' => [],
+					'fall_back' =>(object) [
+						'id' => 2,
+						'root_selector' => 'body',
+						'selector' => '',
+						'pull_from' => 'html',
+						'pre_filter' => [
+							(object) [
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'h3:first'
+							],
+							(object) [
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'p:first'
+							],
+							(object) [
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'h2:first'
+							],
+							(object) [
+								'type'=>'remove',
+								'root'=>'body',
+								'selector'=>'p:first'
+							]
+						],
+						'filter' => [],
+						'fall_back' =>(object) []
+					]
+				];
+				$content = $this->get_content($profile_obj);
+				var_dump($content);
+
 				
-	
+	/*
 				$content = pq('html')->find('div#main:eq(0)')->html();
 				if($content==""){
 					$content_obj = pq('body');
@@ -353,7 +386,7 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					$content_obj->find('h2:first')->remove();
 					$content_obj->find('p:first')->remove();
 					$content = trim($content_obj->html());
-				}//var_dump($content);
+				}//var_dump($content);*/
 				var_dump($content);die();
 				//die();
 				
@@ -364,7 +397,7 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			
 			
 			// Get user info
-			$current_user = get_userdata( get_current_user_id());
+			$current_user = get_userdata( get_current_user_id() );
 			$user               = $current_user;
 	
 			if($user) $author_id=$user->ID; // Outputs 1
@@ -450,6 +483,17 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			'filter' => (object) [],
 			*/
 			$output = "";
+			$output = $this->filter_content($output, $profile_obj->pre_filter);
+								pq('body')->find('h3:first')->remove();
+					pq('body')->find('p:first')->remove();
+					pq('body')->find('h2:first')->remove();
+					pq('body')->find('p:first')->remove();
+					$doc->document->saveXML();
+					$content = trim(pq('body')->html());
+			
+			
+			
+			
 			$content_obj = pq($profile_obj->root_selector);
 			if(isset($profile_obj->selector) && !empty($profile_obj->selector)){
 				$content_obj = $content_obj->find($profile_obj->selector);
