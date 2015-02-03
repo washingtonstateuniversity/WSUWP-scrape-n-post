@@ -31,7 +31,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 					}
 				}
 				add_action('admin_init', array( $this, 'admin_init' ));
-				add_action('admin_menu', array( $this, 'admin_menu' ));
+				add_action('admin_menu', array( $this, 'admin_menu' ), 11);
 			}
 			if (isset($_GET['scrape_dl'])) {// Check if post download is performed
 				add_action('init', array( $this, 'download_post' ));// Add download action hook
@@ -70,13 +70,17 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		 * Add plugin menu
 		 */
 		public function admin_menu() {
-			// Register menu
-			add_menu_page(SCRAPE_NAME, SCRAPE_NAME, 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ), 'dashicons-share-alt2');
+			global $scrape_core;
 			// Register sub-menu
-			add_submenu_page(SCRAPE_BASE_NAME, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
-			add_submenu_page(SCRAPE_BASE_NAME, _('Crawler Templates'), _('Crawler Templates'), 'manage_options', 'scrape-crawler-templates', array( $this, 'template_list_page' ));
-			add_submenu_page(SCRAPE_BASE_NAME, _('Add Template'), _('Add Template'), 'manage_options', 'scrape-add-template', array( $this, 'add_crawler_template_page' ));
-			add_submenu_page(SCRAPE_BASE_NAME, _('Settings'), _('Settings'), 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ));
+			$parent_slug = "edit.php?post_type=".$scrape_core->shadow_content_type;
+
+			add_submenu_page($parent_slug, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
+			
+			add_submenu_page($parent_slug, _('Crawler Templates'), _('Crawler Templates'), 'manage_options', 'scrape-crawler-templates', array( $this, 'template_list_page' ));
+			
+			add_submenu_page($parent_slug, _('Add Template'), _('Add Template'), 'manage_options', 'scrape-add-template', array( $this, 'add_crawler_template_page' ));
+			
+			add_submenu_page($parent_slug, _('Settings'), _('Settings'), 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ));
 		}
 	
 		/**

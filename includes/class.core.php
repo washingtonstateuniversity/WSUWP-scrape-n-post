@@ -72,7 +72,12 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 */
 		var $shadow_content_type = 'wsuwp_snp_postshadow';
 
-
+		/**
+		 * The slug used to register the shadow profile type.
+		 *
+		 * @var string
+		 */
+		var $shadow_profile_type = 'wsuwp_snp_profile';
 		
 		/**
 		 * Add template table.
@@ -97,14 +102,21 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				
 				add_action( 'init', array( $this, 'set_default_model' ), 10 );
+				
 				add_action( 'init', array( $this, 'register_shadow_post_type' ), 11 );
-
 				add_action( 'add_meta_boxes', array( $this, 'add_shadow_post_meta_boxes' ), 11, 1 );
 
-				add_action( 'save_post', array( $this, 'save_object' ), 12, 2 );
-				add_action( 'transition_post_status', array( $this, 'force_post_status' ), 12, 3 );
+				add_action( 'init', array( $this, 'register_shadow_profile_type' ), 11 );
+				add_action( 'add_meta_boxes', array( $this, 'add_shadow_profile_meta_boxes' ), 11, 1 );
+
+
+
+				add_action( 'save_post', array( $this, 'save_shadow_post_object' ), 15, 2 );
+				add_action( 'transition_post_status', array( $this, 'force_shadow_post_status' ), 15, 3 );
 				
-				add_action( 'init', array( $this, 'process_upgrade_routine' ), 13 );
+				add_action( 'save_post', array( $this, 'save_shadow_profile_object' ), 15, 2 );
+				
+				add_action( 'init', array( $this, 'process_upgrade_routine' ), 18 );
 				
 			}
 		}
@@ -118,8 +130,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * 
 		 * @access public
 		 */
-		public function force_post_status( $new_status, $old_status,  $post ) {
-			if ( $post->post_type == 'wsuwp_snp_postshadow' && $new_status == 'publish' && $old_status  != $new_status ) {
+		public function force_shadow_post_status( $new_status, $old_status,  $post ) {
+			if ( $post->post_type == $this->shadow_content_type && $new_status == 'publish' && $old_status  != $new_status ) {
 				$post->post_status = 'private';
 				wp_update_post( $post );
 			}
@@ -153,11 +165,11 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				ini_set('xdebug.max_nesting_level', 1000); // should quitely fail if no xdebug
 			}
 			
-			if(isset($options['timeout_limit']) && $options['timeout_limit']>-1){
-				set_time_limit($options['timeout_limit']);
+			if(isset($options['timeout_limit']) && (int)$options['timeout_limit']>-1){
+				set_time_limit((int)$options['timeout_limit']);
 			}
-			if(isset($options['memory_limit']) && $options['memory_limit']>-2){
-				ini_set('memory_limit', $options['memory_limit']);
+			if(isset($options['memory_limit']) && (int)$options['memory_limit']>-2){
+				ini_set('memory_limit', (int)$options['memory_limit']);
 			}
 		}
 		
@@ -283,6 +295,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 */
 		public function register_shadow_post_type() {
 			$labels = array(
+				'menu_name'          => __( 'Scrape N\' Post', 'wsuwp_snp' ),
 				'name'               => __( 'Shadow Copy', 'wsuwp_snp' ),
 				'singular_name'      => __( 'Shadow Copy', 'wsuwp_snp' ),
 				'all_items'          => __( 'All Shadow Copies', 'wsuwp_snp' ),
@@ -308,20 +321,19 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				),
 				'has_archive' => true,
 				'rewrite' => array(
-					'slug' => $slug,
+					'slug' => $default_slug,
 					'with_front' => false
 				),
 				'exclude_from_search' => true,
 				'publicly_queryable' => false,
 				'show_in_nav_menus' => false,
 				'show_ui' => true,
+				'menu_position' => 80,
 				'menu_icon' => 'dashicons-share-alt2',
-				'show_in_menu'=>SCRAPE_BASE_NAME
+				'show_in_menu'=>true,
 			);
 			register_post_type( $this->shadow_content_type, $args );
 		}
-
-
 
 		/**
 		 * Add meta boxes used to capture pieces of information.
@@ -329,7 +341,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @param string $post_type
 		 */
 		public function add_shadow_post_meta_boxes( $post_type ) {
-			if ($post_type == 'wsuwp_snp_postshadow'){   
+			if ($post_type == $this->shadow_content_type){   
 				//main content area
 				add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
 				add_meta_box( 'wsuwp_snp_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
@@ -338,6 +350,82 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				add_meta_box( 'wsuwp_snp_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
 			}
 		}
+
+
+
+
+
+
+		/**
+		 * Register the shadow profile type.
+		 *
+		 * This defined how urls are crawled and consumed. 
+		 */
+		public function register_shadow_profile_type() {
+			
+			$labels = array(
+				'singular_name'      => __( 'Shadow profile', 'wsuwp_snp' ),
+				'all_items'          => __( 'All Shadow profiles', 'wsuwp_snp' ),
+				'add_new_item'       => __( 'Add Shadow profile', 'wsuwp_snp' ),
+				'edit_item'          => __( 'Edit Shadow profile', 'wsuwp_snp' ),
+				'new_item'           => __( 'New Shadow profile', 'wsuwp_snp' ),
+				'view_item'          => __( 'View Shadow profile', 'wsuwp_snp' ),
+				'search_items'       => __( 'Search Shadow profiles', 'wsuwp_snp' ),
+				'not_found'          => __( 'No Shadow profiles found', 'wsuwp_snp' ),
+				'not_found_in_trash' => __( 'No Shadow profiles found in trash', 'wsuwp_snp' ),
+			);
+			$description = __( 'Shadow profiles used when crawling sites.', 'wsuwp_snp' );
+			$default_slug = 'shadow_profile';
+
+			$args = array(
+				'labels' => $labels,
+				'description' => $description,
+				'public' => false,
+				'hierarchical' => false,
+				'supports' => array (
+					'title',
+					'revisions'
+				),
+				'has_archive' => true,
+				'rewrite' => array(
+					'slug' => $default_slug,
+					'with_front' => false
+				),
+				'exclude_from_search' => true,
+				'publicly_queryable' => false,
+				'show_in_nav_menus' => false,
+				'show_ui' => true,
+				'show_in_menu'=>"edit.php?post_type=".$this->shadow_content_type
+			);
+			
+			register_post_type( $this->shadow_profile_type, $args );
+		}
+
+
+		/**
+		 * Add meta boxes used to capture pieces of information for the profile.
+		 *
+		 * @param string $post_type
+		 */
+		public function add_shadow_profile_meta_boxes( $post_type ) {
+			if ($post_type == $this->shadow_profile_type){   
+
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		/**
 		 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
@@ -441,7 +529,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @param int     $post_id The ID of the post being saved.
 		 * @param object  $post The post being saved.
 		 */
-		public function save_object( $post_id, $post ) {
+		public function save_shadow_post_object( $post_id, $post ) {
 			/*
 			`url` MEDIUMINT(9),
 			`tied_post_id` MEDIUMINT(9),
@@ -491,6 +579,25 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			}		
 			return;
 		}
+		
+		/**
+		 * Save a profiles meta saved through the object's meta box.
+		 *
+		 * @param int     $post_id The ID of the post being saved.
+		 * @param object  $post The post being saved.
+		 */
+		public function save_shadow_profile_object( $post_id, $post ) {
+			if ( isset( $_POST['wsuwp_spn_type'] ) ) {
+				if ( empty( trim( $_POST['wsuwp_spn_type'] ) ) ) {
+					delete_post_meta( $post_id, '_wsuwp_spn_type' );
+				} else {
+					update_post_meta( $post_id, '_wsuwp_spn_type', $_POST['wsuwp_spn_type'] );
+				}
+			}		
+			return;
+		}
+		
+		
 	}
 	global $scrape_core;
 	$scrape_core = new scrape_core();
