@@ -454,7 +454,11 @@ if ( ! class_exists( 'scrape_core' ) ) {
 
 
 
-
+		/**
+		 * Build a jQuery UI style radio group
+		 *
+		 * @param array $options
+		 */
 		public function make_radio_html($options=array()){
 			if(empty($options)){
 				return "";	
@@ -465,14 +469,14 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			$description = $options['description'];
 			$title = $options['title'];
 			?>
-				<p><?=$title?></p>
+				<?php if($title!=""):?><p><?=$title?></p><?php endif;?>
 				<div class="html radio_buttons">
 					<?php foreach($types as $name=>$value):?>
 						<input type="radio" name="<?=$input_name?>" value="<?=$value?>" id="<?=$input_name?>_<?=$value?>" <?=checked($meta_data,$value)?>/>
 						<label for="<?=$input_name?>_<?=$value?>"><?=$name?></label>
 					<?php endforeach;?>
 				</div>
-				<p class="description"><?=$description?></p>
+				<?php if($description!=""):?><p class="description"><?=$description?></p><?php endif;?>
 
 			<?php
 		}
