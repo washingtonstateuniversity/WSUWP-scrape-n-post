@@ -416,22 +416,18 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		public function display_post_defaults_meta_box( $post ) {
 			?>
 			<div>
-				<p class="description">Ignore this url</p>
-				<div class="html radio_buttons">
-				<?php 
-					$input_name = "wsuwp_spn_post_status";
-					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
-					if($meta_data==""){
-						$meta_data="draft";	
-					}
-					$types = array('draft','publish','pending','future','private');
-				?>
-				<?php foreach($types as $type):?>
-					<input type="radio" name="<?=$input_name?>" value="<?=$type?>" id="<?=$input_name?><?=$type?>" <?=checked($meta_data,$type)?>/>
-					<label for="<?=$input_name?><?=$type?>"><?=$type?></label>
-				<?php endforeach;?>
-				</div>
-				<div class="clear"></div>
+				<?php
+				$input_name = "wsuwp_spn_post_status";
+				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$this->make_radio_html(array(
+					'types'=>array('draft'=>'draft','publish'=>'publish','pending'=>'pending','future'=>'future','private'=>'private'),
+					'input_name'=>$input_name,
+					'meta_data'=>$meta_data!=""?$meta_data:"draft",
+					'description'=>'set this to what you want a post to be when it is created.',
+					'title'=>'Post status'
+				))?>
+				<hr/>
+				<div class="clear"></div>	
 			</div>
 			<?php
 		}
@@ -455,6 +451,31 @@ if ( ! class_exists( 'scrape_core' ) ) {
   'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
   'page_template'  => [ <string> ] // Requires name of template file, eg template.php. Default empty.
 */
+
+
+
+
+		public function make_radio_html($options=array()){
+			if(empty($options)){
+				return "";	
+			}
+			$types = $options['types'];
+			$meta_data = $options['meta_data'];
+			$input_name = $options['input_name'];
+			$description = $options['description'];
+			$title = $options['title'];
+			?>
+				<p><?=$title?></p>
+				<div class="html radio_buttons">
+					<?php foreach($types as $name=>$value):?>
+						<input type="radio" name="<?=$input_name?>" value="<?=$value?>" id="<?=$input_name?>_<?=$value?>" <?=checked($meta_data,$value)?>/>
+						<label for="<?=$input_name?>_<?=$value?>"><?=$name?></label>
+					<?php endforeach;?>
+				</div>
+				<p class="description"><?=$description?></p>
+
+			<?php
+		}
 
 
 
@@ -518,18 +539,18 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_option_ignore( $post ) {
-			$input_name = "wsuwp_spn_ignored";
-			$ignore = get_post_meta( $post->ID, '_'.$input_name, true );
 			?>
 			<div id="wsuwp-snp-display-ignore">
-				<p class="description">Ignore this url</p>
-				<div class="html radio_buttons">
-					<input type="radio" name="<?=$input_name?>" value="1" id="<?=$input_name?>1" <?=checked($ignore,1)?>/>
-					<label for="<?=$input_name?>1">Yes</label>
-					
-					<input type="radio" name="<?=$input_name?>" value="0" id="<?=$input_name?>2" <?=checked($ignore,0)?> />
-					<label for="<?=$input_name?>2">No</label>
-				</div>
+				<?php
+				$input_name = "wsuwp_spn_ignored";
+				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$this->make_radio_html(array(
+					'types'=>array('Yes'=>'1','No'=>'0'),
+					'input_name'=>$input_name,
+					'meta_data'=>$meta_data!=""?$meta_data:"0",
+					'description'=>'during updates should this link be included in the crawl?',
+					'title'=>'Ignore this url'
+				))?>
 				<div class="clear"></div>
 			</div>
 			<?php
