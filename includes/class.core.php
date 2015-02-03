@@ -427,6 +427,20 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					'title'=>'Post status'
 				))?>
 				<hr/>
+				
+				
+				<?php
+					$input_name = "wsuwp_spn_post_type";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				?>
+				<label> <?=_e( "Use Post Type" )?> </label>
+				<select name="<?=$input_name?>">
+				<?php foreach(get_post_types( array(), 'names', 'and' ) as $key=>$val): ?>
+					<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
+				<?php endforeach; ?>
+				</select>
+				
+				
 				<div class="clear"></div>	
 			</div>
 			<?php
