@@ -1,18 +1,21 @@
 <?php
-/*
-	Still needs a good refactor
-	- actions should be moved and ?page should be detected?
-*/
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+/**
+ * @todo Still needs a good refactor
+ * - actions should be moved and ?page should be detected?
+ */
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! class_exists( 'scrape_pages' ) ) {
 	class scrape_pages {
 		public $dompdf = NULL;
 		public $message = array();
 		public $title = '';
 	
-		
+		/**
+		 * constructor
+		 *
+		 * @global class $_params
+		 * @global class $scrape_actions
+		 */
 		function __construct() {
 			global $_params,$scrape_actions;
 			if (is_admin()) {
@@ -37,8 +40,10 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 				add_action('init', array( $this, 'download_posts' ));// Add download action hook
 			}
 		}
-		/*
+		/**
 		 * Initailize plugin admin part
+		 *
+		 * @global class $wp_scripts
 		 */
 		public function admin_init() {
 			global $wp_scripts;
@@ -61,7 +66,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			wp_enqueue_style('scrape-style', SCRAPE_URL . 'css/style.css', false, '1.9.0', 'all');
 		}
 		
-		/*
+		/**
 		 * Add plugin menu
 		 */
 		public function admin_menu() {
@@ -74,8 +79,10 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			add_submenu_page(SCRAPE_BASE_NAME, _('Settings'), _('Settings'), 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ));
 		}
 	
-		/*
+		/**
 		 * Display "Add" page
+		 *
+		 * @global class $scrape_templates
 		 */
 		public function add_crawler_template_page() { // short forward
 			global $scrape_templates;
@@ -84,8 +91,10 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			$this->view(SCRAPE_PATH . '/includes/views/template.php', $data);
 		}	
 		
-		/*
+		/**
 		 * Display "Template List" page
+		 *
+		 * @global class $scrape_templates
 		 */
 		public function template_list_page() {
 			global $scrape_templates;
@@ -111,8 +120,10 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		}
 		
 	
-		/*
+		/**
 		 * Display "Crawler" pages
+		 *
+		 * @global class $scrape_data
 		 */
 		public function crawler_page() {
 			global $scrape_data;
@@ -129,7 +140,11 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		}
 	
 
-
+		/**
+		 * get the list of shadows
+		 *
+		 * @global class $scrape_data
+		 */
 		public function url_to_post() {
 			global $scrape_data;
 			include(SCRAPE_PATH . '/includes/views/lists/class.crawl_list.php');
@@ -149,16 +164,20 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		/*-------------------------------------------------------------------------*/
 		/* -Option- 															   */
 		/*-------------------------------------------------------------------------*/
-		/*
+		/**
 		 * Update plugin option
+		 *
+		 * @global class $_params
 		 */
 		public function update_options() {
 			global $_params;
 			$options = $_params;
 			update_option('scrape_options', $options);
 		}
-		/*
+		/**
 		 * Display "Option" page
+		 *
+		 * @global class $scrape_data
 		 */
 		public function option_page() {
 			global $scrape_data;
@@ -179,8 +198,10 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		/*-------------------------------------------------------------------------*/
 		/* -General- 															   */
 		/*-------------------------------------------------------------------------*/
-		/*
+		/**
 		 * Return falsh message
+		 *
+		 * @global class $scrape_core
 		 */
 		public function get_message() {
 			global $scrape_core;
@@ -192,11 +213,12 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			}
 		}
 
-		/*
+		/**
 		 * Return query filter
-		 * @file - string
-		 * @data - array
-		 * @return - boolean
+		 *
+		 * @param string $file
+		 * @param array $data
+		 * @param boolean return
 		 */
 		public function view($file = '', $data = array(), $return = false) {
 			if (count($data) > 0) {
@@ -210,6 +232,12 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 				include($file);
 			}
 		}
+		/**
+		 * redirect as needed
+		 *
+		 * @param string $page
+		 * @param string $scheme
+		 */
 		public function foward($page,$scheme='http') {  //fix the header issue
 			if ( function_exists('admin_url') ) {
 				wp_redirect( admin_url('admin.php?page='.$page, $scheme) );
