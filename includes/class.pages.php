@@ -75,54 +75,11 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			$parent_slug = "edit.php?post_type=".$scrape_core->shadow_content_type;
 
 			add_submenu_page($parent_slug, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
-			
-			add_submenu_page($parent_slug, _('Crawler Templates'), _('Crawler Templates'), 'manage_options', 'scrape-crawler-templates', array( $this, 'template_list_page' ));
-			
-			add_submenu_page($parent_slug, _('Add Template'), _('Add Template'), 'manage_options', 'scrape-add-template', array( $this, 'add_crawler_template_page' ));
-			
+
 			add_submenu_page($parent_slug, _('Settings'), _('Settings'), 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ));
 		}
 	
-		/**
-		 * Display "Add" page
-		 *
-		 * @global class $scrape_templates
-		 */
-		public function add_crawler_template_page() { // short forward
-			global $scrape_templates;
-			$data            = array();
-			$data['message'] = $this->get_message();
-			$this->view(SCRAPE_PATH . '/includes/views/template.php', $data);
-		}	
-		
-		/**
-		 * Display "Template List" page
-		 *
-		 * @global class $scrape_templates
-		 */
-		public function template_list_page() {
-			global $scrape_templates;
-			// Include list class
-			include(SCRAPE_PATH . '/includes/views/lists/class.template_list.php');
-			$wp_list_table = new template_list();
-			$wp_list_table->prepare_items();
-			
-			// Check if edit action is performed
-			if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'edit') {
-				$data['on_edit'] = $scrape_templates->get_template($_GET['template']);
-				$data['message'] = $this->get_message();
-				// Display template form
-				$this->view(SCRAPE_PATH . '/includes/views/template.php', $data);
-			} else {
-				ob_start();
-				$wp_list_table->display();
-				$data['table']   = ob_get_clean();
-				$data['message'] = $this->get_message();
-				// Display template list
-				$this->view(SCRAPE_PATH . '/includes/views/template_list.php', $data);
-			}
-		}
-		
+
 	
 		/**
 		 * Display "Crawler" pages
