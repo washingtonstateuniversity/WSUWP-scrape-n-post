@@ -402,15 +402,59 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 */
 		public function add_shadow_profile_meta_boxes( $post_type ) {
 			if ($post_type == $this->shadow_profile_type){   
-
+				add_meta_box( 'wsuwp_snp_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , null, 'normal', 'default' );
 			}
 		}
 
 
+		/**
+		 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
+		 * not really the meta of the post, but it'll work for our needs
+		 *
+		 * @param WP_Post $post The full post object being edited.
+		 */
+		public function display_post_defaults_meta_box( $post ) {
+			?>
+			<div>
+				<p class="description">Ignore this url</p>
+				<div class="html radio_buttons">
+				<?php 
+					$input_name = "wsuwp_spn_post_status";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					if($meta_data==""){
+						$meta_data="draft";	
+					}
+					$types = array('draft','publish','pending','future','private');
+				?>
+				<?php foreach($types as $type):?>
+					<input type="radio" name="<?=$input_name?>" value="<?=$type?>" id="<?=$input_name?><?=$type?>" <?=checked($meta_data,$type)?>/>
+					<label for="<?=$input_name?><?=$type?>"><?=$type?></label>
+				<?php endforeach;?>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<?php
+		}
 
 
-
-
+/*
+  'post_status'    => [ 'draft' | 'publish' | 'pending'| 'future' | 'private' | custom registered status ] // Default 'draft'.
+  'post_type'      => [ 'post' | 'page' | 'link' | 'nav_menu_item' | custom post type ] // Default 'post'.
+  'post_author'    => [ <user ID> ] // The user ID number of the author. Default is the current user ID.
+  'ping_status'    => [ 'closed' | 'open' ] // Pingbacks or trackbacks allowed. Default is the option 'default_ping_status'.
+  'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
+  'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
+  'to_ping'        => [ <string> ] // Space or carriage return-separated list of URLs to ping. Default empty string.
+  'pinged'         => [ <string> ] // Space or carriage return-separated list of URLs that have been pinged. Default empty string.
+  'post_password'  => [ <string> ] // Password for post, if any. Default empty string.
+  'post_excerpt'   => [ <string> ] // For all your post excerpt needs.
+  'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
+  'comment_status' => [ 'closed' | 'open' ] // Default is the option 'default_comment_status', or 'closed'.
+  'post_category'  => [ array(<category id>, ...) ] // Default empty.
+  'tags_input'     => [ '<tag>, <tag>, ...' | array ] // Default empty.
+  'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
+  'page_template'  => [ <string> ] // Requires name of template file, eg template.php. Default empty.
+*/
 
 
 
@@ -474,16 +518,17 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_option_ignore( $post ) {
-			$ignore = get_post_meta( $post->ID, '_wsuwp_spn_ignored', true );
+			$input_name = "wsuwp_spn_ignored";
+			$ignore = get_post_meta( $post->ID, '_'.$input_name, true );
 			?>
 			<div id="wsuwp-snp-display-ignore">
 				<p class="description">Ignore this url</p>
-				<div class="html">
-					<input type="radio" name="wsuwp_spn_ignored" value="1" id="wsuwp-snp-ignore1" <?php if($ignore==1): echo "checked"; endif;?> />
-					<label for="wsuwp-snp-ignore1">Yes</label>
+				<div class="html radio_buttons">
+					<input type="radio" name="<?=$input_name?>" value="1" id="<?=$input_name?>1" <?=checked($ignore,1)?>/>
+					<label for="<?=$input_name?>1">Yes</label>
 					
-					<input type="radio" name="wsuwp_spn_ignored" value="0" id="wsuwp-snp-ignore2" <?php if($ignore==0): echo "checked"; endif;?> />
-					<label for="wsuwp-snp-ignore2">No</label>
+					<input type="radio" name="<?=$input_name?>" value="0" id="<?=$input_name?>2" <?=checked($ignore,0)?> />
+					<label for="<?=$input_name?>2">No</label>
 				</div>
 				<div class="clear"></div>
 			</div>

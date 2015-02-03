@@ -49,17 +49,15 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			global $wp_scripts;
 			// Enque style and script		
 			wp_enqueue_script('jquery-ui-core');
-			wp_enqueue_script('jquery-ui-datepicker', SCRAPE_URL.'js/ui/jquery.ui.datepicker.js', array('jquery'), '1.9.0', 'all');
-			wp_enqueue_style('jquery-ui-datepicker', SCRAPE_URL.'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
-			
-			wp_enqueue_script('jquery-ui-tabs', SCRAPE_URL.'js/ui/jquery.ui.tabs.js', array('jquery'), '1.9.0', 'all');		
-			wp_enqueue_style('jquery-ui-tabs', SCRAPE_URL.'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+			wp_enqueue_script('jquery-ui-datepicker');
+			wp_enqueue_script('jquery-ui-button');	
+			wp_enqueue_script('jquery-ui-tabs');
+
 			// get registered script object for jquery-ui
 			$ui = $wp_scripts->query('jquery-ui-core');
 		 
 			// tell WordPress to load the Smoothness theme from Google CDN
-			$protocol = is_ssl() ? 'https' : 'http';
-			$url = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
+			$url = "//ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
 			wp_enqueue_style('jquery-ui-smoothness', $url, false, null);
 	
 			wp_enqueue_script('scrape-js', SCRAPE_URL . 'js/scrape.custom.js', array('jquery'), '', 'all');
