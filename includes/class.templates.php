@@ -1,17 +1,31 @@
 <?php
-
-/*
-	Still needs a good refactor
-	- sections should be abstracted to subplugin style
-*/
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! class_exists( 'scrape_output' ) ) {
 
 	class scrape_templates {
+		/**
+		 * title of the page.
+		 *
+		 * @since 0.1.0
+		 * @var string $title
+		 * @access public
+		 */
 		public $title = '';
+		/**
+		 * template for the page.
+		 *
+		 * @since 0.1.0
+		 * @var string $current_template
+		 * @access public
+		 */
 		public $current_template = NULL;
+		
+		/**
+		 * constructor
+		 *
+		 * @global class $_params
+		 * @global class $scrape_actions
+		 */
 		function __construct() {
 			global $_params;
 			if (is_admin()) {
@@ -29,8 +43,13 @@ if ( ! class_exists( 'scrape_output' ) ) {
 				}
 			}  
 		}
-	
-	
+		
+		/**
+		 * load the default sections to a page
+		 *
+		 * @return array
+		 * @access public
+		 */
 		public function get_default_template_sections(){
 			$sections = array(
 				'cover'=>"",
@@ -41,13 +60,20 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			return $sections;
 		}
 	
-		/*
-		* @todo set this up to accept inserted parts
-		*/
+		/**
+		 * @todo set this up to accept inserted parts
+		 * @access public
+		 */
 		public function get_template_sections(){
 			return $this->get_default_template_sections();
 		}
 		
+		/**
+		 * return section content html
+		 *
+		 * @return string
+		 * @access public
+		 */
 		public function get_section_content(){	
 			global $scrape_output;
 			$scrape_output->_html_structure();
@@ -55,12 +81,25 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			$contentHtml	= "<div id='scrape_content'>{$content}</div>";	
 			return $content;
 		}	
+		
+		/**
+		 * return section cover html
+		 *
+		 * @return string
+		 * @access public
+		 */
 		public function get_section_cover(){
 			$cover			= "<h1 class='CoverTitle'>Cover Letter</h1>";
 			$coverHtml 		= "<div id='scrape_cover'>{$cover}</div>";	
 			return $coverHtml;
 		}
 		
+		/**
+		 * return section index html
+		 *
+		 * @return string
+		 * @access public
+		 */
 		public function get_section_index(){
 			global $posts;
 			$index='<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>';
@@ -87,22 +126,38 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			$indexHtml="<div id='scrape_index'>{$index}</div>";
 			return $indexHtml;
 		}	
+		
+		
+		/**
+		 * return appendix html
+		 *
+		 * @return string
+		 * @access public
+		 */
 		public function get_section_appendix(){	
 			$appendix			= "<h1 class='CoverTitle'>appendix</h1>";
 			$appendixHtml 		= "<div id='scrape_appendix'>{$appendix}</div>";	
 			return $appendixHtml;
 		}
 		
-		/*
-		* return template object
-		*/
+		/**
+		 * return template object
+		 *
+		 * @return string
+		 * @access public
+		 */
 		public function get_current_tempate($type=NULL){
 			if($this->current_template==NULL)$this->set_current_tempate($type);
 			return $this->current_template;
 		}
-		/*
-		* set template object
-		*/
+		/**
+		 * set template object
+		 *
+		 * @global class $_params
+		 * @global class $scrape_templates
+		 *
+		 * @access public
+		 */
 		public function set_current_tempate($type=NULL){
 			global $_params,$scrape_templates;
 			$curr_temp = $_params['template'];
@@ -120,8 +175,11 @@ if ( ! class_exists( 'scrape_output' ) ) {
 	
 	
 	
-		/*
+		/**
 		 * Return default template structure
+		 * 
+		 * @return array
+		 * @access public
 		 */
 		public function custruct_default_template($type = 'all') {
 			$temp         = array();
@@ -177,8 +235,11 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			$temp['pagefooter'] = $pagefootertemplate;
 			return $temp;
 		}
-		/*
+		/**
 		 * Return default template
+		 *
+		 * @return object
+		 * @access public
 		 */
 		public function get_default_template() {
 			if (isset($_GET['scrape_dl'])) {
@@ -196,9 +257,14 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			);
 			return (object) $arr;
 		}
-		/*
+		/**
 		 * Insert to template table
-		 * @arr - array
+		 *
+		 * @global class $wpdb
+		 * @global class $current_user
+		 *
+		 * @param array $arr
+		 * @access public
 		 */
 		public function add_this($arr = array()) {
 			global $wpdb, $current_user;
@@ -211,9 +277,15 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			$table_name         = $wpdb->prefix . "scrape_n_post_crawler_templates";
 			$rows_affected      = $wpdb->insert($table_name, $arr);
 		}
-		/*
+		/**
 		 * Update entry in template table
-		 * @data - array
+		 *
+		 * @global class $wpdb
+		 * @global class $_params
+		 * @global class $scrape_core
+		 *
+		 * @param array $data
+		 * @access public
 		 */
 		public function update_this($data = array()) {
 			global $wpdb,$scrape_core,$_params;
@@ -224,9 +296,15 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			$rows_affected = $wpdb->update($table_name, $data, $where);
 		}
 	
-		/*
+		/**
 		 * Return template data
-		 * @id - string
+		 *
+		 * @global class $wpdb
+		 *
+		 * @param string $id
+		 *
+		 * @return string
+		 * @access public
 		 */
 		public function get_template($id = NULL) {
 			global $wpdb;
@@ -239,8 +317,12 @@ if ( ! class_exists( 'scrape_output' ) ) {
 			}
 			return $template;
 		}
-		/*
+		/**
 		 * Add template
+		 *
+		 * @global class $_params
+		 * @global class $scrape_core
+		 * @access public
 		 */
 		public function add_template() {
 			global $scrape_core,$_params;
@@ -266,8 +348,12 @@ if ( ! class_exists( 'scrape_output' ) ) {
 				);
 			}
 		}
-		/*
+		/**
 		 * Update template database entry
+		 *
+		 * @global class $_params
+		 * @global class $scrape_core
+		 * @access public
 		 */
 		public function update_template() {
 			global $scrape_core,$_params;
@@ -292,8 +378,11 @@ if ( ! class_exists( 'scrape_output' ) ) {
 				);
 			}
 		}
-		/*
+		/**
 		 * Delete template entry
+		 *
+		 * @global class $wpdb
+		 * @access public
 		 */
 		public function delete_template($id) {
 			global $wpdb;
