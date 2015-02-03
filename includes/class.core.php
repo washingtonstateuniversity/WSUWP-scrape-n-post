@@ -381,16 +381,9 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				'labels' => $labels,
 				'description' => $description,
 				'public' => false,
-				'hierarchical' => false,
-				'supports' => array (
-					'title',
-					'revisions'
-				),
-				'has_archive' => true,
-				'rewrite' => array(
-					'slug' => $default_slug,
-					'with_front' => false
-				),
+				'hierarchical' => true,
+				'supports' => array ( 'title', 'page-attributes' ),
+				'has_archive' => false,
 				'exclude_from_search' => true,
 				'publicly_queryable' => false,
 				'show_in_nav_menus' => false,
