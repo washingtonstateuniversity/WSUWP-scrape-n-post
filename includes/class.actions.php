@@ -436,13 +436,9 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			$catName = $this->get_content_part($html,$profile->post_category);
 			//var_dump('$catName:'.$catName);
 
-			$content = $this->get_content_part($html,$profile_obj);
 			//var_dump('$content:'.$content);die();
 			//die();
-				
 
-			
-	
 			//EOF PATTERN AREA
 			
 			
@@ -487,8 +483,10 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 						
 			
 			
-			$arrs = array_merge($complied,$arr);
-
+			$arrs = array_merge($post_compiled,$arr);
+			
+			//var_dump($arrs);die();
+			
 			//good so far let make the post
 			if(isset($arrs['ID'])){
 				$post_id = wp_update_post( $arrs );
