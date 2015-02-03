@@ -97,9 +97,9 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				
 				add_action( 'init', array( $this, 'set_default_model' ), 10 );
-				add_action( 'init', array( $this, 'register_tracked_external_content_type' ), 11 );
+				add_action( 'init', array( $this, 'register_shadow_post_type' ), 11 );
 
-				add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 11, 1 );
+				add_action( 'add_meta_boxes', array( $this, 'add_shadow_post_meta_boxes' ), 11, 1 );
 
 				add_action( 'save_post', array( $this, 'save_object' ), 12, 2 );
 				add_action( 'transition_post_status', array( $this, 'force_post_status' ), 12, 3 );
@@ -281,7 +281,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * The point of this content is that a post can be linked back to a url so that it can be 
 		 * updated from that url. 
 		 */
-		public function register_tracked_external_content_type() {
+		public function register_shadow_post_type() {
 			$labels = array(
 				'name'               => __( 'Shadow Copy', 'wsuwp_snp' ),
 				'singular_name'      => __( 'Shadow Copy', 'wsuwp_snp' ),
@@ -318,7 +318,6 @@ if ( ! class_exists( 'scrape_core' ) ) {
 				'menu_icon' => 'dashicons-share-alt2',
 				'show_in_menu'=>SCRAPE_BASE_NAME
 			);
-	
 			register_post_type( $this->shadow_content_type, $args );
 		}
 
@@ -329,7 +328,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 *
 		 * @param string $post_type
 		 */
-		public function add_meta_boxes( $post_type ) {
+		public function add_shadow_post_meta_boxes( $post_type ) {
 			if ($post_type == 'wsuwp_snp_postshadow'){   
 				//main content area
 				add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
