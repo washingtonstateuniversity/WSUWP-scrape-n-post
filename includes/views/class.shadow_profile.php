@@ -78,7 +78,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				$input_name = SHADOW_KEY."_post_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
-					'types'=>array('draft'=>'draft','publish'=>'publish','pending'=>'pending','future'=>'future','private'=>'private'),
+					'types'=>get_post_statuses(),
 					'input_name'=>$input_name,
 					'meta_data'=>$meta_data!=""?$meta_data:"draft",
 					'description'=>'set this to what you want a post to be when it is created.',
@@ -119,7 +119,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					'input_name'=>$input_name,
 					'meta_data'=>$meta_data!=""?$meta_data:"closed",
 					'description'=>'',
-					'title'=>'Pingbacks or trackbacks allowed'
+					'title'=>'Pingbacks or trackbacks are allowed?'
 				))?>
 				
 				<hr/>
@@ -131,7 +131,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					'input_name'=>$input_name,
 					'meta_data'=>$meta_data!=""?$meta_data:"closed",
 					'description'=>'',
-					'title'=>'Pingbacks or trackbacks allowed'
+					'title'=>'Comments are allowed?'
 				))?>
 								
 				<div class="clear"></div>	
