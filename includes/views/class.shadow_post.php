@@ -177,11 +177,11 @@ if ( ! class_exists( 'shadow_post' ) ) {
 			<div id="wsuwp-snp-display">
 				<div class="html">
 					<label for="wsuwp-spn-url">Tracked URL:</label>
-					<input type="text" class="widefat" id="wsuwp-spn-url" name=SHADOW_KEY."_url" value="<?=$object_url?>" />
+					<input type="text" class="widefat" id="wsuwp-spn-url" name="<?=SHADOW_KEY?>_url" value="<?=$object_url?>" />
 					<p class="description">Note, altering the url will cause the html to get reloaded.</p>
 				</div>
-				<div class=SHADOW_KEY."_last_http_status">
-					<input type="hidden" name=SHADOW_KEY."_last_http_status" value="<?=($http_status!="not checked"?$http_status:"")?>"/>
+				<div class="<?=SHADOW_KEY?>_last_http_status">
+					<input type="hidden" name="<?=SHADOW_KEY?>_last_http_status" value="<?=($http_status!="not checked"?$http_status:"")?>"/>
 					<b>Last checked header status:</b> <i style="color:<?=($http_status=="200"?"green":"red")?>" > <?=$http_status?> </i>
 				</div>
 				<div class="clear"></div>

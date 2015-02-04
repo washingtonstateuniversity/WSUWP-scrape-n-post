@@ -71,9 +71,10 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		public function display_shadow_feild_map_meta_box( $post ) {
 			global $scrape_core;
 			?>
-			<b>post_name</b><br/>
-				<label>root_selector</label><input type="text" value=""/> 
-				<label>selector</label><input type="text" value=""/>
+			<div class="field_block">
+				<h3>post_name</h3>
+				<label>root_selector</label><input type="text" value="" placeholder=".css_selector"/><br/>
+				<label>selector</label><input type="text" value="" placeholder=".css_selector"/>
 				<hr/>
 				<?php
 					$input_name = SHADOW_KEY."_pull_from";
@@ -88,32 +89,75 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				</select>
 				<p>The data that is brought back follows the same as the jQuery equivalents.</p>
 				<hr/>
-
+				<a href="#" class="prefilter-add" style="float:right;"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 				<b>pre_filter</b>
-				<div class="filter_block">
-					<?php
-						$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
-						$input_name = SHADOW_KEY."_pull_from";
-						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
-					?>
-					<label> <?=_e( "Type of filter" )?> </label>
-					<select name="<?=$input_name?>" class="filterTypeSelector">
-					<?php foreach($array as $key=>$val): ?>
-						<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
-					<?php endforeach; ?>
-					</select><br/>
-
-					<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required'/><br/></span>
-					<span class="filteroptions type_remove"><label>selector</label><input type="text" value="" data-req='required'/></span>
-					
-					<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/><br/></span>
-					<span class="filteroptions type_explode"><label>select</label><input type="text" value=""/></span>
-					
-					<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/><br/></span>
-					<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required'/><br/></span>
-					<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" value="" data-req='required'/></span>
-				</div>
-
+				<p>Pre-filters are used on content <strong>before</strong> a match is seeked.  This could be to normalize content, or to add content or...</p>
+				<ul>
+					<li class="pre-filter-template" style="display:none;">
+						<div class="filter_block">
+							<?php
+								$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
+								$input_name = SHADOW_KEY."_pull_from";
+								$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+							?>
+							<label> <?=_e( "Type of filter" )?> </label>
+							<select name="<?=$input_name?>" class="filterTypeSelector">
+							<?php foreach($array as $key=>$val): ?>
+								<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
+							<?php endforeach; ?>
+							</select><br/>
+		
+							<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required' placeholder=".css_selector"/><br/></span>
+							<span class="filteroptions type_remove"><label>selector</label><input type="text" value="" data-req='required' placeholder=".css_selector"/></span>
+							
+							<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/><br/></span>
+							<span class="filteroptions type_explode"><label>select</label><input type="number" value=""/></span>
+							
+							<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/><br/></span>
+							<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
+							<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" value="" data-req='required'/></span>
+						</div>
+					</li>
+				</ul>
+				
+				<hr/>
+				<a href="#" class="filter-add" style="float:right;"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+				<b>Content filter</b>
+				<p>Content filters are used on content <strong>after</strong> a match is found.  This could be to normalize content, or to add content or...</p>
+				<ul>
+					<li class="filter-template" style="display:none;">
+						<div class="filter_block">
+							<?php
+								$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
+								$input_name = SHADOW_KEY."_pull_from";
+								$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+							?>
+							<label> <?=_e( "Type of filter" )?> </label>
+							<select name="<?=$input_name?>" class="filterTypeSelector">
+							<?php foreach($array as $key=>$val): ?>
+								<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
+							<?php endforeach; ?>
+							</select><br/>
+		
+							<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required' placeholder=".css_selector"/><br/></span>
+							<span class="filteroptions type_remove"><label>selector</label><input type="text" value="" data-req='required' placeholder=".css_selector"/></span>
+							
+							<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/><br/></span>
+							<span class="filteroptions type_explode"><label>select</label><input type="number" value=""/></span>
+							
+							<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/><br/></span>
+							<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
+							<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" value="" data-req='required'/></span>
+						</div>
+					</li>
+				</ul>
+				
+				
+				
+				
+				
+				<a href="#" class="fallback"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
+			</div>
 
 			<?php
 		}

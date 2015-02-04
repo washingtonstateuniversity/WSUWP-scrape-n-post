@@ -6,6 +6,11 @@ a[href*="?wsuwp_snp_postshadow="]
 {position:absolute; top:-99999em; left:-999em;}
 
 
+.field_block{ padding:0px 15px;}
+.field_block h3{margin-left: -15px !important;
+padding-left: 0px !important;}
+
+
 #scrape-wrap .field-wrap {
 	background: #edeae3;
 	color: #48454a;
