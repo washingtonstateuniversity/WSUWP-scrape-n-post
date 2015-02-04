@@ -115,7 +115,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				$input_name = SHADOW_KEY."_ping_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
-					'types'=>array('closed'=>'closed','open'=>'open'),
+					'types'=>array('Closed'=>'closed','Open'=>'open'),
 					'input_name'=>$input_name,
 					'meta_data'=>$meta_data!=""?$meta_data:"closed",
 					'description'=>'',
@@ -127,7 +127,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				$input_name = SHADOW_KEY."_comment_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
-					'types'=>array('closed'=>'closed','open'=>'open'),
+					'types'=>array('Closed'=>'closed','Open'=>'open'),
 					'input_name'=>$input_name,
 					'meta_data'=>$meta_data!=""?$meta_data:"closed",
 					'description'=>'',
@@ -146,9 +146,17 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<input type="password" name="<?=$input_name?>" value="<?=$meta_data?>" class="show_hide_pass" />
 
 
-
-
-
+				<hr/>
+				<?php
+				$input_name = SHADOW_KEY."_post_excerpt";
+				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$scrape_core->make_radio_html(array(
+					'types'=>array('Yes'=>'yes','No'=>'no'),
+					'input_name'=>$input_name,
+					'meta_data'=>$meta_data!=""?$meta_data:"closed",
+					'description'=>'',
+					'title'=>'Use an excerpt?'
+				))?>
 				<div class="clear"></div>	
 			</div>
 			<?php
@@ -156,11 +164,6 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 
 
 /*
-  'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
-  'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
-  'to_ping'        => [ <string> ] // Space or carriage return-separated list of URLs to ping. Default empty string.
-  'pinged'         => [ <string> ] // Space or carriage return-separated list of URLs that have been pinged. Default empty string.
-  'post_password'  => [ <string> ] // Password for post, if any. Default empty string.
   'post_excerpt'   => [ <string> ] // For all your post excerpt needs.
   'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
   'comment_status' => [ 'closed' | 'open' ] // Default is the option 'default_comment_status', or 'closed'.

@@ -200,9 +200,9 @@ if ( ! class_exists( 'shadow_post' ) ) {
 			foreach($shadow_post_object_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
 					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
-						delete_post_meta( $post_id, '_wsuwp_spn_'.$name );
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name );
 					} else {
-						update_post_meta( $post_id, '_wsuwp_spn_'.$name, esc_url_raw( $_POST[SHADOW_KEY.'_'.$name] ) );
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name, esc_url_raw( $_POST[SHADOW_KEY.'_'.$name] ) );
 					}
 				}
 			}
