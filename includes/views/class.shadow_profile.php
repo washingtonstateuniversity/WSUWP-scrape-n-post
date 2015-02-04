@@ -133,7 +133,22 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					'description'=>'',
 					'title'=>'Comments are allowed?'
 				))?>
-								
+					
+					
+					
+				<hr/>
+				
+				<?php
+					$input_name = SHADOW_KEY."_post_password";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				?>
+				<label> <?=_e( "Use a master Password for posts that are private" )?> </label>
+				<input type="password" name="<?=$input_name?>" value="<?=$meta_data?>" class="show_hide_pass" />
+
+
+
+
+
 				<div class="clear"></div>	
 			</div>
 			<?php
@@ -141,8 +156,6 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 
 
 /*
-
-
   'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
   'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
   'to_ping'        => [ <string> ] // Space or carriage return-separated list of URLs to ping. Default empty string.
