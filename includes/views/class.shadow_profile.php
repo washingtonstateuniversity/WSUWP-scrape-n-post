@@ -87,7 +87,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php
 				$input_name = "wsuwp_spn_post_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
-				$this->make_radio_html(array(
+				$scrape_core->make_radio_html(array(
 					'types'=>array('draft'=>'draft','publish'=>'publish','pending'=>'pending','future'=>'future','private'=>'private'),
 					'input_name'=>$input_name,
 					'meta_data'=>$meta_data!=""?$meta_data:"draft",
