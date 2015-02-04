@@ -56,10 +56,8 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * @param string $post_type
 		 */
 		public function add_shadow_profile_meta_boxes( $post_type ) {
-			if ($post_type == SHADOW_POST_TYPE_PROFILE){
-				add_meta_box( SHADOW_KEY.'_shadow_feild_map', 'Field Map', array( $this, 'display_shadow_feild_map_meta_box' ) , null, 'normal', 'default' );
-				add_meta_box( SHADOW_KEY.'_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , null, 'normal', 'default' );
-			}
+			add_meta_box( SHADOW_KEY.'_shadow_feild_map', 'Field Map', array( $this, 'display_shadow_feild_map_meta_box' ) , SHADOW_POST_TYPE_PROFILE, 'normal', 'default' );
+			add_meta_box( SHADOW_KEY.'_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , SHADOW_POST_TYPE_PROFILE, 'normal', 'default' );
 		}
 
 		/**
@@ -73,11 +71,8 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		public function display_shadow_feild_map_meta_box( $post ) {
 			global $scrape_core;
 			?>
-			<b>post_name</b>
-				<label>root_selector</label><input type="text" value=""/>
-				
-				<hr/>
-				
+			<b>post_name</b><br/>
+				<label>root_selector</label><input type="text" value=""/> 
 				<label>selector</label><input type="text" value=""/>
 				<hr/>
 				<?php
@@ -92,9 +87,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php endforeach; ?>
 				</select>
 				<p>The data that is brought back follows the same as the jQuery equivalents.</p>
-
-
-
+				<hr/>
 
 				<b>pre_filter</b>
 				<div class="filter_block">
@@ -108,17 +101,16 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					<?php foreach($array as $key=>$val): ?>
 						<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
 					<?php endforeach; ?>
-					</select>
-					
-	
-					<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required'/></span>
+					</select><br/>
+
+					<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required'/><br/></span>
 					<span class="filteroptions type_remove"><label>selector</label><input type="text" value="" data-req='required'/></span>
 					
-					<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/></span>
+					<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/><br/></span>
 					<span class="filteroptions type_explode"><label>select</label><input type="text" value=""/></span>
 					
-					<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/></span>
-					<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required'/></span>
+					<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/><br/></span>
+					<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required'/><br/></span>
 					<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" value="" data-req='required'/></span>
 				</div>
 

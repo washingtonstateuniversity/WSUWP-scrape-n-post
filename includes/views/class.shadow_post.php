@@ -82,14 +82,12 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param string $post_type
 		 */
 		public function add_shadow_post_meta_boxes( $post_type ) {
-			if ($post_type == SHADOW_POST_TYPE_POST){   
-				//main content area
-				add_meta_box( SHADOW_KEY.'_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
-				add_meta_box( SHADOW_KEY.'_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
-				//side bars
-				add_meta_box( SHADOW_KEY.'_post_shadowing', 'Shadowing Post', array( $this, 'display_option_post_tie' ) , null, 'side', 'default' );
-				add_meta_box( SHADOW_KEY.'_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
-			}
+			//main content area
+			add_meta_box( SHADOW_KEY.'_url', 'Url', array( $this, 'display_object_url_meta_box' ) , SHADOW_POST_TYPE_POST, 'normal', 'default' );
+			add_meta_box( SHADOW_KEY.'_html', 'Content', array( $this, 'display_cached_html' ) , SHADOW_POST_TYPE_POST, 'normal', 'default' );
+			//side bars
+			add_meta_box( SHADOW_KEY.'_post_shadowing', 'Shadowing Post', array( $this, 'display_option_post_tie' ) , SHADOW_POST_TYPE_POST, 'side', 'default' );
+			add_meta_box( SHADOW_KEY.'_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , SHADOW_POST_TYPE_POST, 'side', 'default' );
 		}
 		/**
 		 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
