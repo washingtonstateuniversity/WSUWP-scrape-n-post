@@ -188,7 +188,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				?>
 				<label><?=_e( "Use template for the posts" )?></label>
 				<select name="<?=$input_name?>">
-					<option value="default"><?=_e( "Default Template" )?></option>
+					<option <?=selected("default", $meta_data)?> value="default"><?=_e( "Default Template" )?></option>
 				<?php foreach( get_page_templates() as $name=>$file ): ?>
 					<option <?=selected($file, $meta_data)?> value="<?=$file?>"><?=$name?></option>
 				<?php endforeach; ?>
