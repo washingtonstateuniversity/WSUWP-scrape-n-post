@@ -70,7 +70,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		public function admin_menu() {
 			global $scrape_core;
 			// Register sub-menu
-			$parent_slug = "edit.php?post_type=".$scrape_core->shadow_content_type;
+			$parent_slug = "edit.php?post_type=".SHADOW_POST_TYPE_POST;
 
 			add_submenu_page($parent_slug, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
 

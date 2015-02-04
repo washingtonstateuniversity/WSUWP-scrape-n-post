@@ -21,13 +21,38 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 [ ]-cronjob support for active crawl and snync
 */
 if ( ! class_exists( 'scrapeNpostLoad' ) ) {
+	
 	define('SCRAPE_NAME', 'Scrape-N-Post');
 	define('SCRAPE_BASE_NAME', 'scrape-n-post');
 	define('SCRAPE_VERSION', '0.1.1');
+	
 	define('SCRAPE_URL', plugin_dir_url(__FILE__));
 	define('SCRAPE_PATH', plugin_dir_path(__FILE__));
 	define('SCRAPE_CACHE_PATH', SCRAPE_PATH . 'cache/');
 	define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
+
+	/**
+	 * The slug used to register the shadow key used for meta data and such.
+	 *
+	 * @cons string
+	 */
+	define('SHADOW_KEY', 'wsuwp_snp');
+	
+
+	/**
+	 * The slug used to register the shadow post type.
+	 *
+	 * @cons string
+	 */
+	define('SHADOW_POST_TYPE_POST', 'wsuwp_snp_post');
+	
+	
+	/**
+	 * The slug used to register the shadow profile type.
+	 *
+	 * @cons string
+	 */
+	define('SHADOW_POST_TYPE_PROFILE', 'wsuwp_snp_profile');
 
 	$scrape_core = NULL;
 	class scrapeNpostLoad {
