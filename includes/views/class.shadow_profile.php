@@ -177,13 +177,16 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * @param object  $post The post being saved.
 		 */
 		public function save_shadow_profile_object( $post_id, $post ) {
-			if ( isset( $_POST[SHADOW_KEY.'_type'] ) ) {
-				if ( empty( trim( $_POST[SHADOW_KEY.'_type'] ) ) ) {
-					delete_post_meta( $post_id, '_wsuwp_spn_type' );
-				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_type', $_POST[SHADOW_KEY.'_type'] );
+			$shadow_profile_object_names = array('post_status','post_type','post_author','ping_status','comment_status','post_password');
+			foreach($shadow_profile_object_names as $name){
+				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
+					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name );
+					} else {
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name, esc_url_raw( $_POST[SHADOW_KEY.'_'.$name] ) );
+					}
 				}
-			}		
+			}
 			return;
 		}
 
