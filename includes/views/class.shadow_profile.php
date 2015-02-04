@@ -57,7 +57,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 */
 		public function add_shadow_profile_meta_boxes( $post_type ) {
 			if ($post_type == SHADOW_POST_TYPE_PROFILE){   
-				add_meta_box( 'wsuwp_snp_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , null, 'normal', 'default' );
+				add_meta_box( SHADOW_KEY.'_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , null, 'normal', 'default' );
 			}
 		}
 
@@ -75,7 +75,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			?>
 			<div>
 				<?php
-				$input_name = "wsuwp_spn_post_status";
+				$input_name = SHADOW_KEY."_post_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
 					'types'=>array('draft'=>'draft','publish'=>'publish','pending'=>'pending','future'=>'future','private'=>'private'),
@@ -88,7 +88,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 				
 				<?php
-					$input_name = "wsuwp_spn_post_type";
+					$input_name = SHADOW_KEY."_post_type";
 					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				?>
 				<label> <?=_e( "Use Post Type" )?> </label>
@@ -100,7 +100,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<hr/>
 				
 				<?php
-					$input_name = "wsuwp_spn_post_author";
+					$input_name = SHADOW_KEY."_post_author";
 					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				?>
 				<label> <?=_e( "Use Author for Posts" )?> </label>
@@ -112,7 +112,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 				<hr/>
 				<?php
-				$input_name = "wsuwp_spn_ping_status";
+				$input_name = SHADOW_KEY."_ping_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
 					'types'=>array('closed'=>'closed','open'=>'open'),
@@ -124,7 +124,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 				<hr/>
 				<?php
-				$input_name = "wsuwp_spn_comment_status";
+				$input_name = SHADOW_KEY."_comment_status";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
 					'types'=>array('closed'=>'closed','open'=>'open'),
@@ -164,11 +164,11 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * @param object  $post The post being saved.
 		 */
 		public function save_shadow_profile_object( $post_id, $post ) {
-			if ( isset( $_POST['wsuwp_spn_type'] ) ) {
-				if ( empty( trim( $_POST['wsuwp_spn_type'] ) ) ) {
+			if ( isset( $_POST[SHADOW_KEY.'_type'] ) ) {
+				if ( empty( trim( $_POST[SHADOW_KEY.'_type'] ) ) ) {
 					delete_post_meta( $post_id, '_wsuwp_spn_type' );
 				} else {
-					update_post_meta( $post_id, '_wsuwp_spn_type', $_POST['wsuwp_spn_type'] );
+					update_post_meta( $post_id, '_wsuwp_spn_type', $_POST[SHADOW_KEY.'_type'] );
 				}
 			}		
 			return;

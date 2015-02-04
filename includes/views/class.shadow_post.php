@@ -84,11 +84,11 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		public function add_shadow_post_meta_boxes( $post_type ) {
 			if ($post_type == SHADOW_POST_TYPE_POST){   
 				//main content area
-				add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
-				add_meta_box( 'wsuwp_snp_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
+				add_meta_box( SHADOW_KEY.'_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );
+				add_meta_box( SHADOW_KEY.'_html', 'Content', array( $this, 'display_cached_html' ) , null, 'normal', 'default' );
 				//side bars
-				add_meta_box( 'display_option_post_tie', 'Shadowing Post', array( $this, 'display_option_post_tie' ) , null, 'side', 'default' );
-				add_meta_box( 'wsuwp_snp_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
+				add_meta_box( SHADOW_KEY.'_post_shadowing', 'Shadowing Post', array( $this, 'display_option_post_tie' ) , null, 'side', 'default' );
+				add_meta_box( SHADOW_KEY.'_ignored', 'Skip Link', array( $this, 'display_option_ignore' ) , null, 'side', 'default' );
 			}
 		}
 		/**
@@ -128,7 +128,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 						'child_of'              => 0,
 						'selected'              => $tiedTo,
 						'echo'                  => 1,
-						'name'                  => 'wsuwp_spn_tied_post_id',
+						'name'                  => SHADOW_KEY.'_tied_post_id',
 						'show_option_none'      => 'un-tied', // string
 						'show_option_no_change' => null, // string
 						'option_none_value'     => "", // string
@@ -149,7 +149,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 			?>
 			<div id="wsuwp-snp-display-ignore">
 				<?php
-				$input_name = "wsuwp_spn_ignored";
+				$input_name = SHADOW_KEY."_ignored";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
 					'types'=>array('Yes'=>'1','No'=>'0'),
@@ -178,11 +178,11 @@ if ( ! class_exists( 'shadow_post' ) ) {
 			<div id="wsuwp-snp-display">
 				<div class="html">
 					<label for="wsuwp-spn-url">Tracked URL:</label>
-					<input type="text" class="widefat" id="wsuwp-spn-url" name="wsuwp_spn_url" value="<?=$object_url?>" />
+					<input type="text" class="widefat" id="wsuwp-spn-url" name=SHADOW_KEY."_url" value="<?=$object_url?>" />
 					<p class="description">Note, altering the url will cause the html to get reloaded.</p>
 				</div>
-				<div class="wsuwp_spn_last_http_status">
-					<input type="hidden" name="wsuwp_spn_last_http_status" value="<?=($http_status!="not checked"?$http_status:"")?>"/>
+				<div class=SHADOW_KEY."_last_http_status">
+					<input type="hidden" name=SHADOW_KEY."_last_http_status" value="<?=($http_status!="not checked"?$http_status:"")?>"/>
 					<b>Last checked header status:</b> <i style="color:<?=($http_status=="200"?"green":"red")?>" > <?=$http_status?> </i>
 				</div>
 				<div class="clear"></div>
@@ -198,11 +198,11 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		public function save_shadow_post_object( $post_id, $post ) {
 			$shadow_post_object_names = array('url','tied_post_id','ignored','last_http_status','type');
 			foreach($shadow_post_object_names as $name){
-				if ( isset( $_POST['wsuwp_spn_'.$name] ) ) {
-					if ( empty( trim( $_POST['wsuwp_spn_'.$name] ) ) ) {
+				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
+					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
 						delete_post_meta( $post_id, '_wsuwp_spn_'.$name );
 					} else {
-						update_post_meta( $post_id, '_wsuwp_spn_'.$name, esc_url_raw( $_POST['wsuwp_spn_'.$name] ) );
+						update_post_meta( $post_id, '_wsuwp_spn_'.$name, esc_url_raw( $_POST[SHADOW_KEY.'_'.$name] ) );
 					}
 				}
 			}

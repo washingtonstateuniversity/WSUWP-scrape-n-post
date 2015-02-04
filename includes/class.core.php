@@ -153,14 +153,14 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * Process any upgrade routines between versions or on initial activation.
 		 */
 		public function process_upgrade_routine() {
-			$db_version = get_option( 'wsuwp_snp_version', '0.0.0' );
+			$db_version = get_option( SHADOW_KEY.'_version', '0.0.0' );
 	
 			// Flush rewrite rules if on an early or non existing DB version.
 			if ( version_compare( $db_version, '0.2.0', '<' ) ) {
 				flush_rewrite_rules();
 			}
 	
-			update_option( 'wsuwp_snp_version', SCRAPE_VERSION );
+			update_option( SHADOW_KEY.'_version', SCRAPE_VERSION );
 		}
 
 		/**

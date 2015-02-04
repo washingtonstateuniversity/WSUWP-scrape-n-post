@@ -44,7 +44,7 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 	 *
 	 * @cons string
 	 */
-	define('SHADOW_POST_TYPE_POST', 'wsuwp_snp_post');
+	define('SHADOW_POST_TYPE_POST', SHADOW_KEY.'_post');
 	
 	
 	/**
@@ -52,7 +52,7 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 	 *
 	 * @cons string
 	 */
-	define('SHADOW_POST_TYPE_PROFILE', 'wsuwp_snp_profile');
+	define('SHADOW_POST_TYPE_PROFILE', SHADOW_KEY.'_profile');
 
 	$scrape_core = NULL;
 	class scrapeNpostLoad {
