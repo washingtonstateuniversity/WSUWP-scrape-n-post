@@ -56,12 +56,133 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * @param string $post_type
 		 */
 		public function add_shadow_profile_meta_boxes( $post_type ) {
-			if ($post_type == SHADOW_POST_TYPE_PROFILE){   
+			if ($post_type == SHADOW_POST_TYPE_PROFILE){
+				add_meta_box( SHADOW_KEY.'_shadow_feild_map', 'Field Map', array( $this, 'display_shadow_feild_map_meta_box' ) , null, 'normal', 'default' );
 				add_meta_box( SHADOW_KEY.'_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , null, 'normal', 'default' );
 			}
 		}
 
+		/**
+		 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
+		 * not really the meta of the post, but it'll work for our needs
+		 *
+		 * @global class $scrape_core
+		 *
+		 * @param WP_Post $post The full post object being edited.
+		 */
+		public function display_shadow_feild_map_meta_box( $post ) {
+			global $scrape_core;
+			?>
+			<b>post_name</b>
+				<label>root_selector</label><input type="text" value=""/>
+				
+				<hr/>
+				
+				<label>selector</label><input type="text" value=""/>
+				<hr/>
+				<?php
+					$input_name = SHADOW_KEY."_pull_from";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$array = array("text"=>"test()","html"=>"html()","innerHTML"=>"innerHTML()");
+				?>
+				<label> <?=_e( "Type of returned data" )?> </label>
+				<select name="<?=$input_name?>">
+				<?php foreach($array as $key=>$val): ?>
+					<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
+				<?php endforeach; ?>
+				</select>
+				<p>The data that is brought back follows the same as the jQuery equivalents.</p>
 
+
+
+
+				<b>pre_filter</b>
+				<div class="filter_block">
+					<?php
+						$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
+						$input_name = SHADOW_KEY."_pull_from";
+						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					?>
+					<label> <?=_e( "Type of filter" )?> </label>
+					<select name="<?=$input_name?>" class="filterTypeSelector">
+					<?php foreach($array as $key=>$val): ?>
+						<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
+					<?php endforeach; ?>
+					</select>
+					
+	
+					<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required'/></span>
+					<span class="filteroptions type_remove"><label>selector</label><input type="text" value="" data-req='required'/></span>
+					
+					<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/></span>
+					<span class="filteroptions type_explode"><label>select</label><input type="text" value=""/></span>
+					
+					<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/></span>
+					<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required'/></span>
+					<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" value="" data-req='required'/></span>
+				</div>
+
+
+			<?php
+		}
+
+
+
+
+/*
+
+'post_title'=>(object) [
+	'id' => 1,
+	'root_selector' => '#siteID',
+	'selector' => 'h1:eq(0)',
+	'pull_from' => 'text',
+	'pre_filter' => [],
+	'filter' => [],
+	'fall_back' =>(object) [
+		'id' => 2,
+		'root_selector' => 'h2:eq(0)',
+		'selector' => '',
+		'pull_from' => 'text',
+		'pre_filter' => [
+				(object) [
+					'type'=>'str_replace',
+					'search'=>'<H2>',
+					'replace'=>'<h2>'
+				],
+				(object) [
+					'type'=>'str_replace',
+					'search'=>'</H2>',
+					'replace'=>'</h2>'
+				]
+			],
+		'filter' => [],
+		'fall_back' =>(object) [
+			'id' => 3,
+			'root_selector' => 'html',
+			'selector' => 'title',
+			'pull_from' => 'text',
+			'pre_filter' => [],
+			'filter' => [
+				(object) [
+					'type'=>'str_replace',
+					'search'=>'.htm',
+					'replace'=>''
+				],
+				(object) [
+					'type'=>'str_replace',
+					'search'=>'_',
+					'replace'=>' '
+				],
+				(object) [
+					'type'=>'preg_replace',
+					'pattern'=>'/\d+\.\d+/',
+					'replace'=>''
+				]
+			]
+		]
+	]
+]
+*/
 		/**
 		 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
 		 * not really the meta of the post, but it'll work for our needs

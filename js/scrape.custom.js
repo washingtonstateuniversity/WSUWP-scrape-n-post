@@ -23,7 +23,17 @@
 			});
 		});
 		
-		
+		$.each($(".filterTypeSelector"),function(){
+			var self = $(this);
+			var container = self.closest('.filter_block');
+			self.on("change",function(){
+				var selected_val = self.val();
+				container.find(".filteroptions").hide();
+				container.find(".filteroptions input,.filteroptions select").removeAttr("required");
+				container.find(".filteroptions.type_"+selected_val).show();
+				container.find(".filteroptions.type_"+selected_val+" input[data-req='required'],.filteroptions.type_"+selected_val+" select[data-req='required']").attr("required",true);
+			}).trigger("change");
+		});
 		
 		
 	});
