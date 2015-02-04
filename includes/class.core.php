@@ -18,16 +18,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @access public
 		 */
 		public $scrape_pages = NULL;
-		
-		/**
-		 * scrape_output class.
-		 *
-		 * @since 0.1.0
-		 * @var class $scrape_output.
-		 * @access public
-		 */
-		public $scrape_output = NULL;
-		
+
 		/**
 		 * scrape_data class.
 		 *
@@ -36,7 +27,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @access public
 		 */
 		public $scrape_data = NULL;
-		
+
 		/**
 		 * scrape_actions class.
 		 *
@@ -45,7 +36,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * @access public
 		 */
 		public $scrape_actions = NULL;
-		
+
 		/**
 		 * shadow_profile class.
 		 *
@@ -98,8 +89,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			if (is_admin()) {
 				include(SCRAPE_PATH . '/includes/QueryPath/qp.php');
 				include(SCRAPE_PATH . '/includes/class.templates.php');// Include scrape_data::	
-				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_actions::	
-				include(SCRAPE_PATH . '/includes/class.output.php');// Include scrape_output::
+				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_actions::
 				include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				

@@ -179,8 +179,21 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					'meta_data'=>$meta_data!=""?$meta_data:"append",
 					'description'=>'By setting it to <code>Override</code>, if there is any matches retruned from the content, the default will be not used.  When set to <code>Append</code> the default list will be used and any new categories will be added to the list for the shadow post.',
 					'title'=>'How should the default categories be used?'
-				))?>			
-				
+				))?>
+				<hr/>
+
+				<?php
+					$input_name = SHADOW_KEY."_page_template";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				?>
+				<label><?=_e( "Use template for the posts" )?></label>
+				<select name="<?=$input_name?>">
+					<option value="default"><?=_e( "Default Template" )?></option>
+				<?php foreach( get_page_templates() as $name=>$file ): ?>
+					<option <?=selected($file, $meta_data)?> value="<?=$file?>"><?=$name?></option>
+				<?php endforeach; ?>
+				</select>
+
 				<div class="clear"></div>	
 			</div>
 			<?php
@@ -188,12 +201,9 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 
 
 /*
-
   'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
-  'post_category'  => [ array(<category id>, ...) ] // Default empty.
   'tags_input'     => [ '<tag>, <tag>, ...' | array ] // Default empty.
   'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
-  'page_template'  => [ <string> ] // Requires name of template file, eg template.php. Default empty.
 */
 		
 		/**
@@ -203,7 +213,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * @param object  $post The post being saved.
 		 */
 		public function save_shadow_profile_object( $post_id, $post ) {
-			$shadow_profile_object_names = array('post_status','post_type','post_author','ping_status','comment_status','post_password','post_excerpt','post_category','post_category_method');
+			$shadow_profile_object_names = array('post_status','post_type','post_author','ping_status','comment_status','post_password','post_excerpt','post_category','post_category_method','page_template');
 			foreach($shadow_profile_object_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
 					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
