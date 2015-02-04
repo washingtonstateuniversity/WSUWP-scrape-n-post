@@ -6,10 +6,10 @@ a[href*="?wsuwp_snp_postshadow="]
 {position:absolute; top:-99999em; left:-999em;}
 
 
-.field_block{ padding:0px 15px;}
-.field_block h3{margin-left: -15px !important;
-padding-left: 0px !important;}
-
+.field_block{ padding:10px 15px; border:1px #C4C3C3 solid;}
+.field_block legend{margin-left: -15px !important;
+padding-left: 0px !important; font-weight:bold; font-size:1.5em;}
+.filter_block{padding:3px 7px; border:1px #C4C3C3 solid;}
 
 #scrape-wrap .field-wrap {
 	background: #edeae3;
