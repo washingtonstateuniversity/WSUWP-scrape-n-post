@@ -35,7 +35,6 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * updated from that url. 
 		 */
 		public function register_shadow_post_type() {
-			global $scrape_core;
 			$labels = array(
 				'menu_name'          => __( 'Scrape N\' Post', SHADOW_KEY ),
 				'name'               => __( 'Shadow Copy', SHADOW_KEY ),
@@ -83,7 +82,6 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param string $post_type
 		 */
 		public function add_shadow_post_meta_boxes( $post_type ) {
-			global $scrape_core;
 			if ($post_type == SHADOW_POST_TYPE_POST){   
 				//main content area
 				add_meta_box( 'wsuwp_snp_url', 'Url', array( $this, 'display_object_url_meta_box' ) , null, 'normal', 'default' );

@@ -5,12 +5,8 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 	
 		/**
 		 * constructor
-		 *
-		 * @global class $_params
-		 * @global class $scrape_actions
 		 */
 		function __construct() {
-			global $_params,$scrape_actions;
 			add_action( 'init', array( $this, 'register_shadow_profile_type' ), 11 );
 			add_action( 'add_meta_boxes', array( $this, 'add_shadow_profile_meta_boxes' ), 11, 1 );
 			add_action( 'save_post', array( $this, 'save_shadow_profile_object' ), 15, 2 );
@@ -20,11 +16,8 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * Register the shadow profile type.
 		 *
 		 * This defined how urls are crawled and consumed.
-		 *
-		 * @global class $scrape_core
 		 */
 		public function register_shadow_profile_type() {
-			global $scrape_core;
 			$labels = array(
 				'singular_name'      => __( 'Shadow profile', SHADOW_KEY ),
 				'all_items'          => __( 'All Shadow profiles', SHADOW_KEY ),
@@ -60,12 +53,9 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		/**
 		 * Add meta boxes used to capture pieces of information for the profile.
 		 *
-		 * @global class $scrape_core
-		 *
 		 * @param string $post_type
 		 */
 		public function add_shadow_profile_meta_boxes( $post_type ) {
-			global $scrape_core;
 			if ($post_type == SHADOW_POST_TYPE_PROFILE){   
 				add_meta_box( 'wsuwp_snp_post_defaults', 'Defaults', array( $this, 'display_post_defaults_meta_box' ) , null, 'normal', 'default' );
 			}
