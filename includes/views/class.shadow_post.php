@@ -134,6 +134,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 						'option_none_value'     => "", // string
 					) ); ?> 
 				</div>
+				<input type="hidden" name="wsuwp_spn_porfile_used" value="<?=get_post_meta( $post->ID, '_wsuwp_spn_porfile_used', true )?>"/>
 				<div class="clear"></div>
 			</div>
 			<?php
@@ -196,7 +197,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param object  $post The post being saved.
 		 */
 		public function save_shadow_post_object( $post_id, $post ) {
-			$shadow_post_object_names = array('url','tied_post_id','ignored','last_http_status','type');
+			$shadow_post_object_names = array('url','tied_post_id','ignored','last_http_status','type','porfile_used');
 			foreach($shadow_post_object_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
 					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
