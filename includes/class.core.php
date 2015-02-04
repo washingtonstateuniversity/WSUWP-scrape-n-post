@@ -439,8 +439,33 @@ if ( ! class_exists( 'scrape_core' ) ) {
 					<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
 				<?php endforeach; ?>
 				</select>
+				<hr/>
+				
+				<?php
+					$input_name = "wsuwp_spn_post_author";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				?>
+				<label> <?=_e( "Use Author for Posts" )?> </label>
+				<select name="<?=$input_name?>">
+				<?php foreach( get_users( array( 'fields'=>array( 'ID','display_name' ) ) ) as $user ): ?>
+					<option <?=selected($user->ID, $meta_data)?> value="<?=$user->ID?>"> <?=$user->display_name?> </option>
+				<?php endforeach; ?>
+				</select>				
+				
+				<hr/>
+				<?php
+				$input_name = "wsuwp_spn_ping_status";
+				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$this->make_radio_html(array(
+					'types'=>array('closed'=>'closed','open'=>'open'),
+					'input_name'=>$input_name,
+					'meta_data'=>$meta_data!=""?$meta_data:"closed",
+					'description'=>'',
+					'title'=>'Pingbacks or trackbacks allowed'
+				))?>
 				
 				
+								
 				<div class="clear"></div>	
 			</div>
 			<?php
@@ -448,10 +473,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 
 
 /*
-  'post_status'    => [ 'draft' | 'publish' | 'pending'| 'future' | 'private' | custom registered status ] // Default 'draft'.
-  'post_type'      => [ 'post' | 'page' | 'link' | 'nav_menu_item' | custom post type ] // Default 'post'.
-  'post_author'    => [ <user ID> ] // The user ID number of the author. Default is the current user ID.
-  'ping_status'    => [ 'closed' | 'open' ] // Pingbacks or trackbacks allowed. Default is the option 'default_ping_status'.
+
+
   'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
   'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
   'to_ping'        => [ <string> ] // Space or carriage return-separated list of URLs to ping. Default empty string.
