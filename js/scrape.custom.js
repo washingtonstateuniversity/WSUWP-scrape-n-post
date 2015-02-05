@@ -90,7 +90,7 @@
 				var self = $(this);
 				var block = self.closest('.field_block_area');
 				var area = self.next('ul.fallbacks');
-				var count = area.find('li').length;
+				var count = area.children('li').length;
 				var input_name = self.data("base_input_name")+"[{##}]";
 				var content = $("#mapping_template").html();
 				area.addClass("active");
@@ -113,7 +113,7 @@
 				var self = $(this);
 				var block = self.closest('.map_filter_wrapper');
 				var area = block.find('ul');
-				var count = area.find('li').length;
+				var count = area.children('li').length;
 				var content = $("#filter_template").html();
 				
 				var block_name = self.data("block_name");

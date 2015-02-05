@@ -77,8 +77,9 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			$mapable_parts=array('post_content','post_name','post_title','post_excerpt','post_date','post_category');//,'post_author','post_parent','menu_order','tags_input','tax_input');
 			foreach($mapable_parts as $name){
 				$value=array();
-				$input_name = SHADOW_KEY."_map['$name']";
-				$this->mapping_block($post,$name,$input_name,$value);
+				$input_name = SHADOW_KEY."_map[$name]";
+				$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_'.$name, true );
+				$this->mapping_block($post,$name,$input_name,json_decode($value));
 			}
 		}
 		
@@ -102,7 +103,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 				<div class="fields_area">
 				<?php if(isset($values) && !empty($values)):?>
-					<?=$this->feild_block_stub($post,$name,$input_name,array())?>
+					<?=$this->feild_block_stub($post,$name,$input_name,$values)?>
 				<?php endif;?>
 
 				</div>
@@ -110,15 +111,19 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			<?php
 		}
 		public function feild_block_stub($post,$name,$input_name,$values=array()){
+			
+			$value=(array)$values;
+			
+			
 			?>
 			<div class="field_block_area"  >
 				<a href="#" class="mapping-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
-				<label>root_selector</label><input type="text" value="" name="<?=$input_name."['root_selector']"?>" placeholder=".css_selector"/><br/>
-				<label>selector</label><input type="text" value="" name="<?=$input_name."['selector']"?>" placeholder=".css_selector"/>
+				<label>root_selector</label><input type="text" value="<?=isset($value["root_selector"])?$value["root_selector"]:""?>" name="<?=$input_name."[root_selector]"?>" placeholder=".css_selector"/><br/>
+				<label>selector</label><input type="text" value="<?=isset($value["selector"])?$value["selector"]:""?>" name="<?=$input_name."[selector]"?>" placeholder=".css_selector"/>
 				<hr/>
 				<?php
-					$selinput_name = $input_name."['pull_from']";
-					$meta_data = get_post_meta( $post->ID, '_'.$selinput_name, true );
+					$selinput_name = $input_name."[pull_from]";
+					$meta_data = isset($value["pull_from"])?$value["pull_from"]:"";
 					$array = array("text"=>"test()","html"=>"html()","innerHTML"=>"innerHTML()");
 				?>
 				<label> <?=_e( "Type of returned data" )?> </label>
@@ -131,14 +136,14 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<hr/>
 				
 				<div class="pre_fill map_filter_wrapper" data-count="0">
-					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."['pre_filters']"?>"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."[pre_filters]"?>"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 					<b>pre_filter</b>
 					<p class="filter-discription">Pre-filters are used on content <strong>before</strong> a match is seeked.  This could be to normalize content, or to add content or...</p>
 					<ul>
-					<?php if(isset($values['pre_filters']) && !empty($values['pre_filters'])){
+					<?php if(isset($value['pre_filters']) && !empty($value['pre_filters'])){
 						$i=0;
-						foreach($values['pre_filters'] as $filter){
-							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."['pre_filters']",array(),$filter))?></li><?php
+						foreach($value['pre_filters'] as $filter){
+							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."[pre_filters]",$value['pre_filters'],$filter))?></li><?php
 							$i++;
 						}
 					}?>
@@ -147,28 +152,28 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 				<hr/>
 				<div class="map_filter_wrapper" data-count="0">
-					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."['filters']"?>"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."[filters]"?>"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 					<b>Content filter</b>
 					<p class="filter-discription">Content filters are used on content <strong>after</strong> a match is found.  This could be to normalize content, or to add content or...</p>
 					<ul>
-					<?php if(isset($values['filters']) && !empty($values['filters'])){
+					<?php if(isset($value['filters']) && !empty($value['filters'])){
 						$i=0;
-						foreach($values['pre_filters'] as $filter){
-							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."['filters']",array(),$filter))?></li><?php
+						foreach($value['pre_filters'] as $filter){
+							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."[filters]",$value['pre_filters'],$filter))?></li><?php
 							$i++;
 						}
 					}?>
 					</ul>
 				</div>
 				<hr/>
-				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."['fallback']"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."[fallback]"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
 				<ul class="fallbacks">
 				<?php
-				if(isset($values["fallback"]) && !empty($values["fallback"])){
+				if(isset($value["fallback"]) && !empty($value["fallback"])){
 					$i=0;
-					foreach($values["fallback"] as $name){
+					foreach($value["fallback"] as $object){
 						?><li><?php
-						$this->mapping_block($post,$name,$input_name."['fallback'][$i]",$values);
+						$this->mapping_block($post,$name,$input_name."[fallback][$i]",(object)$object);
 						?></li><?php
 						$i++;
 					}
@@ -237,14 +242,15 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 */
 
 
-		public function build_filter_ui_block($post,$input_name,$block_obj=array(), $value=array()){
+		public function build_filter_ui_block($post,$input_name,$block_obj=array(), $values=array()){
+			$value=(array)$values;
 			?>
 			<div class="filter_block">
 				<a href="#" class="filter-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
 				<?php
 					$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
-					$selinput_name = $input_name."[{##}]['type']";
-					$meta_data = get_post_meta( $post->ID, '_'.$selinput_name, true );
+					$selinput_name = $input_name."[{##}][type]";
+					$meta_data = isset($value["type"])?$value["type"]:"";
 				?>
 				<label> <?=_e( "Type of filter" )?> </label>
 				<select name="<?=$selinput_name?>" class="filterTypeSelector">
@@ -253,15 +259,15 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php endforeach; ?>
 				</select><br/>
 
-				<span class="filteroptions type_remove"><label>root</label><input type="text" name="<?=$input_name."[{##}]['root']"?>" value="" data-req='required' placeholder=".css_selector"/><br/></span>
-				<span class="filteroptions type_remove"><label>selector</label><input type="text" name="<?=$input_name."[{##}]['selector']"?>" value="" data-req='required' placeholder=".css_selector"/></span>
+				<span class="filteroptions type_remove"><label>root</label><input type="text" name="<?=$input_name."[{##}][root]"?>" value="<?=isset($value["root"])?$value["root"]:""?>" data-req='required' placeholder=".css_selector"/><br/></span>
+				<span class="filteroptions type_remove"><label>selector</label><input type="text" name="<?=$input_name."[{##}][selector]"?>" value="<?=isset($value["selector"])?$value["selector"]:""?>" data-req='required' placeholder=".css_selector"/></span>
 				
-				<span class="filteroptions type_explode"><label>on</label><input type="text" name="<?=$input_name."[{##}]['on']"?>" value="" data-req='required'/><br/></span>
-				<span class="filteroptions type_explode"><label>select</label><input type="number" name="<?=$input_name."[{##}]['select']"?>" value=""/></span>
+				<span class="filteroptions type_explode"><label>on</label><input type="text" name="<?=$input_name."[{##}][on]"?>" value="<?=isset($value["on"])?$value["on"]:""?>" data-req='required'/><br/></span>
+				<span class="filteroptions type_explode"><label>select</label><input type="number" name="<?=$input_name."[{##}][select]"?>" value="<?=isset($value["select"])?$value["select"]:""?>"/></span>
 				
-				<span class="filteroptions type_str_replace"><label>search</label><input type="text" name="<?=$input_name."[{##}]['search']"?>" value="" data-req='required'/><br/></span>
-				<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" name="<?=$input_name."[{##}]['pattern']"?>" value="" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
-				<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" name="<?=$input_name."[{##}]['replace']"?>" value="" data-req='required'/></span>
+				<span class="filteroptions type_str_replace"><label>search</label><input type="text" name="<?=$input_name."[{##}][search]"?>" value="<?=isset($value["search"])?$value["search"]:""?>" data-req='required'/><br/></span>
+				<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" name="<?=$input_name."[{##}][pattern]"?>" value="<?=isset($value["pattern"])?$value["pattern"]:""?>" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
+				<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" name="<?=$input_name."[{##}][replace]"?>" value="<?=isset($value["replace"])?$value["replace"]:""?>" data-req='required'/></span>
 			</div>
 			<?php
 		}
@@ -425,7 +431,19 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
 						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name );
 					} else {
-						update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name, esc_url_raw( $_POST[SHADOW_KEY.'_'.$name] ) );
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name, $_POST[SHADOW_KEY.'_'.$name] );
+					}
+				}
+			}
+			
+			$shadow_profile_object_mapping_names = array('post_content','post_name','post_title','post_excerpt','post_date','post_category');
+			foreach($shadow_profile_object_mapping_names as $name){
+				if ( isset( $_POST[SHADOW_KEY.'_map'][$name] ) ) {
+					$value = json_encode($_POST[SHADOW_KEY.'_map'][$name]);
+					if ( empty( trim( $value ) ) ) {
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name );
+					} else {
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name, json_encode($_POST[SHADOW_KEY.'_map'][$name]) );
 					}
 				}
 			}
