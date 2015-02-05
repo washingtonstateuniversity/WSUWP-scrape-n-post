@@ -73,50 +73,51 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			$mapable_parts=array('post_content','post_name','post_title','post_excerpt','post_date','post_category');//,'post_author','post_parent','menu_order','tags_input','tax_input');
 			foreach($mapable_parts as $name){
 				$value=array();
-				$this->mapping_block($post,$name,$value);
+				$input_name = SHADOW_KEY."_map['$name']";
+				$this->mapping_block($post,$name,$input_name,$value);
 			}
 			?>
 			<div id="mapping_template">
-				<?=$this->feild_block_stub($post,"{STUB_NAME}",array())?>
+				<?=$this->feild_block_stub($post,"{STUB_NAME}","{INPUT_NAME}",array())?>
 			</div>
 			
 			
 			<div id="filter_template">
-				<?=$this->build_filter_ui_block($post,array(),array())?>
+				<?=$this->build_filter_ui_block($post,"{INPUT_NAME}",array(),array())?>
 			</div>
 			<?php
 
 
 		}
-		public function mapping_block($post,$name,$values=array()){
+		public function mapping_block($post,$name,$input_name,$values=array()){
 			?>
 			<fieldset class="field_block">
 				<legend><?=$name?></legend>
-				<a href="#" class="mapping-add" style="float:right;" data-block_name="<?=$name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="mapping-add" style="float:right;" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
 				<div class="fields_area">
 				<?php if(isset($values) && !empty($values)):?>
-					<?=$this->feild_block_stub($post,$name,array())?>
+					<?=$this->feild_block_stub($post,$name,$input_name,array())?>
 				<?php endif;?>
 
 				</div>
 			</fieldset>
 			<?php
 		}
-		public function feild_block_stub($post,$name,$values=array()){
+		public function feild_block_stub($post,$name,$input_name,$values=array()){
 			?>
-			<div class="field_block_area">
+			<div class="field_block_area"  >
 				<a href="#" class="mapping-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
-				<label>root_selector</label><input type="text" value="" placeholder=".css_selector"/><br/>
-				<label>selector</label><input type="text" value="" placeholder=".css_selector"/>
+				<label>root_selector</label><input type="text" value="" name="<?=$input_name."['root_selector']"?>" placeholder=".css_selector"/><br/>
+				<label>selector</label><input type="text" value="" name="<?=$input_name."['selector']"?>" placeholder=".css_selector"/>
 				<hr/>
 				<?php
-					$input_name = SHADOW_KEY."_pull_from";
-					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$selinput_name = $input_name."['pull_from']";
+					$meta_data = get_post_meta( $post->ID, '_'.$selinput_name, true );
 					$array = array("text"=>"test()","html"=>"html()","innerHTML"=>"innerHTML()");
 				?>
 				<label> <?=_e( "Type of returned data" )?> </label>
-				<select name="<?=$input_name?>">
+				<select name="<?=$selinput_name?>">
 				<?php foreach($array as $key=>$val): ?>
 					<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
 				<?php endforeach; ?>
@@ -125,40 +126,46 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<hr/>
 				
 				<div class="pre_fill map_filter_wrapper" data-count="0">
-					<a href="#" class="filter-add" style="float:right;"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."['pre_filters']"?>"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 					<b>pre_filter</b>
 					<p class="filter-discription">Pre-filters are used on content <strong>before</strong> a match is seeked.  This could be to normalize content, or to add content or...</p>
 					<ul>
-					<?php if(isset($values['pre_filters']) && !empty($values['pre_filters'])): ?>
-						<?php foreach($values['pre_filters'] as $filter):?>
-							<li class="filter-template"><?=$this->build_filter_ui_block($post,array(),$filter)?></li>
-						<?php endforeach; ?>
-					<?php endif;?>
+					<?php if(isset($values['pre_filters']) && !empty($values['pre_filters'])){
+						$i=0;
+						foreach($values['pre_filters'] as $filter){
+							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."['pre_filters']",array(),$filter))?></li><?php
+							$i++;
+						}
+					}?>
 					</ul>
 				</div>
 				
 				<hr/>
 				<div class="map_filter_wrapper" data-count="0">
-					<a href="#" class="filter-add" style="float:right;"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."['filters']"?>"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 					<b>Content filter</b>
 					<p class="filter-discription">Content filters are used on content <strong>after</strong> a match is found.  This could be to normalize content, or to add content or...</p>
 					<ul>
-					<?php if(isset($values['filters']) && !empty($values['filters'])): ?>
-						<?php foreach($values['filters'] as $filter):?>
-							<li class="filter-template"><?=$this->build_filter_ui_block($post,array(),$filter)?></li>
-						<?php endforeach; ?>
-					<?php endif;?>
+					<?php if(isset($values['filters']) && !empty($values['filters'])){
+						$i=0;
+						foreach($values['pre_filters'] as $filter){
+							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."['filters']",array(),$filter))?></li><?php
+							$i++;
+						}
+					}?>
 					</ul>
 				</div>
 				<hr/>
-				<a href="#" class="fallback-add" data-block_name="<?=$name?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."['fallback'][{##}]"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
 				<ul class="fallbacks">
 				<?php
-				if(isset($values["mapable_parts"]) && !empty($values["mapable_parts"])){
-					foreach($values["mapable_parts"] as $name){
+				if(isset($values["fallback"]) && !empty($values["fallback"])){
+					$i=0;
+					foreach($values["fallback"] as $name){
 						?><li><?php
-						$this->mapping_block($post,$name,$values);
+						$this->mapping_block($post,$name,$input_name."['fallback'][$i]",$values);
 						?></li><?php
+						$i++;
 					}
 				}
 				?>
@@ -225,13 +232,13 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 */
 
 
-		public function build_filter_ui_block($post,$block_obj=array(), $value=array()){
+		public function build_filter_ui_block($post,$input_name,$block_obj=array(), $value=array()){
 			?>
 			<div class="filter_block">
 				<a href="#" class="filter-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
 				<?php
 					$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
-					$input_name = SHADOW_KEY."_pull_from";
+					$input_name = $input_name."[{##}]['type']";
 					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				?>
 				<label> <?=_e( "Type of filter" )?> </label>
@@ -241,15 +248,15 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php endforeach; ?>
 				</select><br/>
 
-				<span class="filteroptions type_remove"><label>root</label><input type="text" value="" data-req='required' placeholder=".css_selector"/><br/></span>
-				<span class="filteroptions type_remove"><label>selector</label><input type="text" value="" data-req='required' placeholder=".css_selector"/></span>
+				<span class="filteroptions type_remove"><label>root</label><input type="text" name="<?=$input_name."[{##}]['root']"?>" value="" data-req='required' placeholder=".css_selector"/><br/></span>
+				<span class="filteroptions type_remove"><label>selector</label><input type="text" name="<?=$input_name."[{##}]['selector']"?>" value="" data-req='required' placeholder=".css_selector"/></span>
 				
-				<span class="filteroptions type_explode"><label>on</label><input type="text" value="" data-req='required'/><br/></span>
-				<span class="filteroptions type_explode"><label>select</label><input type="number" value=""/></span>
+				<span class="filteroptions type_explode"><label>on</label><input type="text" name="<?=$input_name."[{##}]['on']"?>" value="" data-req='required'/><br/></span>
+				<span class="filteroptions type_explode"><label>select</label><input type="number" name="<?=$input_name."[{##}]['select']"?>" value=""/></span>
 				
-				<span class="filteroptions type_str_replace"><label>search</label><input type="text" value="" data-req='required'/><br/></span>
-				<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" value="" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
-				<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" value="" data-req='required'/></span>
+				<span class="filteroptions type_str_replace"><label>search</label><input type="text" name="<?=$input_name."[{##}]['search']"?>" value="" data-req='required'/><br/></span>
+				<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" name="<?=$input_name."[{##}]['pattern']"?>" value="" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
+				<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" name="<?=$input_name."[{##}]['replace']"?>" value="" data-req='required'/></span>
 			</div>
 			<?php
 		}
