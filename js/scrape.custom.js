@@ -41,6 +41,10 @@
 				}).trigger("change");
 			});
 			$.wsuwp_spn.apply_map_additonal();
+			$.wsuwp_spn.apply_map_removal();
+			$.wsuwp_spn.apply_map_fallback();
+			$.wsuwp_spn.apply_filter_blocks();
+			$.wsuwp_spn.apply_map_filter_removal();
 		},
 		apply_map_additonal:function(){
 			$('.mapping-add').off().on('click',function(e){
@@ -59,6 +63,7 @@
 				$.wsuwp_spn.apply_map_removal();
 				$.wsuwp_spn.apply_map_fallback();
 				$.wsuwp_spn.apply_filter_blocks();
+				$.wsuwp_spn.apply_map_filter_removal();
 	
 			});
 		},

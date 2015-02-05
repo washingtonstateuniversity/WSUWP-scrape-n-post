@@ -99,7 +99,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			?>
 			<fieldset class="field_block">
 				<legend><?=$name?></legend>
-				<a href="#" class="mapping-add" style="float:right;" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="mapping-add" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
 				<div class="fields_area">
 				<?php if(isset($values) && !empty($values)):?>
@@ -167,13 +167,13 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				</div>
 				<hr/>
 				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."[fallback]"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
-				<ul class="fallbacks">
+				<ul class="fallbacks <?=(isset($value["fallback"]) && !empty($value["fallback"])?"active":"")?>">
 				<?php
 				if(isset($value["fallback"]) && !empty($value["fallback"])){
 					$i=0;
 					foreach($value["fallback"] as $object){
 						?><li><?php
-						$this->mapping_block($post,$name,$input_name."[fallback][$i]",(object)$object);
+						$this->feild_block_stub($post,$name,$input_name."[fallback][$i]",(object)$object);
 						?></li><?php
 						$i++;
 					}
