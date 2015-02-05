@@ -244,12 +244,13 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 
 		public function build_filter_ui_block($post,$input_name,$block_obj=array(), $values=array()){
 			$value=(array)$values;
+			$input_name.="[{##}]";
 			?>
 			<div class="filter_block">
 				<a href="#" class="filter-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
 				<?php
 					$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
-					$selinput_name = $input_name."[{##}][type]";
+					$selinput_name = $input_name."[type]";
 					$meta_data = isset($value["type"])?$value["type"]:"";
 				?>
 				<label> <?=_e( "Type of filter" )?> </label>
@@ -259,15 +260,41 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php endforeach; ?>
 				</select><br/>
 
-				<span class="filteroptions type_remove"><label>root</label><input type="text" name="<?=$input_name."[{##}][root]"?>" value="<?=isset($value["root"])?$value["root"]:""?>" data-req='required' placeholder=".css_selector"/><br/></span>
-				<span class="filteroptions type_remove"><label>selector</label><input type="text" name="<?=$input_name."[{##}][selector]"?>" value="<?=isset($value["selector"])?$value["selector"]:""?>" data-req='required' placeholder=".css_selector"/></span>
+				<!-- remove type -->
+				<span class="filteroptions type_remove">
+					<label>root</label><input type="text" name="<?=$input_name."[root]"?>" value="<?=isset($value["root"])?$value["root"]:""?>" data-req='required' placeholder=".css_selector"/><br/>
+				</span>
+				<span class="filteroptions type_remove">
+					<label>selector</label>
+					<input type="text" name="<?=$input_name."[selector]"?>" value="<?=isset($value["selector"])?$value["selector"]:""?>" data-req='required' placeholder=".css_selector"/>
+				</span>
 				
-				<span class="filteroptions type_explode"><label>on</label><input type="text" name="<?=$input_name."[{##}][on]"?>" value="<?=isset($value["on"])?$value["on"]:""?>" data-req='required'/><br/></span>
-				<span class="filteroptions type_explode"><label>select</label><input type="number" name="<?=$input_name."[{##}][select]"?>" value="<?=isset($value["select"])?$value["select"]:""?>"/></span>
+				<!-- explode type -->
+				<span class="filteroptions type_explode">
+					<label>on</label>
+					<input type="text" name="<?=$input_name."[on]"?>" value="<?=isset($value["on"])?$value["on"]:""?>" data-req='required'/><br/>
+				</span>
+				<span class="filteroptions type_explode">
+					<label>select</label>
+					<input type="number" name="<?=$input_name."[select]"?>" value="<?=isset($value["select"])?$value["select"]:""?>"/>
+				</span>
 				
-				<span class="filteroptions type_str_replace"><label>search</label><input type="text" name="<?=$input_name."[{##}][search]"?>" value="<?=isset($value["search"])?$value["search"]:""?>" data-req='required'/><br/></span>
-				<span class="filteroptions type_preg_replace"><label>pattern</label><input type="text" name="<?=$input_name."[{##}][pattern]"?>" value="<?=isset($value["pattern"])?$value["pattern"]:""?>" data-req='required' placeholder="/regex|pattern/si"/><br/></span>
-				<span class="filteroptions type_str_replace type_preg_replace"><label>replace</label><input type="text" name="<?=$input_name."[{##}][replace]"?>" value="<?=isset($value["replace"])?$value["replace"]:""?>" data-req='required'/></span>
+				
+				<!-- replace types -->
+				<span class="filteroptions type_str_replace">
+					<label>search</label>
+					<input type="text" name="<?=$input_name."[search]"?>" value="<?=isset($value["search"])?$value["search"]:""?>" data-req='required'/><br/>
+				</span>
+				<span class="filteroptions type_preg_replace">
+					<label>pattern</label>
+					<input type="text" name="<?=$input_name."[pattern]"?>" value="<?=isset($value["pattern"])?$value["pattern"]:""?>" data-req='required' placeholder="/regex|pattern/si"/><br/>
+				</span>
+				<span class="filteroptions type_str_replace type_preg_replace">
+					<label>replace</label>
+					<input type="text" name="<?=$input_name."[replace]"?>" value="<?=isset($value["replace"])?$value["replace"]:""?>" data-req='required'/>
+				</span>
+				
+				
 			</div>
 			<?php
 		}
