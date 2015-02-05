@@ -6,10 +6,34 @@ a[href*="?wsuwp_snp_postshadow="]
 {position:absolute; top:-99999em; left:-999em;}
 
 
-.field_block{ padding:10px 15px; border:1px #C4C3C3 solid;}
+.field_block{ padding:10px 15px; border:1px #C4C3C3 solid; background-color:#EFEFEF;}
 .field_block legend{margin-left: -15px !important;
-padding-left: 0px !important; font-weight:bold; font-size:1.5em;}
+padding:0px 7px !important; font-weight:bold; font-size:1.5em;}
 .filter_block{padding:3px 7px; border:1px #C4C3C3 solid;}
+
+.filter-discription{display:none;}
+.active .filter-discription:first{display:block;}
+
+#mapping_template,
+#filter_template{display:none;}
+
+.fields_area{clear:right;}
+
+.fallbacks.active {border:1px solid #C9C9C9;background-color:#E5E5E5;padding-top:5px;padding-bottom:5px; opacity:.95}
+.fallbacks li {padding-left:5px;margin-left:7px;padding-right:5px;border-top: 5px solid #9A9A9A; margin-top:5px;padding-top:5px;}
+.fallbacks li:first-child{border-top:none; margin-top:0px;padding-top:0px;}
+
+
+.mapping-removal:hover,
+.filter-removal:hover{color:#AF0002;}
+
+
+.filter_wrapper ul{ list-style:none; padding:0px; margin:0px;}
+
+
+
+
+
 
 #scrape-wrap .field-wrap {
 	background: #edeae3;
