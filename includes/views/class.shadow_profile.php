@@ -9,7 +9,11 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		function __construct() {
 			add_action( 'init', array( $this, 'register_shadow_profile_type' ), 11 );
 			add_action( 'add_meta_boxes', array( $this, 'add_shadow_profile_meta_boxes' ), 11, 1 );
+			
+			add_action('admin_footer-post.php', array( $this, 'add_block_tempates' ), 11);
+			
 			add_action( 'save_post', array( $this, 'save_shadow_profile_object' ), 15, 2 );
+			
 			
 		}
 		/**
@@ -76,19 +80,20 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				$input_name = SHADOW_KEY."_map['$name']";
 				$this->mapping_block($post,$name,$input_name,$value);
 			}
+		}
+		
+		public function add_block_tempates(){
+			global $post;    
 			?>
 			<div id="mapping_template">
 				<?=$this->feild_block_stub($post,"{STUB_NAME}","{INPUT_NAME}",array())?>
 			</div>
-			
-			
 			<div id="filter_template">
 				<?=$this->build_filter_ui_block($post,"{INPUT_NAME}",array(),array())?>
 			</div>
-			<?php
-
-
+			<?php		
 		}
+		
 		public function mapping_block($post,$name,$input_name,$values=array()){
 			?>
 			<fieldset class="field_block">
@@ -238,11 +243,11 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<a href="#" class="filter-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
 				<?php
 					$array = array("explode"=>"explode","remove"=>"remove","str_replace"=>"str_replace","preg_replace"=>"preg_replace");
-					$input_name = $input_name."[{##}]['type']";
-					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$selinput_name = $input_name."[{##}]['type']";
+					$meta_data = get_post_meta( $post->ID, '_'.$selinput_name, true );
 				?>
 				<label> <?=_e( "Type of filter" )?> </label>
-				<select name="<?=$input_name?>" class="filterTypeSelector">
+				<select name="<?=$selinput_name?>" class="filterTypeSelector">
 				<?php foreach($array as $key=>$val): ?>
 					<option <?=selected($key, ($meta_data!=""?$meta_data:"post"))?> value="<?=$key?>"> <?=$val?> </option>
 				<?php endforeach; ?>

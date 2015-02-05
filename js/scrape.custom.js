@@ -40,6 +40,9 @@
 					container.find(".filteroptions.type_"+selected_val+" input[data-req='required'],.filteroptions.type_"+selected_val+" select[data-req='required']").attr("required",true);
 				}).trigger("change");
 			});
+			$.wsuwp_spn.apply_map_additonal();
+		},
+		apply_map_additonal:function(){
 			$('.mapping-add').off().on('click',function(e){
 				e.preventDefault();
 				var self = $(this);
@@ -58,7 +61,7 @@
 				$.wsuwp_spn.apply_filter_blocks();
 	
 			});
-		},		
+		},
 		apply_map_removal:function (){
 			$('.mapping-removal').off().on('click',function(e){
 				e.preventDefault();
@@ -95,13 +98,13 @@
 				area.append('<li>');
 				var targ_li = area.find('li:last');
 				targ_li.hide();
-				targ_li.html(content.split("{##}").join(count).split("{INPUT_NAME}").join(input_name));
+				targ_li.html(content.split("{INPUT_NAME}").join(input_name).split("{##}").join(count>0?count:0));
 				//targ_li.find('.fallback-add').remove();
 				targ_li.fadeIn(500);
-				
-				
+
 				$.wsuwp_spn.apply_map_removal();
 				$.wsuwp_spn.apply_map_fallback();
+				$.wsuwp_spn.apply_filter_blocks();
 			});	
 		},
 		apply_filter_blocks:function (){
@@ -120,7 +123,7 @@
 				area.append('<li>');
 				var targ_li = area.find('li:last');
 				targ_li.hide();
-				targ_li.html(content.split("{##}").join(count).split("{INPUT_NAME}").join(input_name).split("{STUB_NAME}").join(block_name));
+				targ_li.html(content.split("{INPUT_NAME}").join(input_name).split("{##}").join(count>0?count:0).split("{STUB_NAME}").join(block_name));
 				targ_li.fadeIn(500);
 				$.wsuwp_spn.apply_map_filter_removal();
 			});
