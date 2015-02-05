@@ -50,7 +50,7 @@
 				var content = $("#mapping_template").html();
 				area.hide();
 				self.fadeOut(350);
-				area.html( content.split("{STUB_NAME}").join(block_name).split("{INPUT_NAME}").join(input_name) );
+				area.html( content.split("{INPUT_NAME}").join(input_name).split("{STUB_NAME}").join(block_name) );
 				area.fadeIn(500);
 				
 				$.wsuwp_spn.apply_map_removal();
@@ -120,7 +120,7 @@
 				area.append('<li>');
 				var targ_li = area.find('li:last');
 				targ_li.hide();
-				targ_li.html(content.split("{STUB_NAME}").join(block_name).split("{##}").join(count).split("{INPUT_NAME}").join(input_name));
+				targ_li.html(content.split("{##}").join(count).split("{INPUT_NAME}").join(input_name).split("{STUB_NAME}").join(block_name));
 				targ_li.fadeIn(500);
 				$.wsuwp_spn.apply_map_filter_removal();
 			});
