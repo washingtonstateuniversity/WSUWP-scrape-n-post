@@ -161,7 +161,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					</ul>
 				</div>
 				<hr/>
-				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."['fallback'][{##}]"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."['fallback']"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
 				<ul class="fallbacks">
 				<?php
 				if(isset($values["fallback"]) && !empty($values["fallback"])){

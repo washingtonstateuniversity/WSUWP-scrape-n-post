@@ -91,7 +91,7 @@
 				var block = self.closest('.field_block_area');
 				var area = self.next('ul.fallbacks');
 				var count = area.find('li').length;
-				var input_name = self.data("base_input_name");
+				var input_name = self.data("base_input_name")+"[{##}]";
 				var content = $("#mapping_template").html();
 				area.addClass("active");
 				
