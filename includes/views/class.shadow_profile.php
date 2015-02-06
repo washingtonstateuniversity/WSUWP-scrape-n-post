@@ -128,7 +128,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php
 					$selinput_name = $input_name."[pull_from]";
 					$meta_data = isset($value["pull_from"])?$value["pull_from"]:"";
-					$array = array("text"=>"test()","html"=>"html()","innerHTML"=>"innerHTML()");
+					$array = array("text"=>"text()","html"=>"html()","innerHTML"=>"innerHTML()");
 				?>
 				<label> <?=_e( "Type of returned data" )?> </label>
 				<select name="<?=$selinput_name?>">
