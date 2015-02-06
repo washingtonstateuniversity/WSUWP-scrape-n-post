@@ -99,7 +99,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			?>
 			<fieldset class="field_block">
 				<legend><?=$name?></legend>
-				<a href="#" class="mapping-add" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="mapping-add button" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
 				<div class="fields_area">
 				<?php if(isset($values) && !empty($values)):?>
@@ -136,7 +136,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<hr/>
 				
 				<div class="pre_fill map_filter_wrapper" data-count="0">
-					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."[pre_filters]"?>"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+					<a href="#" class="filter-add button" style="float:right;" data-base_input_name="<?=$input_name."[pre_filters]"?>"><b>Add pre-filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 					<b>pre_filter</b>
 					<p class="filter-discription">Pre-filters are used on content <strong>before</strong> a match is seeked.  This could be to normalize content, or to add content or...</p>
 					<ul>
@@ -151,22 +151,22 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				</div>
 				
 				<hr/>
-				<div class="map_filter_wrapper" data-count="0">
-					<a href="#" class="filter-add" style="float:right;" data-base_input_name="<?=$input_name."[filters]"?>"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
+				<div class="post_fill map_filter_wrapper" data-count="0">
+					<a href="#" class="filter-add button" style="float:right;" data-base_input_name="<?=$input_name."[filters]"?>"><b>Add content filter<span class="dashicons dashicons-plus-alt"></span></b></a>
 					<b>Content filter</b>
 					<p class="filter-discription">Content filters are used on content <strong>after</strong> a match is found.  This could be to normalize content, or to add content or...</p>
 					<ul>
 					<?php if(isset($value['filters']) && !empty($value['filters'])){
 						$i=0;
-						foreach($value['pre_filters'] as $filter){
-							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."[filters]",$value['pre_filters'],$filter))?></li><?php
+						foreach($value['filters'] as $filter){
+							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."[filters]",$value['filters'],$filter))?></li><?php
 							$i++;
 						}
 					}?>
 					</ul>
 				</div>
 				<hr/>
-				<a href="#" class="fallback-add" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."[fallback]"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
+				<a href="#" class="fallback-add button" data-block_name="<?=$name?>"  data-base_input_name="<?=$input_name."[fallback]"?>"><b>Add a fallback <span class="dashicons dashicons-plus-alt"></span></b></a>
 				<ul class="fallbacks <?=(isset($value["fallback"]) && !empty($value["fallback"])?"active":"")?>">
 				<?php
 				if(isset($value["fallback"]) && !empty($value["fallback"])){

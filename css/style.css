@@ -6,10 +6,21 @@ a[href*="?wsuwp_snp_postshadow="]
 {position:absolute; top:-99999em; left:-999em;}
 
 
-.field_block{ padding:10px 15px; border:1px #C4C3C3 solid; background-color:#EFEFEF;}
+.field_block{ padding:10px 15px; border:1px #C4C3C3 solid; background-color:#EFEFEF;margin-top: 5px;}
 .field_block legend{margin-left: -15px !important;
-padding:0px 7px !important; font-weight:bold; font-size:1.5em;}
+padding:0px 7px !important; font-weight:bold; font-size:1.5em;
+
+border: 1px solid #d2d2d2;
+background-color: #e6e6e6;
+padding: 5px 10px !important;
+margin-bottom: -25px !important;
+}
+
+
+.fields_area{margin-top: 25px !important;}
+
 .filter_block{padding:3px 7px; border:1px #C4C3C3 solid;}
+
 
 .filter-discription{display:none;}
 .active .filter-discription:first{display:block;}
@@ -30,9 +41,15 @@ padding:0px 7px !important; font-weight:bold; font-size:1.5em;}
 
 .filter_wrapper ul{ list-style:none; padding:0px; margin:0px;}
 
-
-
-
+[class*="post-type-wsuwp_snp_"] a.button .dashicons{line-height: 27px;}
+[class*="post-type-wsuwp_snp_"] a.button.filter-add{}
+[class*="post-type-wsuwp_snp_"] a.button,
+.map_filter_wrapper ul{clear:right;}
+[class*="post-type-wsuwp_snp_"] a.button.mapping-add{margin-right:-10px;margin-top:0px;}
+ul.fallbacks {margin-top: 0px; border-left:3px solid #9A9A9A !important;}
+[class*="post-type-wsuwp_snp_"] a.button.fallback-add{
+	border-left:3px solid #9A9A9A;
+}
 
 
 #scrape-wrap .field-wrap {

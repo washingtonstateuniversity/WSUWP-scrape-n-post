@@ -60,6 +60,12 @@
 				area.html( content.split("{INPUT_NAME}").join(input_name).split("{STUB_NAME}").join(block_name) );
 				area.fadeIn(500);
 				
+				if(block.find('.filter-discription:visible').length<=0){
+					block.find('.post_fill:visible .filter-discription:first,.pre_fill:visible .filter-discription:first').show();
+				}
+				
+				
+				
 				$.wsuwp_spn.apply_map_removal();
 				$.wsuwp_spn.apply_map_fallback();
 				$.wsuwp_spn.apply_filter_blocks();
@@ -87,9 +93,11 @@
 									fall_block.removeClass('active');
 								}
 							}
+							if(block.find('.mapping-removal').length<=0){
+								block.find('.mapping-add').fadeIn(500);
+							}
 						});
-						
-						block.find('.mapping-add').fadeIn(500);
+
 					},
 					"no":function(){}
 				});
