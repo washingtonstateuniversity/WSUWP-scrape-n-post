@@ -52,6 +52,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			wp_enqueue_script('jquery-ui-datepicker');
 			wp_enqueue_script('jquery-ui-button');	
 			wp_enqueue_script('jquery-ui-tabs');
+			wp_enqueue_script('jquery-ui-dialog');
 
 			// get registered script object for jquery-ui
 			$ui = $wp_scripts->query('jquery-ui-core');

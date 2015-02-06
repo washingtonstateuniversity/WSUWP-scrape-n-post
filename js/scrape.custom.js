@@ -75,18 +75,24 @@
 				var area = self.closest('.field_block_area').eq(0);
 				var is_fallback = area.closest('.fallbacks').length>0;
 				var block_name = self.data("block_name");
-				area.fadeOut(350,function(){
-					area.html("");
-					if(is_fallback){
-						area.closest('li').remove();
-						var fall_block = block.find('.fallbacks').eq(0);	
-						if(fall_block.find('li').length==0){
-							fall_block.removeClass('active');
-						}
-					}
-				});
 				
-				block.find('.mapping-add').fadeIn(500);
+				$.wsuwp_spn.confirmation_message("Are you sure?",{
+					"yes":function(){
+						area.fadeOut(350,function(){
+							area.html("");
+							if(is_fallback){
+								area.closest('li').remove();
+								var fall_block = block.find('.fallbacks').eq(0);	
+								if(fall_block.find('li').length==0){
+									fall_block.removeClass('active');
+								}
+							}
+						});
+						
+						block.find('.mapping-add').fadeIn(500);
+					},
+					"no":function(){}
+				});
 			});
 		},
 		apply_map_fallback:function (){
@@ -138,11 +144,68 @@
 				e.preventDefault();
 				var self = $(this);
 				var area = self.closest('li');
-				area.fadeOut(350,function(){
-					area.remove();
+				$.wsuwp_spn.confirmation_message("Are you sure?",{
+					"yes":function(){
+						area.fadeOut(350,function(){
+							area.remove();
+						});
+					},
+					"no":function(){}
 				});
 			});
 		},
+		
+		
+		
+		
+		
+		confirmation_message:function (html_message,callback){
+			if($("#mess").length<=0){
+				$('body').append('<div id="mess">');
+			}
+			$("#mess").html( (typeof html_message === 'string' || html_message instanceof String) ? html_message : html_message.html() );
+			$( "#mess" ).dialog({
+				autoOpen: true,
+				resizable: false,
+				width: 350,
+				minHeight: 25,
+				modal: true,
+				draggable : false,
+				create:function(){
+					$('.ui-dialog-titlebar').remove();
+					$('body').css({overflow:"hidden"});
+				},
+				buttons:{
+					Yes:function(){
+						if($.isFunction(callback.yes)){
+							callback.yes();
+						}
+						$( this ).dialog( "close" );
+					},
+					No: function() {
+						if($.isFunction(callback.no)){
+							callback.no();
+						}
+						$( this ).dialog( "close" );
+					}
+				},
+				close: function() {
+					$.wsuwp_spn.close_dialog_modle($( "#mess" ));
+				}
+			});
+		},
+		close_dialog_modle: function(jObj){
+			jObj.dialog( "destroy" );
+			jObj.remove();
+			if($(".ui-dialog.ui-widget.ui-widget-content").length<=0){
+				$('body').css({overflow:"auto"});
+			}
+		},
+		
+		
+		
+		
+		
 	};
 	$.wsuwp_spn.int();
 })(jQuery);
