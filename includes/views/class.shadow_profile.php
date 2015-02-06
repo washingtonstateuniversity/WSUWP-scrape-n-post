@@ -96,8 +96,12 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		}
 		
 		public function mapping_block($post,$name,$input_name,$values=array()){
+			$display="";
+			if($name=="post_excerpt" && get_post_meta( $post->ID, '_'.SHADOW_KEY."_post_excerpt", true )!="yes"){
+				$display="display:none;";
+			}
 			?>
-			<fieldset class="field_block <?=$name?>">
+			<fieldset class="field_block <?=$name?>" style=" <?=$display?> ">
 				<legend><?=$name?></legend>
 				<a href="#" class="mapping-add button" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
@@ -360,13 +364,13 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 				
 				<hr/>
-				<?php
+				<?php 
 				$input_name = SHADOW_KEY."_post_excerpt";
 				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
 					'types'=>array('Yes'=>'yes','No'=>'no'),
 					'input_name'=>$input_name,
-					'meta_data'=>$meta_data!=""?$meta_data:"closed",
+					'meta_data'=>$meta_data!=""?$meta_data:"yes",
 					'description'=>'',
 					'title'=>'Use an excerpt?'
 				))?>
