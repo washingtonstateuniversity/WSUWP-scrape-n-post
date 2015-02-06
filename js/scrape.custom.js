@@ -45,6 +45,19 @@
 			$.wsuwp_spn.apply_map_fallback();
 			$.wsuwp_spn.apply_filter_blocks();
 			$.wsuwp_spn.apply_map_filter_removal();
+			
+			$('[for*="_post_status_"]').on("click",function(){
+				//console.log( ($(this).is('.ui-state-active[for*="post_status_private"]')?"block":"none") );
+				$("#post_password_area").css({"display":($(this).is('.ui-state-active[for*="post_status_private"]')?"block":"none")});
+			});
+
+
+			$('[for*="_post_excerpt_"]').on("click",function(){
+				//console.log( ($(this).is('.ui-state-active[for*="post_status_private"]')?"block":"none") );
+				$(".field_block.post_excerpt").css({"display":($(this).is('.ui-state-active[for*="post_excerpt_yes"]')?"block":"none")});
+			});
+			
+	
 		},
 		apply_map_additonal:function(){
 			$('.mapping-add').off().on('click',function(e){

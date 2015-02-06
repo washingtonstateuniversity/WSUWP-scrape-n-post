@@ -97,7 +97,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		
 		public function mapping_block($post,$name,$input_name,$values=array()){
 			?>
-			<fieldset class="field_block">
+			<fieldset class="field_block <?=$name?>">
 				<legend><?=$name?></legend>
 				<a href="#" class="mapping-add button" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
@@ -315,17 +315,26 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			<div>
 				<?php
 				$input_name = SHADOW_KEY."_post_status";
-				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$post_status_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				$scrape_core->make_radio_html(array(
 					'types'=> array_flip(get_post_statuses()),
 					'input_name'=>$input_name,
-					'meta_data'=>$meta_data!=""?$meta_data:"draft",
+					'meta_data'=>$post_status_data!=""?$post_status_data:"draft",
 					'description'=>'set this to what you want a post to be when it is created.',
 					'title'=>'Post status'
 				))?>
+				
+				<span id="post_password_area" style=" <?=($post_status_data!="private"?"display:none;":"")?> ">
+					<?php
+						$input_name = SHADOW_KEY."_post_password";
+						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					?>
+					<label> <?=_e( "Use a master Password for posts that are private" )?> </label>
+					<input type="password" name="<?=$input_name?>" value="<?=$meta_data?>" class="show_hide_pass" />
+				</span>
+				
 				<hr/>
-				
-				
+
 				<?php
 					$input_name = SHADOW_KEY."_post_type";
 					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
@@ -349,42 +358,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				<?php endforeach; ?>
 				</select>				
 				
-				<hr/>
-				<?php
-				$input_name = SHADOW_KEY."_ping_status";
-				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
-				$scrape_core->make_radio_html(array(
-					'types'=>array('Closed'=>'closed','Open'=>'open'),
-					'input_name'=>$input_name,
-					'meta_data'=>$meta_data!=""?$meta_data:"closed",
-					'description'=>'',
-					'title'=>'Pingbacks or trackbacks are allowed?'
-				))?>
 				
-				<hr/>
-				<?php
-				$input_name = SHADOW_KEY."_comment_status";
-				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
-				$scrape_core->make_radio_html(array(
-					'types'=>array('Closed'=>'closed','Open'=>'open'),
-					'input_name'=>$input_name,
-					'meta_data'=>$meta_data!=""?$meta_data:"closed",
-					'description'=>'',
-					'title'=>'Comments are allowed?'
-				))?>
-					
-					
-					
-				<hr/>
-				
-				<?php
-					$input_name = SHADOW_KEY."_post_password";
-					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
-				?>
-				<label> <?=_e( "Use a master Password for posts that are private" )?> </label>
-				<input type="password" name="<?=$input_name?>" value="<?=$meta_data?>" class="show_hide_pass" />
-
-
 				<hr/>
 				<?php
 				$input_name = SHADOW_KEY."_post_excerpt";
@@ -432,6 +406,33 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					<option <?=selected($file, $meta_data)?> value="<?=$file?>"><?=$name?></option>
 				<?php endforeach; ?>
 				</select>
+<hr/>
+				<?php
+				$input_name = SHADOW_KEY."_ping_status";
+				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$scrape_core->make_radio_html(array(
+					'types'=>array('Closed'=>'closed','Open'=>'open'),
+					'input_name'=>$input_name,
+					'meta_data'=>$meta_data!=""?$meta_data:"closed",
+					'description'=>'',
+					'title'=>'Pingbacks or trackbacks are allowed?'
+				))?>
+				
+				<hr/>
+				<?php
+				$input_name = SHADOW_KEY."_comment_status";
+				$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+				$scrape_core->make_radio_html(array(
+					'types'=>array('Closed'=>'closed','Open'=>'open'),
+					'input_name'=>$input_name,
+					'meta_data'=>$meta_data!=""?$meta_data:"closed",
+					'description'=>'',
+					'title'=>'Comments are allowed?'
+				))?>
+					
+					
+					
+
 
 				<div class="clear"></div>	
 			</div>
