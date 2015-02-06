@@ -295,7 +295,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				</span>
 				<span class="filteroptions type_str_replace type_preg_replace">
 					<label>replace</label>
-					<input type="text" name="<?=$input_name."[replace]"?>" value="<?=isset($value["replace"])?$value["replace"]:""?>" data-req='required'/>
+					<input type="text" name="<?=$input_name."[replace]"?>" value="<?=isset($value["replace"])?$value["replace"]:""?>" />
 				</span>
 				
 				
