@@ -292,6 +292,9 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					// repeat for profile_fallback_id
 				//assign string to post part
 			//
+			
+			
+			
 			$profile = (object) [
 				'post_name'=>(object) [
 					'id' => 1,
@@ -432,6 +435,34 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					]
 				]
 			];
+			
+			
+			
+			//var_dump($profile);
+			
+			
+			$post = get_post(42);//, $output, $filter 
+			//var_dump($post);
+			
+			$shadow_profile_object_mapping_names = array('post_content','post_name','post_title','post_excerpt','post_date','post_category');
+			$porfile_obj = array();
+			foreach($shadow_profile_object_mapping_names as $name){
+				$input_name = SHADOW_KEY."_map[$name]";
+				$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_'.$name, true );
+				$block = json_decode($value);
+				//var_dump($block);
+				$porfile_obj[$name]=$block;
+			}
+			
+			
+			$profile=(object)$porfile_obj;
+			/*$out = $this->get_content_part($html,$profile->post_content);
+			/var_dump($out );
+			var_dump((object)$porfile_obj);
+			die();*/
+			
+			
+			
 
 			$catName = $this->get_content_part($html,$profile->post_category);
 			//var_dump('$catName:'.$catName);
@@ -464,6 +495,11 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 					}
 				}
 			}
+			
+
+
+
+
 
 			// Create post object
 			$post_compiled = array(
@@ -473,11 +509,11 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 				'post_author'    => $author_id,
 				'post_parent'    => 0,
 				'menu_order'     => 0,
-				'post_excerpt'   => $this->get_content_part($html,$profile->post_excerpt),
-				'post_date'      => $this->get_content_part($html,$profile->post_date),//[ Y-m-d H:i:s ] // The time post was made.
+				'post_excerpt'   => (isset($profile->post_excerpt)?$this->get_content_part($html,$profile->post_excerpt):""),
+				'post_date'      => (isset($profile->post_date)?$this->get_content_part($html,$profile->post_date):""),//[ Y-m-d H:i:s ] // The time post was made.
 				'post_category'  => array($cat_ID),
-				'tags_input'     => $this->get_content_part($html,$profile->tags_input),//[ '<tag>, <tag>, ...' | array ] // Default empty.
-				'tax_input'      => $this->get_content_part($html,$profile->tax_input),//[ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
+				'tags_input'     => (isset($profile->tags_input)?$this->get_content_part($html,$profile->tags_input):""),//[ '<tag>, <tag>, ...' | array ] // Default empty.
+				'tax_input'      => (isset($profile->tax_input)?$this->get_content_part($html,$profile->tax_input):""),//[ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
 				'post_content'   => $this->get_content_part($html,$profile->post_content)
 			);
 						
@@ -485,7 +521,10 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			
 			$arrs = array_merge($post_compiled,$arr);
 			
-			//var_dump($arrs);die();
+			/*var_dump($arrs);
+			var_dump((object)$porfile_obj);
+			
+			die();*/
 			
 			//good so far let make the post
 			if(isset($arrs['ID'])){
@@ -518,7 +557,7 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 		 * @access public
 		 */
 		public function get_content_part($html,$profile_obj=NULL){
-			//var_dump($profile_obj);
+			
 			$check = (array)$profile_obj;
 			if($profile_obj==NULL || empty($check)){
 				return "";	
@@ -530,8 +569,12 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			'filter' => (object) [],
 			*/
 			$output = "";
-			if(isset($profile_obj->pre_filter) && !empty($profile_obj->pre_filter)){
-				$html = $this->filter_content($html, $profile_obj->pre_filter);
+			
+			if( isset($profile_obj->pre_filters) ){
+				$pre = (array)$profile_obj->pre_filters;
+				if(!empty($pre)){
+					$html = $this->filter_content($html, $pre);
+				}
 			}
 
 
@@ -550,15 +593,26 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 				$output = $content_obj->html();
 			}
 			
-			//would filter here
-			if(isset($profile_obj->filter)&& !empty($profile_obj->filter)){
-				$output = $this->filter_content($output, $profile_obj->filter);
-			}
 			
-			if( $output=="" && isset($profile_obj->fall_back)){ 
-				$fall_check = (array) $profile_obj->fall_back;
-				if(!empty($fall_check)){
-					$output = $this->get_content_part($html,$profile_obj->fall_back);
+			//would filter here
+			//var_dump($profile_obj->filters);
+			
+			if( isset($profile_obj->filters) ){
+				$fill = (array)$profile_obj->filters;
+				if(!empty($fill)){
+					$output = $this->filter_content($output,$fill);
+				}
+			}
+
+			if( empty($output) && isset($profile_obj->fallback) ){ 
+				//var_dump('starting fallback');
+				foreach($profile_obj->fallback as $fallback){
+					//var_dump('doing fallback');
+					//var_dump($fallback);
+					$output = $this->get_content_part($html,$fallback);
+					if(!empty($output)){
+						break;	
+					}
 				}
 			}
 			return trim($output);

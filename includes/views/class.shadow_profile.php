@@ -147,7 +147,12 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					<?php if(isset($value['pre_filters']) && !empty($value['pre_filters'])){
 						$i=0;
 						foreach($value['pre_filters'] as $filter){
-							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."[pre_filters]",$value['pre_filters'],$filter))?></li><?php
+ob_start();
+$this->build_filter_ui_block($post,$input_name.'[pre_filters]',$value['pre_filters'],$filter);
+$content = ob_get_clean();
+							?><li class="filter-template">
+							<?=preg_replace("/\{##\}/si","$i",$content)?>
+							</li><?php
 							$i++;
 						}
 					}?>
@@ -163,7 +168,12 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					<?php if(isset($value['filters']) && !empty($value['filters'])){
 						$i=0;
 						foreach($value['filters'] as $filter){
-							?><li class="filter-template"><?=str_replace("{##}",$i,$this->build_filter_ui_block($post,$input_name."[filters]",$value['filters'],$filter))?></li><?php
+ob_start();
+$this->build_filter_ui_block($post,$input_name.'[filters]',$value['filters'],$filter);
+$content = ob_get_clean();
+							?><li class="filter-template">
+							<?=preg_replace("/\{##\}/si","$i",$content)?>
+							</li><?php
 							$i++;
 						}
 					}?>
@@ -249,6 +259,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		public function build_filter_ui_block($post,$input_name,$block_obj=array(), $values=array()){
 			$value=(array)$values;
 			$input_name.="[{##}]";
+
 			?>
 			<div class="filter_block">
 				<a href="#" class="filter-removal" style="float:right;"><b>Remove<span class="dashicons dashicons-dismiss"></span></b></a>
@@ -301,6 +312,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 				
 			</div>
 			<?php
+
 		}
 
 
