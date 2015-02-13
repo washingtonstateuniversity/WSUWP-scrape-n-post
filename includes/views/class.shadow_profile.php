@@ -277,11 +277,11 @@ $content = ob_get_clean();
 
 				<!-- remove type -->
 				<span class="filteroptions type_remove">
-					<label>root</label><input type="text" name="<?=$input_name."[root]"?>" value="<?=isset($value["root"])?$value["root"]:""?>" data-req='required' placeholder=".css_selector"/><br/>
+					<label>root</label><input type="text" name="<?=$input_name."[root]"?>" value='<?=isset($value["root"])?str_replace("'","\'",$value["root"]):""?>' data-req='required' placeholder=".css_selector" class="half"/><br/>
 				</span>
 				<span class="filteroptions type_remove">
 					<label>selector</label>
-					<input type="text" name="<?=$input_name."[selector]"?>" value="<?=isset($value["selector"])?$value["selector"]:""?>" data-req='required' placeholder=".css_selector"/>
+					<input type="text" name="<?=$input_name."[selector]"?>" value='<?=isset($value["selector"])?str_replace("'","\'",$value["selector"]):""?>' data-req='required' placeholder=".css_selector" class="half"/>
 				</span>
 				
 				<!-- explode type -->
@@ -298,15 +298,15 @@ $content = ob_get_clean();
 				<!-- replace types -->
 				<span class="filteroptions type_str_replace">
 					<label>search</label>
-					<input type="text" name="<?=$input_name."[search]"?>" value="<?=isset($value["search"])?$value["search"]:""?>" data-req='required'/><br/>
+					<input type="text" name="<?=$input_name."[search]"?>" value='<?=isset($value["search"])?str_replace("'","\'",$value["search"]):""?>' data-req='required' class="full"/><br/>
 				</span>
 				<span class="filteroptions type_preg_replace">
 					<label>pattern</label>
-					<input type="text" name="<?=$input_name."[pattern]"?>" value="<?=isset($value["pattern"])?$value["pattern"]:""?>" data-req='required' placeholder="/regex|pattern/si"/><br/>
+					<input type="text" name="<?=$input_name."[pattern]"?>" value='<?=isset($value["pattern"])?str_replace("'","\'",$value["pattern"]):""?>' data-req='required' placeholder="/regex|pattern/si" class="full"/><br/>
 				</span>
 				<span class="filteroptions type_str_replace type_preg_replace">
 					<label>replace</label>
-					<input type="text" name="<?=$input_name."[replace]"?>" value="<?=isset($value["replace"])?$value["replace"]:""?>" />
+					<input type="text" name="<?=$input_name."[replace]"?>" value='<?=isset($value["replace"])?$value["replace"]:""?>'  class="full"/>
 				</span>
 				
 				
