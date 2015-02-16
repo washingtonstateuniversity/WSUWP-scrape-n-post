@@ -23,6 +23,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 */
 		public function register_shadow_profile_type() {
 			$labels = array(
+				'name'               => __( 'Shadow profile', SHADOW_KEY ),
 				'singular_name'      => __( 'Shadow profile', SHADOW_KEY ),
 				'all_items'          => __( 'All Shadow profiles', SHADOW_KEY ),
 				'add_new_item'       => __( 'Add Shadow profile', SHADOW_KEY ),
