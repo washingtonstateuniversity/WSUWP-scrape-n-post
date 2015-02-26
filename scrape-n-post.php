@@ -62,29 +62,30 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 		 */
 		public function __construct() {
 			include(SCRAPE_PATH . '/includes/class.core.php');// Include core
-			register_activation_hook(__FILE__,  '_activation');// Install
-			register_deactivation_hook(__FILE__,  '_deactivation');// turn off cron jobs
+			register_activation_hook(__FILE__, array( $this, '_activation' ) );
+			register_deactivation_hook(__FILE__, array( $this, '_deactivation' ) );
+		}
+		/**
+		 * Get the plugin into an active state
+		 * 
+		 * @global class $scrape_core
+		 *
+		 * @access public
+		 */
+		function _activation() {
+			global $scrape_core;
+			$scrape_core->install_init();		// Call plugin initializer
+		}
+		/**
+		 * Get the plugin into an inactive state
+		 *
+		 * @access public
+		 */
+		function _deactivation() {
+			//trun off the cron jobs
 		}
 	}
-	/**
-	 * Get the plugin into an active state
-	 * 
-	 * @global class $scrape_core
-	 *
-	 * @access public
-	 */
-	function _activation() {
-		global $scrape_core;
-		$scrape_core->install_init();		// Call plugin initializer
-	}
-	/**
-	 * Get the plugin into an inactive state
-	 *
-	 * @access public
-	 */
-	function _deactivation() {
-		//trun off the cron jobs
-	}
+
 	global $scrapeNpostLoad;
 	$scrapeNpostLoad = new scrapeNpostLoad();
 }
