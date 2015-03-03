@@ -700,19 +700,44 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 		public function test_crawler(){
 			global $scrape_core,$scrape_data,$_params;
 			$url = $_params['scrape_url'];
+
 			$res = wp_remote_get($url);
-			$page = wp_remote_retrieve_body( $res );
-			if(empty($page)){
-				$page = $scrape_data->scrape_get_content($url, 'body');
+			$response_code = wp_remote_retrieve_response_code( $res );
+			
+			if($response_code=="200"){
+				$page = wp_remote_retrieve_body( $res );
+				if(empty($page)){
+					$page = $scrape_data->scrape_get_content($url, 'head');
+				}
+				/*$doc = phpQuery::newDocument($page);
+				$title = pq('title')->text();*/
+				
+				$content_obj = htmlqp($page, 'head', array('ignore_parser_warnings' => TRUE));
+				$title = $content_obj->find('title')->text();
+				$error = false;
+				if(empty($title)){
+					$error = true;
+					$message=" error : no page title";
+				}else{
+					$message=' and return html <code>&lt;title&gt; '.$title.'&lt;/title&gt; </code>';	
+				}
+				if(empty($page)){
+					$message.=" -- the page also didn't render.";
+				}
+			}else{
+				$error = true;	
+				$message=" and retruned <b>${response_code}</b>";	
 			}
-			$doc = phpQuery::newDocument($page);
-			$title = pq('title')->text();
-			if(empty($title))$title=" error : no title- page didn't render";
+			
 			$scrape_core->message = array(
-					'type' => 'updated',
-					'message' => __('tested '.$url.' and return html &lt;title&gt; '.$title)
+					'type' =>  ( !$error ?'updated':'error'),
+					'message' => ( !$error ? '<span class="dashicons dashicons-yes"></span>' : '<span class="dashicons dashicons-no-alt"></span>') . __( 'tested <code>`'.$url.'`</code> '.$message)
 				);
 		}
+		
+
+		
+		
 		/**
 		 * Start the crawl from this url.
 		 * 
