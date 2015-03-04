@@ -22,7 +22,8 @@
 			$.wsuwp_spn.apply_map_filter_removal();
 			$.wsuwp_spn.apply_filter_config();
 			$.wsuwp_spn.int_pass_show();
-			
+			$.wsuwp_spn.apply_map_show();
+			$.wsuwp_spn.meta_choice_init();
 			
 			$('[for*="_post_status_"]').on("click",function(){
 				//console.log( ($(this).is('.ui-state-active[for*="post_status_private"]')?"block":"none") );
@@ -56,6 +57,39 @@
 				});
 			});
 		},
+
+		meta_choice_init: function(){
+			$('#meta_choice').on("change",function(){
+				var self = $(this);
+				$('.field_block.'+self.val()).fadeIn(500,function(){
+					self.find(':selected').removeAttr('selected').attr('disabled',true);
+					
+				});
+			});
+		},
+
+		apply_map_show:function(){
+			$('.mapping-showhide').off().on('click',function(e){
+				e.preventDefault();
+				var self = $(this);
+				var block = self.closest('.field_block');
+				var area = block.find('.fields_area').eq(0);
+				
+				if(self.is(".open")){
+					area.fadeOut(500,function(){
+						self.removeClass("open");
+						area.addClass("closed");
+					});
+				}else{
+					area.fadeIn(500,function(){
+						self.addClass("open");
+						area.removeClass("closed");
+					});
+				}
+			});
+		},
+		
+		
 		
 		
 		apply_map_additonal:function(){
@@ -75,14 +109,12 @@
 				if(block.find('.filter-discription:visible').length<=0){
 					block.find('.post_fill:visible .filter-discription:first,.pre_fill:visible .filter-discription:first').show();
 				}
-				
-				
-				
+
 				$.wsuwp_spn.apply_map_removal();
 				$.wsuwp_spn.apply_map_fallback();
 				$.wsuwp_spn.apply_filter_blocks();
 				$.wsuwp_spn.apply_map_filter_removal();
-				
+				block.find('.mapping-showhide').fadeIn(500,function(){ $(this).addClass("open"); area.removeClass("closed"); });
 			});
 		},
 		apply_map_removal:function (){
@@ -107,6 +139,7 @@
 							}
 							if(block.find('.mapping-removal').length<=0){
 								block.find('.mapping-add').fadeIn(500);
+								block.find('.mapping-showhide').fadeOut(500,function(){ $(this).removeClass("open"); area.addClass("closed"); });
 							}
 						});
 

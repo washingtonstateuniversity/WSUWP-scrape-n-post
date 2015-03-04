@@ -70,18 +70,67 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * not really the meta of the post, but it'll work for our needs
 		 *
 		 * @global class $scrape_core
+		 * @gloabl class $scrape_data
 		 *
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_shadow_feild_map_meta_box( $post ) {
-			global $scrape_core;
-			$mapable_parts=array('post_content','post_name','post_title','post_excerpt','post_date','post_category');//,'post_author','post_parent','menu_order','tags_input','tax_input');
-			foreach($mapable_parts as $name){
-				$value=array();
-				$input_name = SHADOW_KEY."_map[$name]";
-				$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_'.$name, true );
-				$this->mapping_block($post,$name,$input_name,json_decode($value));
-			}
+			global $scrape_core, $scrape_data;
+			
+			
+			?><fieldset id="post_block" style=" <?=$display?> ">
+				<legend>Post Blocks</legend>
+				<div id="mapping_meta_template" style="padding:10px 15px; border:1px solid #E9E9E9;">
+				<?php
+						$mapable_parts=array('post_content', 'post_name', 'post_title', 'post_excerpt', 'post_date', 'post_category');//,'post_author','post_parent','menu_order','tags_input','tax_input');
+						foreach($mapable_parts as $name){
+							$value=array();
+							$input_name = SHADOW_KEY."_map[$name]";
+							$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_'.$name, true );
+							$this->mapping_block( $post, $name, $input_name, json_decode($value) );
+						}
+					?>
+				</div>
+			</fieldset>
+			<?php
+
+			?><fieldset id="meta_block" style=" <?=$display?> ">
+				<legend>Meta Blocks</legend>
+				<div id="mapping_meta_template" style="padding:10px 15px; border:1px solid #E9E9E9;">
+				
+				<?php
+					$mapable_meta_parts=$scrape_data->get_all_meta_keys();
+					$meta_values=array();
+					foreach($mapable_meta_parts as $name){
+						$value=array();
+						$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_meta__'.$name, true );
+						if(!empty($value)){
+							$meta_values[$name]=$value;
+						}
+					}
+					
+					?>
+				
+				
+					<label>Add a meta value map: </label>
+					<?php $mapable_meta_parts=$scrape_data->get_all_meta_keys(); ?>
+					<select id="meta_choice">
+						<option>Select</option>
+					<?php foreach($mapable_meta_parts as $name) : ?>
+						<option <?=(isset($meta_values[$name])?"disabled":"")?>><?=$name?></option>
+					<?php endforeach;?>
+					</select>
+				<?php
+					$mapable_meta_parts=$scrape_data->get_all_meta_keys();
+					foreach($mapable_meta_parts as $name){
+						$input_name = SHADOW_KEY."_map[meta__$name]";
+						$this->mapping_block( $post, $name, $input_name, isset($meta_values[$name]) ? json_decode($meta_values[$name]) : array(), isset($meta_values[$name]) );
+					}
+					?>
+				</div>
+			</fieldset>
+			<?php
+		
 		}
 		
 		public function add_block_tempates(){
@@ -96,17 +145,18 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			<?php		
 		}
 		
-		public function mapping_block($post,$name,$input_name,$values=array()){
+		public function mapping_block( $post, $name, $input_name, $values=array(), $show=true){
 			$display="";
-			if($name=="post_excerpt" && get_post_meta( $post->ID, '_'.SHADOW_KEY."_post_excerpt", true )!="yes"){
+			if( !$show || ( $name=="post_excerpt" && get_post_meta( $post->ID, '_'.SHADOW_KEY."_post_excerpt", true )!="yes" ) ){
 				$display="display:none;";
 			}
 			?>
 			<fieldset class="field_block <?=$name?>" style=" <?=$display?> ">
 				<legend><?=$name?></legend>
+				<a href="#" class="mapping-showhide <?=(isset($open_value)?"open":"")?>" style=" <?=(isset($values) && !empty($values)?"":"display:none;")?> " data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b><span class="dashicons dashicons-admin-collapse"></span><span class="show_text">Show</span></b></a>
 				<a href="#" class="mapping-add button" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
-				<div class="fields_area">
+				<div class="fields_area <?=( isset($is_open) || (!isset($values) || empty($values)) ? "" : "closed" )?>">
 				<?php if(isset($values) && !empty($values)):?>
 					<?=$this->feild_block_stub($post,$name,$input_name,$values)?>
 				<?php endif;?>

@@ -588,15 +588,14 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		/*
 		 * Return detected meta keys.
 		 *
-		 * @global array $_params
+		 * @global class $wpdb
 		 * 
-		 * @param string $where
+		 * @param string $post_type
 		 * 
 		 * @return array
 		 */
-		public function generate_meta_keys(){
+		public function get_meta_keys( $post_type='post' ){
 			global $wpdb;
-			$post_type = 'foods';
 			$query = "
 				SELECT DISTINCT($wpdb->postmeta.meta_key) 
 				FROM $wpdb->posts 
@@ -608,9 +607,31 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				AND $wpdb->postmeta.meta_key NOT RegExp '(^[0-9]+$)'
 			";
 			$meta_keys = $wpdb->get_col($wpdb->prepare($query, $post_type));
-			set_transient('foods_meta_keys', $meta_keys, 60*60*24); # 1 Day Expiration
+			set_transient($post_type.'_meta_keys', $meta_keys, 60*60*24); # 1 Day Expiration
 			return $meta_keys;
+		}
+		/*
+		 * Return detected meta keys.
+		 *
+		 * @global class $wpdb
+		 * 
+		 * @return array
+		 */
+		public function get_all_meta_keys($unique=true){
+			global $wpdb;
+			$post_types      = get_post_types(array(
+				'public'   => true,
+			),'names' , 'and' );
+			
+			$meta_keys = array();
+			foreach( $post_types as $post_type){
+				$meta_keys = array_merge($meta_keys,get_meta_keys( $post_type ));
+			}
+			return $unique ? array_unique ($meta_keys) : $meta_keys;
 		}	
+		
+		
+		
 	}
 	global $scrape_data;
 	$scrape_data = new scrape_data();
