@@ -518,10 +518,13 @@ $content = ob_get_clean();
 		/**
 		 * Save a profiles meta saved through the object's meta box.
 		 *
+		 * @global class $scrape_data
+		 *
 		 * @param int     $post_id The ID of the post being saved.
 		 * @param object  $post The post being saved.
 		 */
 		public function save_shadow_profile_object( $post_id, $post ) {
+			global $scrape_data;
 			$shadow_profile_object_names = array('post_status','post_type','post_author','ping_status','comment_status','post_password','post_excerpt','post_category','post_category_method','page_template');
 			foreach($shadow_profile_object_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
@@ -544,6 +547,23 @@ $content = ob_get_clean();
 					}
 				}
 			}
+			
+			
+			$mapable_meta_parts=$scrape_data->get_all_meta_keys();
+			foreach($mapable_meta_parts as $name){
+				$input_name = SHADOW_KEY."_map[meta__$name]";
+				$this->mapping_block( $post, $name, $input_name, isset($meta_values[$name]) ? json_decode($meta_values[$name]) : array(), isset($meta_values[$name]) );
+				
+				if ( isset( $_POST[SHADOW_KEY.'_map']['meta__'.$name] ) ) {
+					$value = json_encode($_POST[SHADOW_KEY.'_map']['meta__'.$name]);
+					if ( empty( trim( $value ) ) ) {
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_map_meta__'.$name );
+					} else {
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_meta__'.$name, json_encode($_POST[SHADOW_KEY.'_map']['meta__'.$name]) );
+					}
+				}
+			}
+
 			return;
 		}
 
