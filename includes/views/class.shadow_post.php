@@ -19,8 +19,6 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param string $new_status string of new value
 		 * @param string $old_status string of old value
 		 * @param object $post Post object
-		 * 
-		 * @access public
 		 */
 		public function force_shadow_post_status( $new_status, $old_status,  $post ) {
 			if ( $post->post_type == SHADOW_POST_TYPE_POST && $new_status == 'publish' && $old_status  != $new_status ) {
