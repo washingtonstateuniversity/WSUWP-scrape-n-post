@@ -15,10 +15,54 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @param array $arr
 		 */
 		public function add_queue($arr = array()) {
-			global $wpdb;
-			$arr['added_date'] = current_time('mysql');
-			$table_name         = $wpdb->prefix . "scrape_n_post_queue";
-			$rows_affected      = $wpdb->insert($table_name, $arr);
+				$parent_id = isset($arr['post_id']) ? $arr('post_id') : 0;
+				// Create post object
+				$post_compiled = array(
+					'post_type'      => SHADOW_POST_TYPE_POST,
+					'post_name'      => $arr['url'],
+					'post_title'     => $arr['url'],
+					'post_author'    => 0,
+					'post_parent'    => 0,//may want to use this to tie to the parent?
+					'menu_order'     => 0,
+					'post_excerpt'   => '',
+					'post_date'      => current_time('mysql'),
+					'post_category'  => array(),
+					'tags_input'     => '',
+					'tax_input'      => '',
+					'post_content'   => $arr['html']
+				);
+				$arrs = array_merge($post_compiled,$arr);
+
+				
+				var_dump($arrs);
+				/*var_dump((object)$porfile_obj);
+				
+				die();*/
+				
+				//good so far let make the post
+				if(isset($arr['shadow_id'])){
+					$post_id = wp_update_post( $arrs );
+				}else{
+					$post_id = wp_insert_post( $arrs );	
+				}
+				if( !is_wp_error($post_id) ) {
+					update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.'url', $arr['url'] );
+					update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.'ignored', '0' );
+					update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.'tied_post_id', $parent_id);
+					update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.'last_http_status', $arr['http_status'] );
+					$scrape_core->message = array(
+						'type' => isset($arrs['ID']) ? 'updated' : 'added',
+						'message' => isset($arrs['ID']) ?  __('Updated post') : __('Added new Post')
+					);
+				}else{
+					$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Post error '.$post_id->get_error_message())
+					);	
+				}
+				//var_dump($arrs);
+				//die();
+			
 			//needs message
 		}
 		
@@ -215,218 +259,11 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			//$doc = phpQuery::newDocumentHTML($raw_html['body'], $currcharset);
 			//phpQuery::selectDocument($doc);
 
-//$html5 = new HTML5();
-//$dom = $html5->loadHTML($html);
-$html=$raw_html['body'];
+			//$html5 = new HTML5();
+			//$dom = $html5->loadHTML($html);
+			$html=$raw_html['body'];
 
 			$obj = get_post_type_object( $options['post_type'] );
-
-/* this is the basic map for a post, just need the meta map
-Not all of this will be set at the post level but set at the run 
-level in refernce to the options that are pull
-
-//compiled layer
-$post_compiled = array(
-  'post_content'   => [ <string> ] // The full text of the post.
-  'post_name'      => [ <string> ] // The name (slug) for your post
-  'post_title'     => [ <string> ] // The title of your post.
-  'post_author'    => [ <user ID> ] // The user ID number of the author. Default is the current user ID.
-  'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
-  'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
-  'post_excerpt'   => [ <string> ] // For all your post excerpt needs.
-  'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
-  'post_category'  => [ array(<category id>, ...) ] // Default empty.
-  'tags_input'     => [ '<tag>, <tag>, ...' | array ] // Default empty.
-  'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
-);
-$post_compiled_meta = array();
-//from defaults
-$post_base = array(
-  'post_status'    => [ 'draft' | 'publish' | 'pending'| 'future' | 'private' | custom registered status ] // Default 'draft'.
-  'post_type'      => [ 'post' | 'page' | 'link' | 'nav_menu_item' | custom post type ] // Default 'post'.
-  'post_author'    => [ <user ID> ] // The user ID number of the author. Default is the current user ID.
-  'ping_status'    => [ 'closed' | 'open' ] // Pingbacks or trackbacks allowed. Default is the option 'default_ping_status'.
-  'post_parent'    => [ <post ID> ] // Sets the parent of the new post, if any. Default 0.
-  'menu_order'     => [ <order> ] // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
-  'to_ping'        => [ <string> ] // Space or carriage return-separated list of URLs to ping. Default empty string.
-  'pinged'         => [ <string> ] // Space or carriage return-separated list of URLs that have been pinged. Default empty string.
-  'post_password'  => [ <string> ] // Password for post, if any. Default empty string.
-  'post_excerpt'   => [ <string> ] // For all your post excerpt needs.
-  'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
-  'comment_status' => [ 'closed' | 'open' ] // Default is the option 'default_comment_status', or 'closed'.
-  'post_category'  => [ array(<category id>, ...) ] // Default empty.
-  'tags_input'     => [ '<tag>, <tag>, ...' | array ] // Default empty.
-  'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
-  'page_template'  => [ <string> ] // Requires name of template file, eg template.php. Default empty.
-);
-merge into each other droping emtpies first
-$post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
-// make post
-// add $post_compiled_meta
-// report
-// repeat
- */
-
-				
-			//NOTE WHAT IS GOIGN TO BE DONE IS A EVAL FOR A PATTERN
-			//remove placeholder
-				
-			//foreach profile query not fallback
-				//$profile_obj = get_meta profile_id
-				//$content = get_content($profile_obj);
-				//if $content == "" && profile_fallback > 0
-					// repeat for profile_fallback_id
-				//assign string to post part
-			//
-			
-			
-			
-			$profile = (object) [
-				'post_name'=>(object) [
-					'id' => 1,
-					'root_selector' => 'html',
-					'selector' => 'title',
-					'pull_from' => 'text',
-					'pre_filter' => [],
-					'filter' => [],
-					'fall_back' =>(object) [
-						'id' => 2,
-						'root_selector' => '#siteID',
-						'selector' => 'h1:first',
-						'pull_from' => 'text',
-						'pre_filter' => [],
-						'filter' => [],
-						'fall_back' =>(object) [
-							'id' => 3,
-							'root_selector' => 'h2:first',
-							'selector' => '',
-							'pull_from' => 'text',
-							'pre_filter' => [],
-							'filter' => []
-						]
-					]
-				],
-				'post_title'=>(object) [
-					'id' => 1,
-					'root_selector' => '#siteID',
-					'selector' => 'h1:eq(0)',
-					'pull_from' => 'text',
-					'pre_filter' => [],
-					'filter' => [],
-					'fall_back' =>(object) [
-						'id' => 2,
-						'root_selector' => 'h2:eq(0)',
-						'selector' => '',
-						'pull_from' => 'text',
-						'pre_filter' => [
-								(object) [
-									'type'=>'str_replace',
-									'search'=>'<H2>',
-									'replace'=>'<h2>'
-								],
-								(object) [
-									'type'=>'str_replace',
-									'search'=>'</H2>',
-									'replace'=>'</h2>'
-								]
-							],
-						'filter' => [],
-						'fall_back' =>(object) [
-							'id' => 3,
-							'root_selector' => 'html',
-							'selector' => 'title',
-							'pull_from' => 'text',
-							'pre_filter' => [],
-							'filter' => [
-								(object) [
-									'type'=>'str_replace',
-									'search'=>'.htm',
-									'replace'=>''
-								],
-								(object) [
-									'type'=>'str_replace',
-									'search'=>'_',
-									'replace'=>' '
-								],
-								(object) [
-									'type'=>'preg_replace',
-									'pattern'=>'/\d+\.\d+/',
-									'replace'=>''
-								]
-							]
-						]
-					]
-				],
-				'post_category'=>(object) [
-					'id' => 1,
-					'root_selector' => 'html',
-					'selector' => 'p:eq(0)',
-					'pull_from' => 'innerHTML',
-					'pre_filter' => [
-						(object) [
-							'type'=>'str_replace',
-							'search'=>'<P>',
-							'replace'=>'<p>'
-						],
-						(object) [
-							'type'=>'str_replace',
-							'search'=>'</P>',
-							'replace'=>'</p>'
-						]
-					],
-					'filter' => [
-						(object) [
-							'type'=>'explode',
-							'on'=>'<br/>',
-							'select'=>'0'
-						]
-					],
-				],
-				'post_content'=>(object) [
-					'id' => 1,
-					'root_selector' => 'html',
-					'selector' => 'div#main:eq(0)',
-					'pull_from' => 'innerHTML',
-					'pre_filter' => [],
-					'filter' => [],
-					'fall_back' =>(object) [
-						'id' => 2,
-						'root_selector' => 'body',
-						'selector' => '',
-						'pull_from' => 'innerHTML',
-						'pre_filter' => [
-							(object) [
-								'type'=>'remove',
-								'root'=>'body',
-								'selector'=>'h3:eq(0)'
-							],
-							(object) [
-								'type'=>'remove',
-								'root'=>'body',
-								'selector'=>'p:eq(0)'
-							],
-							(object) [
-								'type'=>'remove',
-								'root'=>'body',
-								'selector'=>'h2:eq(0)'
-							],
-							(object) [
-								'type'=>'remove',
-								'root'=>'body',
-								'selector'=>'p:eq(0)'
-							]
-						],
-						'filter' => [],
-						'fall_back' =>(object) []
-					]
-				]
-			];
-			
-			
-			
-			//var_dump($profile);
-			
-			
 			$post = get_post(42);//, $output, $filter 
 			//var_dump($post);
 			
@@ -575,9 +412,9 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 			}
 			
 			$grab = $profile_obj->pull_from;
-			if( $grab == "text"){
+			if( $grab == "text" ){
 				$output = $content_obj->text();
-			}elseif($grab == "innerHTML"){
+			}elseif( $grab == "innerHTML" ){
 				$output = $content_obj->innerHTML();
 			}else{
 				$output = $content_obj->html();
@@ -666,11 +503,11 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 		 * @param string $url
 		 */	
 		public function crawl_from($url=NULL) {
-			global $_params,$scrape_core;
+			global $_params,$scrape_core,$scrape_data;
 			if(isset($_params['url'])){
 				$options = get_option( 'scrape_options', array('crawl_depth'=>5) ); //@todo bring this option in line with the abstracted
 				$depth = $options['depth']; 
-				$this->traverse_all_urls($_params['url'],$depth);
+				$scrape_data->traverse_all_urls($_params['url'],$depth);
 			}
 		}
 			

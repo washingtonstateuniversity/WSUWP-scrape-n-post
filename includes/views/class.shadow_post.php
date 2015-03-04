@@ -94,14 +94,15 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_cached_html( $post ) {
+
 			?>
 			<div id="wsuwp-snp-display-content">
 				<p class="description">Html from url</p>
 				<p class="description"><strong>note:</strong> edits to this will not be saved. This is purely informational only.</p>
 				<div class="html">
 					<label for="wsuwp-snp-html">Last captured html:</label><br/>
-					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?=$post->content?></textarea>
-					<input type="hidden" name="content" value="<?=$post->content?>" />
+					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?=$post->post_content?></textarea>
+					<textarea name="content" style="width:0%; max-height:0px;"><?=$post->post_content?></textarea>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -167,9 +168,9 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param WP_Post $post
 		 */
 		public function display_object_url_meta_box( $post ) {
-			$object_url = get_post_meta( $post->ID, '_wsuwp_spn_url', true );
+			$object_url = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_url', true );
 			$object_url = ! empty( $object_url ) ? esc_url( $object_url ) : '';
-			$http_status = get_post_meta( $post->ID, '_wsuwp_spn_last_http_status', true );
+			$http_status = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_last_http_status', true );
 			$http_status = ! empty( $http_status ) ? $http_status : 'not checked';
 			?>
 			<div id="wsuwp-snp-display">

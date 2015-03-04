@@ -132,16 +132,30 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				}
 				if( $obj['type'] == "page" ){
 					$exist=$scrape_core->_is_exist('url',$href);
+
 					if(!$exist){
+						
+						$raw_html = wp_remote_get($href);//$scrape_data->scrape_get_content($id, 'html');
+						//var_dump($raw_html);die();
+						if(is_a($raw_html, 'WP_Error') || $raw_html=="ERROR::404"){
+							$scrape_core->message = array(
+								'type' => 'error',
+								'message' => __('Failed '.print_r($raw_html))
+							);
+						}
+
 						$scrape_actions->add_queue(array(
 							'url'=>$href,
 							'type'=>$obj['type'],
-							'http_status'=>200
+							'http_status'=>$raw_html['response']['code'],
+							'html'=>($raw_html['response']['code']!=200)?"":$raw_html['body']
 						));
 						
 						if($scrape_options['add_post_on_crawl']){
 							$scrape_actions->make_post($href);
 						}
+											var_dump($href);
+					var_dump($exist);die();
 					}
 					$this->wanted[$href]=$obj;
 					$this->traverse_all_urls($href,$depth - 1);
@@ -625,7 +639,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			
 			$meta_keys = array();
 			foreach( $post_types as $post_type){
-				$meta_keys = array_merge($meta_keys,get_meta_keys( $post_type ));
+				$meta_keys = array_merge($meta_keys,$this->get_meta_keys( $post_type ));
 			}
 			return $unique ? array_unique ($meta_keys) : $meta_keys;
 		}	

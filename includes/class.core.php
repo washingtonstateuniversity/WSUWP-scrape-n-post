@@ -230,11 +230,22 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 * 
 		 * @todo will be a post typed item later on
 		 */
-		public function _is_exist($column = '', $value = '') {
+		 //@todo note that the 'post_type'  => 'any' would fail.  the query was not returning anything. BUG?
+		public function _is_exist( $column = '', $value = '', $post_type = SHADOW_POST_TYPE_POST ) {
 			global $wpdb;
-			$table_name = $wpdb->prefix . "scrape_n_post_queue";
-			$result     = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE " . $column . " = '" . $value . "'");
-			return (count($result) > 0);
+			$args = array(
+				'meta_query' => array(
+					array(
+						'key' => '_'.SHADOW_KEY.'_'.$column,
+						'value' => $value,
+					)
+				),
+				'post_status'=> 'any',
+				'post_type'  => $post_type,
+				'nopaging'   => true
+			);
+			$posts = get_posts($args);
+			return (count($posts) > 0);
 		}
 
 		/**
