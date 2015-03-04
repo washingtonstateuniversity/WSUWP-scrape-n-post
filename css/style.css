@@ -309,4 +309,7 @@ float: left;
 	font-size: 1em;
 	width: auto;
 }
-
+.mapping-showhide:focus,.mapping-showhide *:focus{
+    outline: 0;
+	box-shadow:none;
+}

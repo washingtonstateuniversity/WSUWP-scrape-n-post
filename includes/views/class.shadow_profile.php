@@ -117,7 +117,9 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					<select id="meta_choice">
 						<option>Select</option>
 					<?php foreach($mapable_meta_parts as $name) : ?>
-						<option <?=(isset($meta_values[$name])?"disabled":"")?>><?=$name?></option>
+						<?php if(strpos($name,'_'.SHADOW_KEY)===false) : ?>
+							<option <?=(isset($meta_values[$name])?"disabled":"")?>><?=$name?></option>
+						<?php endif;?>
 					<?php endforeach;?>
 					</select>
 				<?php
