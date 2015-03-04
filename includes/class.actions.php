@@ -519,6 +519,12 @@ $post_arrs = array_merge(array_filter( $post_compiled, 'strlen' ),$post_base);
 				$post_id = wp_insert_post( $arrs );	
 			}
 			if( !is_wp_error($post_id) ) {
+				foreach($profile as $key=>$meta_profile){
+					if(strpos($key,'meta__')!==false){
+						$meta = $this->get_content_part($html,$meta_profile);
+						update_post_meta( $post_id, str_replace('meta__','',$key), $meta_profile );
+					}
+				}
 				$scrape_core->message = array(
 					'type' => isset($arrs['ID']) ? 'updated' : 'added',
 					'message' => isset($arrs['ID']) ?  __('Updated post') : __('Added new Post')
