@@ -29,15 +29,11 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 					'post_category'  => array(),
 					'tags_input'     => '',
 					'tax_input'      => '',
+					'post_status'      => 'private',
 					'post_content'   => $arr['html']
 				);
 				$arrs = array_merge($post_compiled,$arr);
 
-				
-				var_dump($arrs);
-				/*var_dump((object)$porfile_obj);
-				
-				die();*/
 				
 				//good so far let make the post
 				if(isset($arr['shadow_id'])){
@@ -443,21 +439,6 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				}
 			}
 			return trim($output);
-			
-			
-			// search for the match in the doc
-			// - what it the $root element?
-			// - what is the $selector to use?
-			
-			// if doc match and + strlen;
-				// = if type is text push to ->text() else push to html;
-				// if == "" && profile_fallback > 0
-					// repeat for profile_fallback
-					
-			// foreach filter
-				// $content = filter_content($content, $filter_id)
-			// if $content != "" || $content == "" && profile_fallback <= 0
-				// repeat for profile_fallback_id
 		}
 
 		/**

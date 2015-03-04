@@ -143,7 +143,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 								'message' => __('Failed '.print_r($raw_html))
 							);
 						}
-
+						
 						$scrape_actions->add_queue(array(
 							'url'=>$href,
 							'type'=>$obj['type'],
@@ -154,8 +154,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 						if($scrape_options['add_post_on_crawl']){
 							$scrape_actions->make_post($href);
 						}
-											var_dump($href);
-					var_dump($exist);die();
+
 					}
 					$this->wanted[$href]=$obj;
 					$this->traverse_all_urls($href,$depth - 1);
