@@ -11,8 +11,112 @@ if ( ! class_exists( 'shadow_post' ) ) {
 			add_action( 'add_meta_boxes', array( $this, 'add_shadow_post_meta_boxes' ), 11, 1 );
 			add_filter('post_row_actions', array( $this, 'shadow_post_action_row' ), 10, 2);
 			add_action( 'save_post', array( $this, 'save_shadow_post_object' ), 15, 2 );
+			
+			add_action( 'admin_footer-edit.php', array( $this, 'custom_bulk_admin_footer' ) );
+			add_action( 'load-edit.php', array( $this, 'custom_bulk_action' ) );
+			add_action( 'admin_notices', array( $this, 'custom_bulk_admin_notices' ) );
+			
 			add_action( 'transition_post_status', array( $this, 'force_shadow_post_status' ), 15, 3 );
 		}
+
+
+
+	
+	 
+		public function custom_bulk_admin_footer() {
+			global $post_type;
+			if( $post_type == SHADOW_POST_TYPE_POST ) {
+				?>
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery('<option>').val('import').text('<?php _e('Import')?>').appendTo("select[name='action']");
+						jQuery('<option>').val('import').text('<?php _e('Import')?>').appendTo("select[name='action2']");
+					});
+				</script>
+				<?php
+			}
+		}
+	
+	
+	/*
+	        global $scrape_actions,$_param;
+        if ('ignore' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					//add ignore flag
+                    //$scrape_actions->update_queue($url);
+                }
+            }
+        }
+        if ('topost' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					$scrape_actions->make_post($url,array());
+                }
+            }
+        }
+        if ('reimport' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					$scrape_actions->reimport_post($url);
+                }
+            }
+        }	
+        if ('detach' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					$scrape_actions->detach_post($url);
+                }
+            }
+        }		*/
+		public function custom_bulk_action() {
+			global $scrape_actions, $_params;
+			//get the action
+			$wp_list_table = _get_list_table('WP_Posts_List_Table');
+			$action = $wp_list_table->current_action();
+			
+			//security check
+			//check_admin_referer('edit.php');
+			switch( $action ) {
+				//Perform the action
+				case 'import':
+					$imported = 0;
+					if(isset($_params['post'] )){
+						foreach( $_params['post']  as $post_id ) {
+							$url = get_post_meta($post_id, '_'.SHADOW_KEY.'_url', true );
+							if ( !$scrape_actions->make_post( $url, array() ) ){
+								wp_die( __('Error exporting post.') );
+							}
+							$imported++;
+						}
+					}
+					// build the redirect url
+					$sendback = add_query_arg( array( 'imported' => $imported, 'ids' => join(',', $post_ids) ), $sendback );
+					break;
+				default: return;
+			}
+			//Redirect client
+			wp_redirect($sendback);
+			return;
+		}
+	
+	 
+		public function custom_bulk_admin_notices() {
+			global $post_type, $pagenow, $_params;
+			if( $post_type == SHADOW_POST_TYPE_POST && isset( $_params['imported'] ) && (int) $_params['imported']>0 ) {
+				if( $_params['imported']>0 ){
+					$message = sprintf( _n( 'Post imported.', '%s posts exported.', $_params['imported'] ), number_format_i18n( $_params['imported'] ) );
+				}else{
+					$message = sprintf( __( 'No Posts were imported.' ) );
+				}
+				echo "<div class='updated'><p>{$message}</p></div>";
+			}
+		}
+
+
+
+
+
 
 		/**
 		 * force post status to be private for the shadow posts.

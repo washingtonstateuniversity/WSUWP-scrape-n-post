@@ -224,25 +224,19 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @param int $target_id
 		 * @param array $arr
 		 */	
-		public function make_post($target_id=NULL, $arr = array()){
+		public function make_post( $_url=NULL, $arr = array() ){
 			global $wpdb,$wp_query, $current_user,$scrape_core,$scrape_data,$_params;
 			
-			if( $target_id==NULL && !isset($_params['url']) ){
-				$scrape_core->message = array(
-						'type' => 'error',
-						'message' => __('Failed to recived a proper post id to work with before getting the remote content.')
-					);
-				 return; // do message
-			}else{
-				$url = $target_id==NULL ? $_params['url'] : $target_id;
+			if( $_url==NULL ){
+				wp_die( __('Failed to recived a proper URK to work with before getting the remote content.') );	 
 			}
-			$raw_html = wp_remote_get($url);//$scrape_data->scrape_get_content($id, 'html');
+			$raw_html = wp_remote_get( $_url );//$scrape_data->scrape_get_content($id, 'html');
 			//var_dump($raw_html);
-			if(is_a($raw_html, 'WP_Error') || $raw_html=="ERROR::404"){
+			if( is_a($raw_html, 'WP_Error') || $raw_html=="ERROR::404" ){
 				$scrape_core->message = array(
-						'type' => 'error',
-						'message' => __('Failed '.print_r($raw_html))
-					);
+					'type' => 'error',
+					'message' => __('Failed '.print_r($raw_html))
+				);
 				//var_dump($url); die(); //should be a message no? yes!
 			}
 			$currcharset = get_bloginfo('charset');
@@ -251,19 +245,25 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			//profile to parse the data on
 			$scrape_profile = $scrape_data->get_scraping_profile();
 
-
-			//$doc = phpQuery::newDocumentHTML($raw_html['body'], $currcharset);
-			//phpQuery::selectDocument($doc);
-
-			//$html5 = new HTML5();
-			//$dom = $html5->loadHTML($html);
 			$html=$raw_html['body'];
 
 			$obj = get_post_type_object( $options['post_type'] );
 			$post = get_post(42);//, $output, $filter 
 			//var_dump($post);
-			
-			$shadow_profile_object_mapping_names = array('post_content','post_name','post_title','post_excerpt','post_date','post_category');
+
+			// Get user info
+			$current_user = get_userdata( get_current_user_id() );
+			$user         = $current_user; // current_user is default, w/should get it as a choice
+	
+			if($user){
+				$author_id=$user->ID;
+			}
+			if($author_id<=0){
+				wp_die( __( 'User not found to assign to an author' ).print_r($user.true) );
+			}
+
+
+			$shadow_profile_object_mapping_names = array( 'post_content', 'post_name', 'post_title', 'post_excerpt', 'post_date', 'post_category' );
 			$porfile_obj = array();
 			foreach($shadow_profile_object_mapping_names as $name){
 				$input_name = SHADOW_KEY."_map[$name]";
@@ -275,30 +275,10 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			
 			
 			$profile=(object)$porfile_obj;
-			/*$out = $this->get_content_part($html,$profile->post_content);
-			/var_dump($out );
-			var_dump((object)$porfile_obj);
-			die();*/
-			
-			
-			
 
 			$catName = $this->get_content_part($html,$profile->post_category);
-			//var_dump('$catName:'.$catName);
 
-			//var_dump('$content:'.$content);die();
-			//die();
 
-			//EOF PATTERN AREA
-			
-			
-			// Get user info
-			$current_user = get_userdata( get_current_user_id() );
-			$user         = $current_user;
-	
-			if($user) $author_id=$user->ID; // Outputs 1
-			if($author_id<=0)die('user not found');
-			
 			$cat_ID = 0;
 			if($catName!=""){
 				$catSlug = sanitize_title_with_dashes($catName);
@@ -351,25 +331,22 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			}else{
 				$post_id = wp_insert_post( $arrs );	
 			}
-			if( !is_wp_error($post_id) ) {
-				foreach($profile as $key=>$meta_profile){
-					if(strpos($key,'meta__')!==false){
-						$meta = $this->get_content_part($html,$meta_profile);
-						update_post_meta( $post_id, str_replace('meta__','',$key), $meta_profile );
-					}
-				}
-				$scrape_core->message = array(
-					'type' => isset($arrs['ID']) ? 'updated' : 'added',
-					'message' => isset($arrs['ID']) ?  __('Updated post') : __('Added new Post')
-				);
-			}else{
-				$scrape_core->message = array(
-					'type' => 'error',
-					'message' => __('Post error '.$post_id->get_error_message())
-				);	
+			if( is_wp_error($post_id) ) {
+				wp_die( __('Post error '.$post_id->get_error_message()) );
 			}
+			foreach( $profile as $key=>$meta_profile ){
+				if( strpos($key,'meta__') !== false ){
+					$meta = $this->get_content_part($html,$meta_profile);
+					update_post_meta( $post_id, str_replace('meta__','',$key), $meta_profile );
+				}
+			}
+			$scrape_core->message = array(
+				'type' => isset($arrs['ID']) ? 'updated' : 'added',
+				'message' => isset($arrs['ID']) ?  __('Updated post') : __('Added new Post')
+			);
+			return true;
 			//all good let tie the post to the url
-			$this->url_to_post($post_id,$url);
+			//$this->url_to_post($post_id,$url);
 		}
 
 		/**

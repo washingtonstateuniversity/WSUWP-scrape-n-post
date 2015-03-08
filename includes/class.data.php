@@ -81,7 +81,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * 
 		 * @TODO should store the content if option allows for it, create option to not allow for storeage, and when to not allow
 		 */
-		public function traverse_all_urls($url,  $depth = 5) {
+		public function traverse_all_urls( $url,  $depth = 5, $idx = 0 ) {
 			global $_params,$scrape_core,$scrape_actions;
 			
 			if ( isset($this->seen["{$url}"]) 
@@ -92,6 +92,12 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			}
 			$this->seen["{$url}"] = true;
 			$scrape_options = get_option('scrape_options');
+			
+			if($scrape_options['limit_scraps']<=$idx){
+				return;
+			}
+			
+			
 			$urls = $this->get_urls($url);
 			foreach($urls as $href=>$obj ) {
 				if($obj['type']=='page'){
@@ -154,10 +160,13 @@ if ( ! class_exists( 'scrape_data' ) ) {
 						if($scrape_options['add_post_on_crawl']){
 							$scrape_actions->make_post($href);
 						}
-
+						$idx++;
+					}
+					if($scrape_options['limit_scraps']<=$idx){
+						return;
 					}
 					$this->wanted[$href]=$obj;
-					$this->traverse_all_urls($href,$depth - 1);
+					$this->traverse_all_urls($href,$depth - 1,$idx);
 				}
 			}
 			sleep( $scrape_options['interval'] );
