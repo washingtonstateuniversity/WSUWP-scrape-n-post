@@ -9,6 +9,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		function __construct() {
 			add_action( 'init', array( $this, 'register_shadow_post_type' ), 11 );
 			add_action( 'add_meta_boxes', array( $this, 'add_shadow_post_meta_boxes' ), 11, 1 );
+			add_filter('post_row_actions', array( $this, 'shadow_post_action_row' ), 10, 2);
 			add_action( 'save_post', array( $this, 'save_shadow_post_object' ), 15, 2 );
 			add_action( 'transition_post_status', array( $this, 'force_shadow_post_status' ), 15, 3 );
 		}
@@ -115,7 +116,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_option_post_tie( $post ) {
-			$tiedTo = get_post_meta( $post->ID, '_wsuwp_spn_tied_post_id', true );
+			$tiedTo = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_tied_post_id', true );
 			?>
 			<div id="wsuwp-snp-display-ignore">
 				<p class="description">This is the post that the shadow post feeds to when requested</p>
@@ -161,6 +162,23 @@ if ( ! class_exists( 'shadow_post' ) ) {
 			<?php
 		}
 
+
+		public function shadow_post_action_row($actions, $post){
+			//check for your post type
+			if ($post->post_type == SHADOW_POST_TYPE_POST ){
+				/*do you stuff here
+				you can unset to remove actions
+				and to add actions ex:*/
+				$tiedTo = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_tied_post_id', true );
+				if($tiedTo>0){
+					$actions['remake_post'] = '<a href="#&shadow='.get_permalink($post->ID).'&post='.$tiedTo.'">'.__('Reimport Post').'</a>';
+				}else{
+					$actions['make_post'] = '<a href="#&shadow='.get_permalink($post->ID).'">'.__('Make Post').'</a>';
+				}
+				
+			}
+			return $actions;
+		}
 
 		/**
 		 * Display a meta box to capture the URL for an object.
