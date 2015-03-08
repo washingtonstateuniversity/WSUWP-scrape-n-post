@@ -77,7 +77,7 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		public function display_shadow_feild_map_meta_box( $post ) {
 			global $scrape_core, $scrape_data;
 			
-			
+			$display='';//@todo check why this is there.. maybe for optional or security reasons?
 			?><fieldset id="post_block" style=" <?=$display?> ">
 				<legend>Post Blocks</legend>
 				<div id="mapping_meta_template" style="padding:10px 15px; border:1px solid #E9E9E9;">
@@ -131,12 +131,59 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 					?>
 				</div>
 			</fieldset>
+			
+			<fieldset id="meta_block" style=" <?=$display?> ">
+				<legend>Content additions</legend>
+				<br/>
+				<div id="ext_sections">
+					<?php
+						$input_name = SHADOW_KEY."_post_preppened_content";
+						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					?>
+						<label> <?=_e( "Preppened content block" )?> </label><br/>
+						<textarea name="<?=$input_name?>"  style="width:100%; min-height:250px;"><?=esc_textarea( $meta_data)?></textarea>
+					<?php
+					$input_name = SHADOW_KEY."_post_preppened_shortcode";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$scrape_core->make_radio_html(array(
+						'types'       => array('Yes'=>'yes','No'=>'no'),
+						'input_name'  => $input_name,
+						'meta_data'   => isset($meta_data)?$meta_data:'no',
+						'description' => '',
+						'title'       => 'Process shortcodes'
+					))?>
+					
+					<hr/>
+					<?php
+						$input_name = SHADOW_KEY."_post_appended_content";
+						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					?>
+						<label> <?=_e( "Appended content block" )?> </label><br/>
+						<textarea name="<?=$input_name?>"  style="width:100%; min-height:250px;"><?=esc_textarea( $meta_data)?></textarea>
+					<?php
+					$input_name = SHADOW_KEY."_post_appended_shortcode";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$scrape_core->make_radio_html(array(
+						'types'       => array('Yes'=>'yes','No'=>'no'),
+						'input_name'  => $input_name,
+						'meta_data'   => isset($meta_data)?$meta_data:'no',
+						'description' => '',
+						'title'       => 'Process shortcodes'
+					))?>
+					<hr/>
+				</div>
+			</fieldset>
+			
+			
+			
+			
+			
 			<?php
 		
 		}
 		
 		public function add_block_tempates(){
-			global $post;    
+			global $post,$scrape_core;    
 			?>
 			<div id="mapping_template">
 				<?=$this->feild_block_stub($post,"{STUB_NAME}","{INPUT_NAME}",array())?>
@@ -525,7 +572,7 @@ $content = ob_get_clean();
 		 */
 		public function save_shadow_profile_object( $post_id, $post ) {
 			global $scrape_data;
-			$shadow_profile_object_names = array('post_status','post_type','post_author','ping_status','comment_status','post_password','post_excerpt','post_category','post_category_method','page_template');
+			$shadow_profile_object_names = array( 'post_status', 'post_type', 'post_author', 'ping_status', 'comment_status', 'post_password', 'post_excerpt', 'post_category', 'post_category_method', 'page_template' );
 			foreach($shadow_profile_object_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
 					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
@@ -535,20 +582,33 @@ $content = ob_get_clean();
 					}
 				}
 			}
-			
-			$shadow_profile_object_mapping_names = array('post_content','post_name','post_title','post_excerpt','post_date','post_category');
+
+			$shadow_profile_object_names = array( 'post_preppened_content', 'post_preppened_shortcode', 'post_appended_content', 'post_appended_shortcode' );
+			foreach($shadow_profile_object_names as $name){
+				//var_dump($_POST[SHADOW_KEY.'_'.$name]);
+				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
+					$value = $_POST[SHADOW_KEY.'_'.$name];
+					if ( empty( trim( $value ) ) ) {
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name );
+					} else {
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name, $value );
+						//var_dump('update_post_meta');
+					}
+				}
+			}//die();
+		
+			$shadow_profile_object_mapping_names = array( 'post_content', 'post_name', 'post_title', 'post_excerpt', 'post_date', 'post_category' );
 			foreach($shadow_profile_object_mapping_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_map'][$name] ) ) {
 					$value = json_encode($_POST[SHADOW_KEY.'_map'][$name]);
 					if ( empty( trim( $value ) ) ) {
 						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name );
 					} else {
-						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name, json_encode($_POST[SHADOW_KEY.'_map'][$name]) );
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name, $value );
 					}
 				}
 			}
-			
-			
+
 			$mapable_meta_parts=$scrape_data->get_all_meta_keys();
 			foreach($mapable_meta_parts as $name){
 				$input_name = SHADOW_KEY."_map[meta__$name]";

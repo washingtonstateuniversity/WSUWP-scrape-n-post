@@ -295,10 +295,30 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				}
 			}
 			
+			
+
+			$post_preppened_content = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_post_preppened_content', true );
+			$post_preppened_shortcode = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_post_preppened_shortcode', true );
+			
+			$post_appended_content = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_post_appended_content', true );
+			$post_appended_shortcode = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_post_appended_shortcode', true );
+			//var_dump($post_appened_content);
+			
 
 
-
-
+			if( isset($post_preppened_shortcode) && $post_preppened_shortcode == "yes" ){
+				$post_preppened = isset($post_preppened_content) ? do_shortcode( $post_preppened_content ) : '';
+			}else{
+				$post_preppened = isset($post_preppened_content) ? $post_preppened_content : '';
+			}
+			
+			if( isset($post_appended_shortcode) && $post_appended_shortcode == "yes" ){
+				$post_appended = isset($post_appended_content) ? do_shortcode( $post_appended_content ) : '';
+			}else{
+				$post_appended = isset($post_appended_content) ? $post_appended_content : '';
+			}
+			//var_dump($post_appended);die();
+			$content = $post_preppened . $this->get_content_part($html,$profile->post_content) . $post_appended;
 
 			// Create post object
 			$post_compiled = array(
@@ -313,7 +333,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				'post_category'  => array($cat_ID),
 				'tags_input'     => (isset($profile->tags_input)?$this->get_content_part($html,$profile->tags_input):""),//[ '<tag>, <tag>, ...' | array ] // Default empty.
 				'tax_input'      => (isset($profile->tax_input)?$this->get_content_part($html,$profile->tax_input):""),//[ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
-				'post_content'   => $this->get_content_part($html,$profile->post_content)
+				'post_content'   =>  $content
 			);
 						
 			
