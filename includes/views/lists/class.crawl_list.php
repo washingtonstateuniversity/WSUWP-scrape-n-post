@@ -1,5 +1,10 @@
 <?php
-
+if(!class_exists('WP_List_Table')){
+    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+	require_once(ABSPATH . 'wp-admin/includes/template.php' );
+	require_once( ABSPATH . 'wp-admin/includes/screen.php' );
+}
+if(!class_exists('crawl_list')){
 /* lists helpers.. rethink this */
 class crawl_list extends WP_List_Table {
     function __construct() {
@@ -259,5 +264,6 @@ class crawl_list extends WP_List_Table {
         );
         $this->items           = $wpdb->get_results($query);
     }
+}
 }
 ?>

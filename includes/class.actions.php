@@ -248,7 +248,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$html=$raw_html['body'];
 
 			$obj = get_post_type_object( $options['post_type'] );
-			$post = get_post(42);//, $output, $filter 
+			$post = get_post(5);//, $output, $filter 
 			//var_dump($post);
 
 			// Get user info
@@ -319,7 +319,10 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			}
 			//var_dump($post_appended);die();
 			$content = $post_preppened . $this->get_content_part($html,$profile->post_content) . $post_appended;
-
+			var_dump($profile->post_content);
+			var_dump($content);
+			//var_dump($html);
+			die();
 			// Create post object
 			$post_compiled = array(
 				'post_type'      => $options['post_type'],

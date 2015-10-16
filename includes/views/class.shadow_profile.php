@@ -377,11 +377,11 @@ $content = ob_get_clean();
 
 				<!-- remove type -->
 				<span class="filteroptions type_remove">
-					<label>root</label><input type="text" name="<?=$input_name."[root]"?>" value='<?=isset($value["root"])?str_replace("'","\'",$value["root"]):""?>' data-req='required' placeholder=".css_selector" class="half"/><br/>
+					<label>root selector</label><input type="text" name="<?=$input_name."[root]"?>" value='<?=isset($value["root"])?str_replace("'","\'",$value["root"]):""?>' placeholder=".css_selector" class="half" data-req='required'/><br/> <!--  -->
 				</span>
 				<span class="filteroptions type_remove">
-					<label>selector</label>
-					<input type="text" name="<?=$input_name."[selector]"?>" value='<?=isset($value["selector"])?str_replace("'","\'",$value["selector"]):""?>' data-req='required' placeholder=".css_selector" class="half"/>
+					<label>child selector</label>
+					<input type="text" name="<?=$input_name."[selector]"?>" value='<?=isset($value["selector"])?str_replace("'","\'",$value["selector"]):""?>'  placeholder=".css_selector (optional)" class="half"/> <!-- data-req='required' -->
 				</span>
 				
 				<!-- explode type -->
