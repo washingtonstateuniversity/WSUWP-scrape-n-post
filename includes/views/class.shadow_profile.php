@@ -406,7 +406,7 @@ $content = ob_get_clean();
 				</span>
 				<span class="filteroptions type_str_replace type_preg_replace">
 					<label>replace</label>
-					<input type="text" name="<?=$input_name."[replace]"?>" value='<?=isset($value["replace"])?$value["replace"]:""?>'  class="full"/>
+					<textarea name="<?=$input_name."[replace]"?>" style="height:50px;width:100%;"><?=isset($value["replace"])?$value["replace"]:""?></textarea>
 				</span>
 				
 				
@@ -554,7 +554,13 @@ $content = ob_get_clean();
 			</div>
 			<?php
 		}
-
+		public function escapeJsonString($value) {
+			# list from www.json.org: (\b backspace, \f formfeed)    
+			$escapers =     array("\\",     "/",   "\"",  "\n",  "\r",  "\t", "\x08", "\x0c");
+			$replacements = array("\\\\", "\\/", "\\\"", "\\n", "\\r", "\\t",  "\\f",  "\\b");
+			$result = str_replace($escapers, $replacements, $value);
+			return $result;
+		}
 
 /*
   'post_date'      => [ Y-m-d H:i:s ] // The time post was made.
@@ -600,14 +606,17 @@ $content = ob_get_clean();
 			$shadow_profile_object_mapping_names = array( 'post_content', 'post_name', 'post_title', 'post_excerpt', 'post_date', 'post_category' );
 			foreach($shadow_profile_object_mapping_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_map'][$name] ) ) {
-					$value = json_encode($_POST[SHADOW_KEY.'_map'][$name]);
+					$raw = $_POST[SHADOW_KEY.'_map'][$name];
+					$encoded = json_encode($raw);
+					$value = str_replace('\r\n', '\\\\r\\\\n', $encoded);
+					//var_dump($value);
 					if ( empty( trim( $value ) ) ) {
 						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name );
 					} else {
 						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name, $value );
 					}
 				}
-			}
+			}//die();
 
 			$mapable_meta_parts=$scrape_data->get_all_meta_keys();
 			foreach($mapable_meta_parts as $name){

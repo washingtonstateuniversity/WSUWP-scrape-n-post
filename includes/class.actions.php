@@ -319,10 +319,20 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			}
 			//var_dump($post_appended);die();
 			$content = $post_preppened . $this->get_content_part($html,$profile->post_content) . $post_appended;
-			var_dump($profile->post_content);
+			/*var_dump($profile->post_content);
 			var_dump($content);
 			//var_dump($html);
-			die();
+			die();*/
+			/*if(strpos($html,'>70.18_Using_Registered')>0){
+				$part = $this->get_content_part($html,$profile->post_title);
+				var_dump($part);
+				var_dump($html);
+				var_dump($profile->post_title);
+				
+				die();
+			}
+			*/
+			
 			// Create post object
 			$post_compiled = array(
 				'post_type'      => $options['post_type'],
@@ -458,9 +468,18 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 						$content=$content[$filter->select];
 						break;
 					case 'remove':
-						$content_obj = htmlqp($content, $filter->root, array('ignore_parser_warnings' => TRUE));
-						$content_obj->find($filter->selector)->remove();
-						$content = $content_obj->top()->html();
+						$root = '';
+						$selector = '';
+						if(isset($filter->selector) && !empty($filter->selector)){
+							$selector = $filter->selector;
+							$root = $filter->root;
+						}else{
+							$selector = $filter->root;
+							$root = '';
+						}
+						$content_obj = htmlqp($content, $root, array('ignore_parser_warnings' => TRUE));
+						$content_obj->find($selector)->remove();
+						$content = str_replace('</body>','',str_replace('<body>','',$content_obj->top()->innerHTML()));
 						break;
 					case 'str_replace':
 						$content = str_replace($filter->search,$filter->replace,$content);
