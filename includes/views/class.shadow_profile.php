@@ -454,6 +454,8 @@ $content = ob_get_clean();
 				<?php
 					$input_name = SHADOW_KEY."_post_type";
 					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$meta_data_post_type = $meta_data;
+					
 				?>
 				<label> <?=_e( "Use Post Type" )?> </label>
 				<select name="<?=$input_name?>">
@@ -492,9 +494,15 @@ $content = ob_get_clean();
 					$input_name = SHADOW_KEY."_post_category";
 					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
 				?>
+
 				<label> <?=_e( "Use Base Categories Posts" )?> </label>
 				<select name="<?=$input_name?>">
-				<?php foreach( get_categories() as $cat ): ?>
+
+				<?php foreach( get_categories(array( 
+									'post_type'=>$meta_data_post_type!=""?$meta_data_post_type:"post",
+									'hide_empty'=>0
+									)
+									) as $cat ): ?>
 					<option <?=selected($cat->term_id, $meta_data)?> value="<?=$cat->term_id?>"> <?=$cat->name?> </option>
 				<?php endforeach; ?>
 				</select>	
